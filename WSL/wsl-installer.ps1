@@ -141,11 +141,9 @@ function Install-WSL {
     Write-Step "安装 $Distro..."
     
     if (-not $existing) {
-        # 使用字符串拼接而不是数组，避免 null 问题
         $wslPath = (Get-Command wsl.exe).Source
         if (-not $wslPath) { $wslPath = "wsl.exe" }
         
-        # 构建参数（确保无 null）
         $arguments = "--install"
         if ($Distro -and $Distro -ne "Ubuntu") {
             $arguments += " -d $Distro"
@@ -153,7 +151,6 @@ function Install-WSL {
         
         Write-Host "  执行: wsl $arguments" -ForegroundColor Gray
         
-        # 使用 cmd /c 执行，避免 PowerShell 参数解析问题
         $cmd = "`"$wslPath`" $arguments"
         $proc = Start-Process -FilePath "cmd.exe" -ArgumentList "/c", $cmd -Wait -PassThru -WindowStyle Hidden
         
@@ -166,7 +163,7 @@ function Install-WSL {
 
     # 等待安装完成
     Write-Host "等待 WSL 初始化..." -ForegroundColor Yellow
-    $timeout = 60
+    $timeout = 120
     $timer = 0
     while (-not (Test-DistroInstalled $Distro) -and $timer -lt $timeout) {
         Start-Sleep -Seconds 1
@@ -182,80 +179,149 @@ function Install-WSL {
     }
 }
 
-# 配置发行版
+# 修复后的配置函数
 function Configure-Distro($distroName) {
     Write-Step "配置 $distroName..."
 
-    # 确保发行版名称有效
     if ([string]::IsNullOrWhiteSpace($distroName)) {
         $distroName = "Ubuntu"
     }
 
-    # 创建 wsl.conf（使用 Unix 换行符）
-    $configContent = "[boot]`nsystemd=true`n`n[user]`ndefault=root`n"
-    $tempConfig = "$env:TEMP\wsl.conf"
+    # 等待 WSL 完全启动
+    Write-Host "  等待 WSL 系统完全初始化..." -ForegroundColor Gray
+    $maxWait = 30
+    $waited = 0
+    $systemReady = $false
     
-    # 使用 .NET 写入文件确保无 BOM 和正确换行符
-    $bytes = [System.Text.Encoding]::UTF8.GetBytes($configContent)
-    [System.IO.File]::WriteAllBytes($tempConfig, $bytes)
-    
-    # 等待 WSL 文件系统就绪
-    Write-Host "  等待文件系统就绪..." -ForegroundColor Gray
-    $ready = $false
-    for ($i = 0; $i -lt 10; $i++) {
-        $test = wsl -d $distroName -e echo "ready" 2>&1
-        if ($test -eq "ready") {
-            $ready = $true
+    while ($waited -lt $maxWait -and -not $systemReady) {
+        $testResult = wsl -d $distroName -u root -e /bin/true 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            $systemReady = $true
             break
         }
-        Start-Sleep -Seconds 1
+        
+        wsl -d $distroName -e true 2>$null
+        Start-Sleep -Seconds 2
+        $waited++
+        
+        if ($waited % 5 -eq 0) { 
+            Write-Host "    已等待 $waited 秒，系统初始化中..." -ForegroundColor Gray 
+        }
     }
     
-    if (-not $ready) {
-        Write-Warn "WSL 响应较慢，继续尝试..."
+    if (-not $systemReady) {
+        Write-Warn "WSL 系统初始化较慢，继续尝试..."
+    } else {
+        Write-Ok "WSL 系统已就绪"
     }
 
-    # 复制配置文件到 WSL
-    try {
-        $destPath = "\\wsl$\$distroName\etc\wsl.conf"
-        Copy-Item -Path $tempConfig -Destination $destPath -Force -ErrorAction Stop
-        Write-Ok "wsl.conf 已写入"
-    } catch {
-        # 备选：使用 base64 编码通过 bash 写入
-        Write-Host "  使用备选方式写入配置..." -ForegroundColor Gray
-        $base64 = [Convert]::ToBase64String($bytes)
-        wsl -d $distroName -u root -e bash -c "echo $base64 | base64 -d > /etc/wsl.conf" 2>$null
-        Write-Ok "wsl.conf 已写入（备选方式）"
-    }
-    
-    Remove-Item $tempConfig -ErrorAction SilentlyContinue
-
-    # 重启生效
-    wsl --terminate $distroName 2>$null
-    Start-Sleep -Seconds 3
-
-    # 创建用户
+    # 获取有效的 Linux 用户名
     $defaultName = $env:USERNAME
+    $defaultName = $defaultName -replace '[^a-zA-Z0-9_-]', ''
+    if ($defaultName -match '^[0-9]') {
+        $defaultName = "user$defaultName"
+    }
+    if ([string]::IsNullOrWhiteSpace($defaultName) -or $defaultName.Length -eq 0) {
+        $defaultName = "ubuntu"
+    }
+    $defaultName = $defaultName.ToLower()
+
     $username = Read-Host "`n请输入 Linux 用户名（留空使用 '$defaultName'）"
     if ([string]::IsNullOrWhiteSpace($username)) { 
         $username = $defaultName 
     }
     
-    # 清理用户名中的特殊字符
-    $username = $username -replace '[^\w\-]', ''
-    if ([string]::IsNullOrWhiteSpace($username)) {
-        $username = "user"
+    # 验证并清理用户名
+    $username = $username -replace '[^a-z0-9_-]', ''
+    if ($username -match '^[0-9]' -or $username.Length -eq 0) {
+        $username = "user$username"
+    }
+    if ($username.Length -gt 32) {
+        $username = $username.Substring(0, 32)
     }
 
-    Write-Host "创建用户 '$username'，请按提示设置密码..." -ForegroundColor Yellow
+    Write-Host "创建用户 '$username'..." -ForegroundColor Yellow
+
+    # 创建 wsl.conf（先不设置默认用户）
+    $configContent = "[boot]`nsystemd=true`n"
+    $tempConfig = "$env:TEMP\wsl.conf"
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($configContent)
+    [System.IO.File]::WriteAllBytes($tempConfig, $bytes)
     
-    # 分步执行，避免复杂命令解析问题
-    wsl -d $distroName -u root -e useradd -m -G sudo -s /bin/bash $username 2>$null
-    wsl -d $distroName -u root -e bash -c "echo '$username ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/$username"
-    wsl -d $distroName -u root -e passwd $username
-    wsl -d $distroName -u root -e sed -i "s/^default=.*/default=$username/" /etc/wsl.conf
+    try {
+        $destPath = "\\wsl$\$distroName\etc\wsl.conf"
+        Copy-Item -Path $tempConfig -Destination $destPath -Force -ErrorAction Stop
+        Write-Ok "wsl.conf 已写入"
+    } catch {
+        Write-Host "  使用备选方式写入配置..." -ForegroundColor Gray
+        $base64 = [Convert]::ToBase64String($bytes)
+        wsl -d $distroName -u root -e bash -c "echo $base64 | base64 -d > /etc/wsl.conf" 2>$null
+        Write-Ok "wsl.conf 已写入（备选方式）"
+    }
+    Remove-Item $tempConfig -ErrorAction SilentlyContinue
+
+    # 关键修复：简化的用户创建逻辑
+    Write-Host "  创建用户账户..." -ForegroundColor Gray
     
+    # 先检查用户是否已存在
+    $checkUser = wsl -d $distroName -u root -e id $username 2>&1
+    if ($checkUser -match "uid=") {
+        Write-Warn "用户 '$username' 已存在，跳过创建"
+    } else {
+        # 创建用户 - 使用简单直接的命令
+        wsl -d $distroName -u root useradd -m -G sudo -s /bin/bash $username 2>&1 | Out-Null
+        
+        # 再次检查是否创建成功
+        $verifyUser = wsl -d $distroName -u root -e id $username 2>&1
+        if ($verifyUser -match "uid=") {
+            Write-Ok "用户 '$username' 创建成功"
+        } else {
+            Write-Err "用户创建失败"
+            Write-Host "  尝试使用默认用户名 'ubuntu'..." -ForegroundColor Yellow
+            $username = "ubuntu"
+            
+            # 检查默认用户是否存在
+            $checkDefault = wsl -d $distroName -u root -e id $username 2>&1
+            if ($checkDefault -match "uid=") {
+                Write-Warn "用户 'ubuntu' 已存在"
+            } else {
+                wsl -d $distroName -u root useradd -m -G sudo -s /bin/bash $username 2>&1 | Out-Null
+                $verifyDefault = wsl -d $distroName -u root -e id $username 2>&1
+                if ($verifyDefault -notmatch "uid=") {
+                    Write-Err "默认用户也创建失败，请手动创建用户"
+                    return
+                }
+            }
+        }
+    }
+    
+    # 配置 sudo 权限
+    Write-Host "  配置 sudo 权限..." -ForegroundColor Gray
+    wsl -d $distroName -u root bash -c "echo '$username ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/$username" 2>$null
+    wsl -d $distroName -u root chmod 440 /etc/sudoers.d/$username 2>$null
+    Write-Ok "sudo 权限已配置"
+    
+    # 设置密码
+    Write-Host "请为 '$username' 设置密码:" -ForegroundColor Yellow
+    wsl -d $distroName -u root passwd $username
+    
+    # 更新 wsl.conf 设置默认用户
+    $configContent = "[boot]`nsystemd=true`n`n[user]`ndefault=$username`n"
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($configContent)
+    $tempConfig = "$env:TEMP\wsl.conf"
+    [System.IO.File]::WriteAllBytes($tempConfig, $bytes)
+    
+    try {
+        Copy-Item -Path $tempConfig -Destination "\\wsl$\$distroName\etc\wsl.conf" -Force -ErrorAction Stop
+    } catch {
+        $base64 = [Convert]::ToBase64String($bytes)
+        wsl -d $distroName -u root bash -c "echo $base64 | base64 -d > /etc/wsl.conf" 2>$null
+    }
+    Remove-Item $tempConfig -ErrorAction SilentlyContinue
+    
+    # 重启 WSL 使配置生效
     wsl --terminate $distroName 2>$null
+    Start-Sleep -Seconds 3
     
     Write-Ok "配置完成，默认用户: $username"
     
