@@ -1,423 +1,343 @@
-﻿<#
-.SYNOPSIS
-    WSL 管理脚本 - 支持安装、卸载、更新
-#>
+﻿#!/bin/bash
+# OpenClaw WSL Ubuntu 管理脚本（精简版）
+# 支持: 安装 | 更新 | 卸载
 
-[CmdletBinding()]
-param(
-    [Parameter(Mandatory=$true, Position=0)]
-    [ValidateSet("install", "uninstall", "update")]
-    [string]$Action,
+set -e
 
-    [Parameter()]
-    [string]$Distro = "",
+# 颜色定义
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+YELLOW='\e[1;33m'
+BLUE='\e[0;34m'
+CYAN='\e[0;36m'
+NC='\e[0m'
 
-    [Parameter()]
-    [ValidateSet("LTS", "Latest", "")]
-    [string]$UbuntuVersion = "LTS",
+# 配置变量
+OPENCLAW_VERSION="latest"
 
-    [Parameter()]
-    [switch]$All,
+# OpenClaw 要求的最低 Node.js 版本
+REQUIRED_NODE_VERSION="22.16.0"
 
-    [Parameter()]
-    [switch]$Force
-)
-
-# 自动提权
-if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "正在请求管理员权限..." -ForegroundColor Yellow
-    $scriptPath = $MyInvocation.MyCommand.Path
-    $arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`" $Action"
-    if ($Distro) { $arguments += " -Distro `"$Distro`"" }
-    if ($UbuntuVersion -and -not $Distro) { $arguments += " -UbuntuVersion `"$UbuntuVersion`"" }
-    if ($All) { $arguments += " -All" }
-    if ($Force) { $arguments += " -Force" }
-    Start-Process -FilePath "powershell.exe" -ArgumentList $arguments -Verb RunAs
-    exit
+# 打印消息
+print_msg() {
+    local color=$1
+    local msg=$2
+    printf "${color}%s${NC}\n" "$msg"
 }
 
-# 工具函数
-function Write-Step($msg) { Write-Host "`n[步骤] $msg" -ForegroundColor Cyan }
-function Write-Ok($msg) { Write-Host "  ✓ $msg" -ForegroundColor Green }
-function Write-Warn($msg) { Write-Host "  ! $msg" -ForegroundColor Yellow }
-function Write-Err($msg) { Write-Host "  ✗ $msg" -ForegroundColor Red }
-
-function Get-UbuntuVersions {
-    try {
-        $onlineList = wsl --list --online 2>$null | Select-String "Ubuntu"
-        $versions = foreach ($line in $onlineList) {
-            if ($line -match "(Ubuntu-?[\d\.]*)") { $matches[1] }
-        }
-        return $versions | Where-Object { $_ } | Sort-Object -Unique
-    } catch {
-        return @("Ubuntu-24.04", "Ubuntu-22.04", "Ubuntu-20.04", "Ubuntu")
-    }
+# 显示帮助
+show_help() {
+    printf "${CYAN}🦞 OpenClaw WSL Ubuntu 管理脚本（精简版）${NC}\n\n"
+    printf "${GREEN}用法:${NC} %s [选项]\n\n" "$0"
+    printf "${YELLOW}选项:${NC}\n"
+    printf "    install, i      安装 OpenClaw（首次安装或完整重装）\n"
+    printf "    update, u       更新 OpenClaw 到最新版本\n"
+    printf "    uninstall, rm   完全卸载 OpenClaw\n"
+    printf "    help, h         显示此帮助信息\n\n"
+    printf "${YELLOW}示例:${NC}\n"
+    printf "    %s install      # 首次安装\n" "$0"
+    printf "    %s update       # 更新版本\n" "$0"
+    printf "    %s uninstall    # 完全卸载\n\n" "$0"
 }
 
-function Get-VersionNumber($ver) {
-    if ($ver -match "(\d+)\.(\d+)") { return [int]$matches[1] * 100 + [int]$matches[2] }
-    return 0
+# 检查命令是否存在
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
 }
 
-function Select-UbuntuVersion($versions, $strategy) {
-    $sorted = $versions | Where-Object { $_ -match "Ubuntu-?(\d+\.\d+)" } | ForEach-Object {
-        [PSCustomObject]@{ Name = $_; Ver = Get-VersionNumber $_; IsLTS = ($_ -match "\d+\.04") }
-    } | Sort-Object Ver -Descending
+# 版本比较函数：如果 $1 >= $2 返回 0，否则返回 1
+version_ge() {
+    local v1=$1
+    local v2=$2
 
-    switch ($strategy) {
-        "LTS" { 
-            $lts = $sorted | Where-Object { $_.IsLTS } | Select-Object -First 1
-            if ($lts) { return $lts.Name }
-            return "Ubuntu-24.04"
-        }
-        "Latest" { 
-            if ($sorted) { return $sorted[0].Name }
-            return "Ubuntu"
-        }
-        default { 
-            $lts = $sorted | Where-Object { $_.IsLTS } | Select-Object -First 1
-            if ($lts) { return $lts.Name }
-            return "Ubuntu-24.04"
-        }
-    }
+    local v1_major=$(echo "$v1" | cut -d'.' -f1 | sed 's/v//')
+    local v1_minor=$(echo "$v1" | cut -d'.' -f2)
+    local v1_patch=$(echo "$v1" | cut -d'.' -f3)
+
+    local v2_major=$(echo "$v2" | cut -d'.' -f1 | sed 's/v//')
+    local v2_minor=$(echo "$v2" | cut -d'.' -f2)
+    local v2_patch=$(echo "$v2" | cut -d'.' -f3)
+
+    if [[ "$v1_major" -gt "$v2_major" ]]; then return 0; fi
+    if [[ "$v1_major" -lt "$v2_major" ]]; then return 1; fi
+    if [[ "$v1_minor" -gt "$v2_minor" ]]; then return 0; fi
+    if [[ "$v1_minor" -lt "$v2_minor" ]]; then return 1; fi
+    if [[ "$v1_patch" -ge "$v2_patch" ]]; then return 0; fi
+    return 1
 }
 
-function Get-InstalledDistros {
-    return wsl --list --quiet 2>$null | Where-Object { $_ } | ForEach-Object { $_.Trim() }
+# 修复 nvm 和 npm 的冲突
+fix_nvm_npm_conflict() {
+    print_msg "$BLUE" "检查 nvm 和 npm 配置冲突..."
+
+    local npmrc_file="$HOME/.npmrc"
+
+    if [[ -f "$npmrc_file" ]]; then
+        if grep -qE "^(prefix|globalconfig)=" "$npmrc_file" 2>/dev/null; then
+            print_msg "$YELLOW" "检测到 .npmrc 中的 prefix/globalconfig 设置与 nvm 冲突"
+            print_msg "$BLUE" "备份并修复 .npmrc..."
+            cp "$npmrc_file" "$npmrc_file.backup.$(date +%Y%m%d%H%M%S)"
+            grep -vE "^(prefix|globalconfig)=" "$npmrc_file" > "$npmrc_file.tmp" || true
+            mv "$npmrc_file.tmp" "$npmrc_file"
+            print_msg "$GREEN" "✓ 已移除 .npmrc 中的冲突设置"
+        fi
+    fi
+
+    unset NPM_CONFIG_PREFIX 2>/dev/null || true
+    unset npm_config_prefix 2>/dev/null || true
 }
 
-function Test-DistroInstalled($name) {
-    if ([string]::IsNullOrWhiteSpace($name)) { return $false }
-    return (Get-InstalledDistros) -contains $name
-}
+# 检查 Node.js 版本（要求 >= 22.16.0）
+check_nodejs() {
+    print_msg "$BLUE" "[检查] Node.js 环境..."
 
-# ========== INSTALL ==========
-function Install-WSL {
-    Write-Host "=== WSL 安装 ===" -ForegroundColor Cyan
-    
-    # 确定版本（确保不为空）
-    if ([string]::IsNullOrWhiteSpace($Distro)) {
-        Write-Step "检测可用 Ubuntu 版本..."
-        $available = Get-UbuntuVersions
-        Write-Host "  可用: $($available -join ', ')" -ForegroundColor Gray
-        $Distro = Select-UbuntuVersion $available $UbuntuVersion
-        if ([string]::IsNullOrWhiteSpace($Distro)) {
-            $Distro = "Ubuntu"
-        }
-        Write-Ok "选择: $Distro (策略: $UbuntuVersion)"
-    }
-
-    # 检查是否已存在
-    $existing = Test-DistroInstalled $Distro
-    if ($existing) {
-        Write-Warn "$Distro 已安装"
-        if (-not $Force) {
-            $reinstall = Read-Host "是否重新安装? 这将删除现有数据! (yes/N)"
-            if ($reinstall -ne "yes") { 
-                Write-Host "配置现有系统..." -ForegroundColor Yellow
-                Configure-Distro $Distro
-                return 
-            }
-            Write-Step "卸载旧版本..."
-            wsl --terminate $Distro 2>$null
-            wsl --unregister $Distro 2>$null
-            $existing = $false
-        }
-    }
-
-    # 1. 启用功能
-    Write-Step "启用 WSL 功能..."
-    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart | Out-Null
-    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart | Out-Null
-    Write-Ok "WSL 功能已启用"
-
-    # 2. 设置默认 WSL2
-    Write-Step "配置 WSL2..."
-    wsl --set-default-version 2 2>$null
-    wsl --update 2>$null
-    Write-Ok "WSL2 配置完成"
-
-    # 3. 安装发行版
-    Write-Step "安装 $Distro..."
-    
-    if (-not $existing) {
-        $wslPath = (Get-Command wsl.exe).Source
-        if (-not $wslPath) { $wslPath = "wsl.exe" }
-        
-        $arguments = "--install"
-        if ($Distro -and $Distro -ne "Ubuntu") {
-            $arguments += " -d $Distro"
-        }
-        
-        Write-Host "  执行: wsl $arguments" -ForegroundColor Gray
-        
-        $cmd = "`"$wslPath`" $arguments"
-        $proc = Start-Process -FilePath "cmd.exe" -ArgumentList "/c", $cmd -Wait -PassThru -WindowStyle Hidden
-        
-        if ($proc.ExitCode -ne 0 -and -not (Test-DistroInstalled $Distro)) {
-            Write-Warn "安装返回错误，尝试默认安装..."
-            Start-Process -FilePath "cmd.exe" -ArgumentList "/c", "`"$wslPath`" --install" -Wait -WindowStyle Hidden
-            $Distro = "Ubuntu"
-        }
-    }
-
-    # 等待安装完成
-    Write-Host "等待 WSL 初始化..." -ForegroundColor Yellow
-    $timeout = 120
-    $timer = 0
-    while (-not (Test-DistroInstalled $Distro) -and $timer -lt $timeout) {
-        Start-Sleep -Seconds 1
-        $timer++
-        if ($timer % 10 -eq 0) { Write-Host "  已等待 $timer 秒..." -ForegroundColor Gray }
-    }
-
-    if (Test-DistroInstalled $Distro) {
-        Write-Ok "WSL 就绪"
-        Configure-Distro $Distro
-    } else {
-        Write-Err "等待超时，请手动检查安装状态"
-    }
-}
-
-# 修复后的配置函数
-function Configure-Distro($distroName) {
-    Write-Step "配置 $distroName..."
-
-    if ([string]::IsNullOrWhiteSpace($distroName)) {
-        $distroName = "Ubuntu"
-    }
-
-    # 等待 WSL 完全启动
-    Write-Host "  等待 WSL 系统完全初始化..." -ForegroundColor Gray
-    $maxWait = 30
-    $waited = 0
-    $systemReady = $false
-    
-    while ($waited -lt $maxWait -and -not $systemReady) {
-        $testResult = wsl -d $distroName -u root -e /bin/true 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            $systemReady = $true
-            break
-        }
-        
-        wsl -d $distroName -e true 2>$null
-        Start-Sleep -Seconds 2
-        $waited++
-        
-        if ($waited % 5 -eq 0) { 
-            Write-Host "    已等待 $waited 秒，系统初始化中..." -ForegroundColor Gray 
-        }
-    }
-    
-    if (-not $systemReady) {
-        Write-Warn "WSL 系统初始化较慢，继续尝试..."
-    } else {
-        Write-Ok "WSL 系统已就绪"
-    }
-
-    # 获取有效的 Linux 用户名
-    $defaultName = $env:USERNAME
-    $defaultName = $defaultName -replace '[^a-zA-Z0-9_-]', ''
-    if ($defaultName -match '^[0-9]') {
-        $defaultName = "user$defaultName"
-    }
-    if ([string]::IsNullOrWhiteSpace($defaultName) -or $defaultName.Length -eq 0) {
-        $defaultName = "ubuntu"
-    }
-    $defaultName = $defaultName.ToLower()
-
-    $username = Read-Host "`n请输入 Linux 用户名（留空使用 '$defaultName'）"
-    if ([string]::IsNullOrWhiteSpace($username)) { 
-        $username = $defaultName 
-    }
-    
-    # 验证并清理用户名
-    $username = $username -replace '[^a-z0-9_-]', ''
-    if ($username -match '^[0-9]' -or $username.Length -eq 0) {
-        $username = "user$username"
-    }
-    if ($username.Length -gt 32) {
-        $username = $username.Substring(0, 32)
-    }
-
-    Write-Host "创建用户 '$username'..." -ForegroundColor Yellow
-
-    # 创建 wsl.conf（先不设置默认用户）
-    $configContent = "[boot]`nsystemd=true`n"
-    $tempConfig = "$env:TEMP\wsl.conf"
-    $bytes = [System.Text.Encoding]::UTF8.GetBytes($configContent)
-    [System.IO.File]::WriteAllBytes($tempConfig, $bytes)
-    
-    try {
-        $destPath = "\\wsl$\$distroName\etc\wsl.conf"
-        Copy-Item -Path $tempConfig -Destination $destPath -Force -ErrorAction Stop
-        Write-Ok "wsl.conf 已写入"
-    } catch {
-        Write-Host "  使用备选方式写入配置..." -ForegroundColor Gray
-        $base64 = [Convert]::ToBase64String($bytes)
-        wsl -d $distroName -u root -e bash -c "echo $base64 | base64 -d > /etc/wsl.conf" 2>$null
-        Write-Ok "wsl.conf 已写入（备选方式）"
-    }
-    Remove-Item $tempConfig -ErrorAction SilentlyContinue
-
-    # 关键修复：简化的用户创建逻辑
-    Write-Host "  创建用户账户..." -ForegroundColor Gray
-    
-    # 先检查用户是否已存在
-    $checkUser = wsl -d $distroName -u root -e id $username 2>&1
-    if ($checkUser -match "uid=") {
-        Write-Warn "用户 '$username' 已存在，跳过创建"
-    } else {
-        # 创建用户 - 使用简单直接的命令
-        wsl -d $distroName -u root useradd -m -G sudo -s /bin/bash $username 2>&1 | Out-Null
-        
-        # 再次检查是否创建成功
-        $verifyUser = wsl -d $distroName -u root -e id $username 2>&1
-        if ($verifyUser -match "uid=") {
-            Write-Ok "用户 '$username' 创建成功"
-        } else {
-            Write-Err "用户创建失败"
-            Write-Host "  尝试使用默认用户名 'ubuntu'..." -ForegroundColor Yellow
-            $username = "ubuntu"
-            
-            # 检查默认用户是否存在
-            $checkDefault = wsl -d $distroName -u root -e id $username 2>&1
-            if ($checkDefault -match "uid=") {
-                Write-Warn "用户 'ubuntu' 已存在"
-            } else {
-                wsl -d $distroName -u root useradd -m -G sudo -s /bin/bash $username 2>&1 | Out-Null
-                $verifyDefault = wsl -d $distroName -u root -e id $username 2>&1
-                if ($verifyDefault -notmatch "uid=") {
-                    Write-Err "默认用户也创建失败，请手动创建用户"
-                    return
-                }
-            }
-        }
-    }
-    
-    # 配置 sudo 权限
-    Write-Host "  配置 sudo 权限..." -ForegroundColor Gray
-    wsl -d $distroName -u root bash -c "echo '$username ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/$username" 2>$null
-    wsl -d $distroName -u root chmod 440 /etc/sudoers.d/$username 2>$null
-    Write-Ok "sudo 权限已配置"
-    
-    # 设置密码
-    Write-Host "请为 '$username' 设置密码:" -ForegroundColor Yellow
-    wsl -d $distroName -u root passwd $username
-    
-    # 更新 wsl.conf 设置默认用户
-    $configContent = "[boot]`nsystemd=true`n`n[user]`ndefault=$username`n"
-    $bytes = [System.Text.Encoding]::UTF8.GetBytes($configContent)
-    $tempConfig = "$env:TEMP\wsl.conf"
-    [System.IO.File]::WriteAllBytes($tempConfig, $bytes)
-    
-    try {
-        Copy-Item -Path $tempConfig -Destination "\\wsl$\$distroName\etc\wsl.conf" -Force -ErrorAction Stop
-    } catch {
-        $base64 = [Convert]::ToBase64String($bytes)
-        wsl -d $distroName -u root bash -c "echo $base64 | base64 -d > /etc/wsl.conf" 2>$null
-    }
-    Remove-Item $tempConfig -ErrorAction SilentlyContinue
-    
-    # 重启 WSL 使配置生效
-    wsl --terminate $distroName 2>$null
-    Start-Sleep -Seconds 3
-    
-    Write-Ok "配置完成，默认用户: $username"
-    
-    # 完成提示
-    Write-Host "`n========================================" -ForegroundColor Green
-    Write-Host "  安装完成！" -ForegroundColor Green
-    Write-Host "  启动命令: wsl -d $distroName" -ForegroundColor White
-    Write-Host "========================================" -ForegroundColor Green
-    
-    if ((Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux).RestartNeeded) {
-        Write-Warn "需要重启计算机"
-    } else {
-        Read-Host "`n按 Enter 启动 $distroName"
-        wsl -d $distroName
-    }
-}
-
-# ========== UNINSTALL ==========
-function Uninstall-WSL {
-    Write-Host "=== WSL 卸载 ===" -ForegroundColor Cyan
-
-    if ($All) {
-        Write-Step "完全卸载 WSL..."
-        if (-not $Force) {
-            $confirm = Read-Host "删除所有 WSL 发行版和配置，确认? (yes/N)"
-            if ($confirm -ne "yes") { return }
-        }
-        
-        Get-InstalledDistros | ForEach-Object {
-            Write-Host "  卸载 $_..." -ForegroundColor Yellow
-            wsl --unregister $_ 2>$null
-        }
-        
-        dism.exe /online /disable-feature /featurename:Microsoft-Windows-Subsystem-Linux /norestart | Out-Null
-        dism.exe /online /disable-feature /featurename:VirtualMachinePlatform /norestart | Out-Null
-        Write-Ok "WSL 已完全卸载"
-        
-    } else {
-        if ([string]::IsNullOrWhiteSpace($Distro)) {
-            $installed = Get-InstalledDistros
-            if ($installed.Count -eq 0) { Write-Err "没有已安装的发行版"; return }
-            
-            Write-Host "`n已安装发行版:" -ForegroundColor Cyan
-            for ($i = 0; $i -lt $installed.Count; $i++) { Write-Host "  [$i] $($installed[$i])" }
-            
-            $sel = Read-Host "选择要卸载的编号（或输入名称）"
-            if ($sel -match "^\d+$" -and [int]$sel -lt $installed.Count) {
-                $Distro = $installed[[int]$sel]
-            } else {
-                $Distro = $sel
-            }
-        }
-
-        if (Test-DistroInstalled $Distro) {
-            Write-Step "卸载 $Distro..."
-            wsl --terminate $Distro 2>$null
-            wsl --unregister $Distro 2>$null
-            Write-Ok "$Distro 已卸载"
-        } else {
-            Write-Err "$Distro 未安装"
-        }
-    }
-}
-
-# ========== UPDATE ==========
-function Update-WSL {
-    Write-Host "=== WSL 更新 ===" -ForegroundColor Cyan
-
-    Write-Step "更新 WSL 内核..."
-    wsl --update
-    Write-Ok "WSL 内核已更新"
-
-    $installed = Get-InstalledDistros | Where-Object { $_ -match "Ubuntu" }
-    if (-not $installed) {
-        Write-Warn "未检测到 Ubuntu 发行版"
+    if ! command_exists node; then
+        print_msg "$YELLOW" "⚠️  Node.js 未安装，正在安装 Node.js 22.16.0+..."
+        install_nodejs_22_16
         return
-    }
+    fi
 
-    foreach ($distro in $installed) {
-        Write-Step "更新 $distro..."
-        wsl -d $distro -u root -e bash -c "apt update && apt upgrade -y && apt autoremove -y" 2>$null
-        Write-Ok "$distro 系统包已更新"
-    }
+    local current_version=$(node --version)
+    print_msg "$BLUE" "检测到 Node.js: $current_version"
 
-    wsl --shutdown
-    Write-Host "`n========================================" -ForegroundColor Green
-    Write-Host "  更新完成！" -ForegroundColor Green
-    Write-Host "========================================" -ForegroundColor Green
+    if version_ge "$current_version" "$REQUIRED_NODE_VERSION"; then
+        print_msg "$GREEN" "✓ Node.js 版本满足要求 (>= $REQUIRED_NODE_VERSION)"
+    else
+        print_msg "$YELLOW" "⚠️  Node.js 版本过低 ($current_version < $REQUIRED_NODE_VERSION)"
+        print_msg "$YELLOW" "OpenClaw 2026.3.13+ 要求 Node.js >= 22.16.0"
+
+        if [[ -n "$NVM_DIR" ]] || [[ -d "$HOME/.nvm" ]]; then
+            print_msg "$BLUE" "检测到 nvm，尝试通过 nvm 升级..."
+            fix_nvm_npm_conflict
+            upgrade_node_with_nvm
+        else
+            print_msg "$BLUE" "尝试通过 NodeSource 升级..."
+            install_nodejs_22_16
+        fi
+    fi
+
+    local new_version=$(node --version)
+    if version_ge "$new_version" "$REQUIRED_NODE_VERSION"; then
+        print_msg "$GREEN" "✓ Node.js 版本已更新: $new_version"
+    else
+        print_msg "$RED" "✗ Node.js 版本仍不满足要求: $new_version"
+        print_msg "$YELLOW" "请手动升级 Node.js 到 22.16.0 或更高版本"
+        print_msg "$NC" "升级方法:"
+        print_msg "$NC" "  1. 使用 nvm: nvm install 22 && nvm use 22"
+        print_msg "$NC" "  2. 或访问: https://nodejs.org/en/download"
+        exit 1
+    fi
+
+    if ! command_exists npm; then
+        print_msg "$RED" "✗ npm 未安装"
+        exit 1
+    fi
+    print_msg "$GREEN" "✓ npm 版本: $(npm --version)"
 }
 
-# ========== 主入口 ==========
-switch ($Action) {
-    "install" { Install-WSL }
-    "uninstall" { Uninstall-WSL }
-    "update" { Update-WSL }
+# 使用 nvm 升级 Node.js
+upgrade_node_with_nvm() {
+    export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+
+    if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+        source "$NVM_DIR/nvm.sh"
+    else
+        print_msg "$YELLOW" "nvm 未找到，尝试安装 nvm..."
+        install_nvm_and_node
+        return
+    fi
+
+    print_msg "$BLUE" "安装 Node.js 22.16.0 (LTS)..."
+    nvm install 22.16.0
+    nvm use --delete-prefix v22.16.0 --silent
+    nvm alias default 22.16.0
+    print_msg "$GREEN" "✓ nvm 已安装并切换到 Node 22.16.0"
 }
 
-Write-Host "`n按任意键退出..." -ForegroundColor Gray
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+# 安装 nvm 和 Node.js
+install_nvm_and_node() {
+    print_msg "$BLUE" "安装 nvm..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+    export NVM_DIR="$HOME/.nvm"
+    source "$NVM_DIR/nvm.sh"
+
+    print_msg "$BLUE" "通过 nvm 安装 Node.js 22.16.0..."
+    nvm install 22.16.0
+    nvm use --delete-prefix v22.16.0 --silent
+    nvm alias default 22.16.0
+
+    print_msg "$GREEN" "✓ nvm 和 Node.js 22.16.0 安装完成"
+}
+
+# 通过 NodeSource 安装 Node.js 22.x
+install_nodejs_22_16() {
+    print_msg "$BLUE" "通过 NodeSource 安装 Node.js 22.x..."
+
+    sudo apt-get remove -y nodejs npm 2>/dev/null || true
+    sudo rm -f /etc/apt/sources.list.d/nodesource.list* 2>/dev/null || true
+
+    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+
+    local installed_version=$(node --version)
+    print_msg "$GREEN" "✓ Node.js 安装完成: $installed_version"
+
+    if ! version_ge "$installed_version" "$REQUIRED_NODE_VERSION"; then
+        print_msg "$YELLOW" "NodeSource 版本 ($installed_version) 仍低于 22.16.0"
+        print_msg "$BLUE" "尝试通过 nvm 安装精确版本..."
+        install_nvm_and_node
+    fi
+}
+
+# 配置 npm 环境（兼容 nvm）
+setup_npm() {
+    print_msg "$BLUE" "[配置] npm 环境..."
+
+    if [[ -n "$NVM_DIR" ]] && [[ -s "$NVM_DIR/nvm.sh" ]]; then
+        print_msg "$BLUE" "检测到 nvm，使用 nvm 默认 npm 配置"
+        return
+    fi
+
+    mkdir -p ~/.npm-global
+    npm config set prefix '~/.npm-global'
+
+    if ! grep -q ".npm-global/bin" ~/.bashrc 2>/dev/null; then
+        echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+        print_msg "$GREEN" "✓ 已添加 npm 全局路径到 ~/.bashrc"
+    fi
+
+    export PATH=~/.npm-global/bin:$PATH
+
+    printf "是否使用国内 npm 镜像加速下载? [y/N]: "
+    read -r use_mirror
+    if [[ "$use_mirror" =~ ^[Yy]$ ]]; then
+        npm config set registry https://registry.npmmirror.com
+        print_msg "$GREEN" "✓ 已设置 npm 国内镜像"
+    fi
+}
+
+# 安装 OpenClaw
+cmd_install() {
+    print_msg "$CYAN" "\n🚀 开始安装 OpenClaw"
+    printf "==========================================\n"
+
+    print_msg "$BLUE" "[1/3] 环境准备..."
+    sudo apt update && sudo apt install -y curl git build-essential
+
+    check_nodejs
+    setup_npm
+
+    print_msg "$BLUE" "[3/3] 安装 OpenClaw..."
+
+    if curl -fsSL https://openclaw.ai/install.sh | bash; then
+        print_msg "$GREEN" "✓ 官方脚本安装成功"
+    else
+        print_msg "$YELLOW" "⚠️  脚本安装失败，尝试 npm 安装..."
+        npm install -g openclaw@$OPENCLAW_VERSION
+    fi
+
+    if ! command_exists openclaw; then
+        print_msg "$RED" "✗ OpenClaw 安装失败"
+        exit 1
+    fi
+
+    print_msg "$GREEN" "✓ OpenClaw 安装成功: $(openclaw --version 2>/dev/null || echo 'unknown')"
+
+    print_msg "$GREEN" "\n=========================================="
+    print_msg "$GREEN" "🎉 OpenClaw 安装完成！"
+    print_msg "$GREEN" "=========================================="
+    printf "\n"
+    print_msg "$CYAN" "🔧 常用命令:"
+    printf "   openclaw --version    # 查看版本\n"
+    printf "   openclaw --help       # 查看帮助\n"
+    printf "   %s update             # 更新版本\n" "$0"
+    printf "   %s uninstall          # 卸载\n" "$0"
+}
+
+# 更新 OpenClaw
+cmd_update() {
+    print_msg "$CYAN" "\n🔄 更新 OpenClaw"
+    printf "==========================================\n"
+
+    if ! command_exists openclaw; then
+        print_msg "$RED" "✗ OpenClaw 未安装，请先执行安装"
+        exit 1
+    fi
+
+    check_nodejs
+
+    local old_version
+    old_version=$(openclaw --version 2>/dev/null || echo "unknown")
+    print_msg "$BLUE" "当前版本: $old_version"
+
+    print_msg "$BLUE" "停止当前服务..."
+    openclaw gateway stop 2>/dev/null || true
+
+    print_msg "$BLUE" "正在更新..."
+    if npm update -g openclaw 2>/dev/null || npm install -g openclaw@latest; then
+        print_msg "$GREEN" "✓ 更新成功"
+        print_msg "$GREEN" "新版本: $(openclaw --version 2>/dev/null || echo 'unknown')"
+    else
+        print_msg "$RED" "✗ 更新失败"
+        exit 1
+    fi
+
+    print_msg "$BLUE" "重启服务..."
+    openclaw gateway start 2>/dev/null || true
+
+    print_msg "$GREEN" "\n✓ 更新完成"
+}
+
+# 卸载 OpenClaw
+cmd_uninstall() {
+    print_msg "$CYAN" "\n🗑️  卸载 OpenClaw"
+    printf "==========================================\n"
+
+    printf "确定要完全卸载 OpenClaw 吗? [y/N]: "
+    read -r confirm
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        print_msg "$YELLOW" "已取消卸载"
+        exit 0
+    fi
+
+    print_msg "$BLUE" "停止服务..."
+    openclaw gateway stop 2>/dev/null || true
+    openclaw gateway uninstall 2>/dev/null || true
+
+    print_msg "$BLUE" "卸载 OpenClaw..."
+    npm uninstall -g openclaw 2>/dev/null || true
+
+    print_msg "$BLUE" "清理残留文件..."
+    rm -rf ~/.npm-global/lib/node_modules/openclaw 2>/dev/null || true
+    rm -f ~/.npm-global/bin/openclaw 2>/dev/null || true
+
+    print_msg "$GREEN" "\n✓ OpenClaw 已完全卸载"
+}
+
+# 主函数
+main() {
+    local cmd="${1:-help}"
+
+    case "$cmd" in
+        install|i)
+            cmd_install
+            ;;
+        update|u)
+            cmd_update
+            ;;
+        uninstall|remove|rm)
+            cmd_uninstall
+            ;;
+        help|h|--help|-h)
+            show_help
+            ;;
+        *)
+            print_msg "$RED" "未知命令: $cmd"
+            show_help
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
