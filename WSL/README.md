@@ -30,30 +30,30 @@
 
 ```powershell
 # 以管理员身份运行 PowerShell，执行：
-.\wsl-manager.ps1 install
+.\wsl-installer.ps1 install
 
 # 或安装指定版本
-.\wsl-manager.ps1 install -Distro Ubuntu-22.04
+.\wsl-installer.ps1 install -Distro Ubuntu-22.04
 
 # 强制重新安装
-.\wsl-manager.ps1 install -Force
+.\wsl-installer.ps1 install -Force
 ```
 
 ### 卸载 WSL
 
 ```powershell
 # 交互式选择卸载
-.\wsl-manager.ps1 uninstall
+.\wsl-installer.ps1 uninstall
 
 # 完全移除 WSL
-.\wsl-manager.ps1 uninstall -All
+.\wsl-installer.ps1 uninstall -All
 ```
 
 ### 更新 WSL
 
 ```powershell
 # 更新 WSL 内核和 Ubuntu 系统
-.\wsl-manager.ps1 update
+.\wsl-installer.ps1 update
 ```
 
 ## 📖 详细使用说明
@@ -176,5 +176,8 @@ MIT License
 **温馨提示**：首次安装后可能需要重启计算机以确保所有功能正常工作。建议定期运行更新命令，获取最新功能和安全性改进：
 
 ```powershell
-.\wsl-manager.ps1 update
+.\wsl-installer.ps1 update
+```
+
+
 ```
