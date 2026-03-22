@@ -1,0 +1,117 @@
+# 金句库
+# 按分类存储，支持自动更新
+
+policy:  # 政策类
+  - text: 十五五时期是基本实现社会主义现代化夯实基础、全面发力的关键时期
+    source: 教育部2026年全国教育工作会议
+    leader: 教育部部长怀进鹏
+    added_at: 2026-03-14
+  - text: 全面构建公平优质的基础教育体系
+    source: 教育部2026年度全国基础教育重点工作部署会
+    leader: 教育部
+    added_at: 2026-03-14
+  - text: 扩优提质抓公平
+    source: 教育部基础教育四项任务
+    leader: 教育部
+    added_at: 2026-03-14
+  - text: 教育家精神铸魂强师行动
+    source: 教育部2026年全国教育工作会议
+    leader: 教育部
+    added_at: 2026-03-14
+  - text: 经师与人师相统一的大先生
+    source: 教育部关于教师队伍建设
+    leader: 教育部
+    added_at: 2026-03-14
+  - text: 特岗计划实施20年来约120万名特岗教师扎根乡村
+    source: 教育部《中国教育报》
+    leader: 教育部
+    added_at: 2026-03-14
+  - text: 深化"总校制"扩优提质
+    source: 福建省教育工作简报
+    leader: 福建省教育厅
+    added_at: 2026-03-14
+  - text: 以评促建，将健康学校建设成效纳入教育督导
+    source: 教育部《全面推进健康学校建设的指导意见》
+    leader: 教育部
+    added_at: 2026-03-14
+
+allusion:  # 典故类
+  - text: 周公吐哺，天下归心
+    source: 扶风县生物医药产业高质量发展大会
+    leader: 张局
+    added_at: 2026-03-14
+  - text: 周虽旧邦，其命维新
+    source: 扶风县生物医药产业高质量发展大会
+    leader: 张局
+    added_at: 2026-03-14
+
+inspiration:  # 感悟类
+  - text: 时不我待，只争朝夕
+    source: 秦创原产业研究院揭牌仪式
+    leader: 张局
+    added_at: 2026-03-14
+  - text: 项目为王，实干为先
+    source: 中小企业协会会员大会
+    leader: 张局
+    added_at: 2026-03-14
+  - text: 营商环境没有最好，只有更好
+    source: 中小企业协会会员大会
+    leader: 张局
+    added_at: 2026-03-14
+  - text: 企业强则宝鸡强，企业兴则宝鸡兴
+    source: 市属企业负责人座谈会
+    leader: 张局
+    added_at: 2026-03-14
+  - text: 风劲潮涌，自当扬帆破浪；任重道远，更需策马加鞭
+    source: 宝鸡市工业发展大会
+    leader: 激情型
+    added_at: 2026-03-14
+  - text: 起步即冲刺，开局即决战
+    source: 宝鸡市工业发展大会
+    leader: 激情型
+    added_at: 2026-03-14
+  - text: 狭路相逢勇者胜
+    source: 宝鸡市工业发展大会
+    leader: 激情型
+    added_at: 2026-03-14
+  - text: 信息工作责任重大、使命光荣
+    source: 全市信息交流会
+    leader: 务实型
+    added_at: 2026-03-14
+  - text: 千里眼、顺风耳
+    source: 政务信息工作交流会发言
+    leader: 通用
+    added_at: 2026-03-14
+  - text: 参谋部、智囊团
+    source: 政务信息工作交流会发言
+    leader: 通用
+    added_at: 2026-03-14
+  - text: 连心桥、助推器
+    source: 政务信息工作交流会发言
+    leader: 通用
+    added_at: 2026-03-14
+  - text: 快采、快编、快报、快用
+    source: 政务信息工作交流会发言
+    leader: 通用
+    added_at: 2026-03-14
+  - text: 能写、会写、写好
+    source: 政务信息工作交流会发言
+    leader: 通用
+    added_at: 2026-03-14
+  - text: 守正创新、提质增效
+    source: 政务信息工作交流会发言
+    leader: 通用
+    added_at: 2026-03-14
+  - text: 精益求精、久久为功
+    source: 政务信息工作交流会发言
+    leader: 通用
+    added_at: 2026-03-14
+  - text: 上情下达、下情上报、左右互通
+    source: 政务信息工作交流会发言
+    leader: 通用
+    added_at: 2026-03-14
+
+# 自动更新规则：
+# 1. 用户确认添加领导风格时 → 自动提取金句并写入
+# 2. 用户通过金句工坊搜索并选择"加入金句库"时 → 自动写入
+# 3. 用户反馈某金句有问题时 → 自动标记或删除

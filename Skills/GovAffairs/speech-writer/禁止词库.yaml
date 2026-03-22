@@ -1,0 +1,13 @@
+# 禁止词库
+global_ban_words: []
+
+leader_ban_words: {}
+
+# 添加禁止词示例
+# global_ban_words:
+#   - 绝对化表述
+#   - 敏感词汇
+#
+# leader_ban_words:
+#   张市长:
+#     - 某词

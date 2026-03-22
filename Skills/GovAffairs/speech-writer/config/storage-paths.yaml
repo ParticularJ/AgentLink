@@ -1,0 +1,17 @@
+# 存储路径配置
+# 可自定义修改
+
+# 素材库 - 存放政策资料、背景信息
+materials_dir: memory/speech-writer/materials
+
+# 输出目录 - 存放生成的讲话稿
+output_dir: skills/speech-writer/output
+
+# 领导风格库
+leaders_dir: skills/speech-writer/leaders
+
+# 金句库
+gold_sentences_dir: skills/speech-writer/gold-sentences
+
+# 字体模板配置
+font_template_dir: skills/speech-writer/config
