@@ -2,6 +2,7 @@
 .SYNOPSIS
     WSL Manager Script - Fixed filesystem wait hang issue and .wslconfig encoding
     新增：支持离线安装，使用 Ubuntu 官方云镜像（国内可访问）
+    修复：添加 WSL/Hyper-V 服务预检查和自动修复
 #>
 
 [CmdletBinding()]
@@ -104,7 +105,7 @@ function Test-WSLResponsive($distroName, $timeoutSeconds = 5) {
             return $false
         }
     } -ArgumentList $distroName
-    
+
     $jobResult = Wait-Job $job -Timeout $timeoutSeconds
     if ($jobResult) {
         $output = Receive-Job $job
@@ -117,12 +118,93 @@ function Test-WSLResponsive($distroName, $timeoutSeconds = 5) {
     }
 }
 
+# ========== 新增：WSL 服务预检查和修复 ==========
+function Test-AndRepair-WSLService {
+    Write-Step "Checking WSL services..."
+
+    $services = @("LxssManager", "vmcompute")
+    $needsRestart = $false
+
+    foreach ($svcName in $services) {
+        try {
+            $svc = Get-Service $svcName -ErrorAction SilentlyContinue
+            if (-not $svc) {
+                Write-Warn "$svcName service not found"
+                continue
+            }
+
+            Write-Info "$svcName status: $($svc.Status)"
+
+            if ($svc.Status -ne "Running") {
+                Write-Warn "$svcName is not running, attempting to start..."
+                try {
+                    Start-Service $svcName -ErrorAction Stop
+                    Start-Sleep -Seconds 2
+                    $svc = Get-Service $svcName
+                    if ($svc.Status -eq "Running") {
+                        Write-Ok "$svcName started successfully"
+                    } else {
+                        Write-Err "Failed to start $svcName"
+                        $needsRestart = $true
+                    }
+                } catch {
+                    Write-Err "Cannot start ${svcName}: $_"
+                    $needsRestart = $true
+                }
+            } else {
+                Write-Ok "$svcName is running"
+            }
+        } catch {
+            Write-Err "Error checking $svcName`: $_"
+        }
+    }
+
+    # 检查 WSL 是否响应
+    Write-Info "Testing WSL responsiveness..."
+    $wslTest = wsl --version 2>&1
+    if ($LASTEXITCODE -ne 0 -or $wslTest -match "HCS_E_SERVICE_NOT_AVAILABLE|service is not available") {
+        Write-Warn "WSL is not responding properly"
+        $needsRestart = $true
+    } else {
+        Write-Ok "WSL is responsive"
+    }
+
+    if ($needsRestart) {
+        Write-Warn "WSL services need to be reset"
+        Write-Info "Attempting WSL shutdown and service restart..."
+
+        # 尝试修复
+        wsl --shutdown 2>$null
+        Start-Sleep -Seconds 2
+
+        # 重启 LxssManager
+        try {
+            Restart-Service LxssManager -Force -ErrorAction Stop
+            Start-Sleep -Seconds 3
+            Write-Ok "LxssManager restarted"
+        } catch {
+            Write-Err "Failed to restart LxssManager: $_"
+            Write-Warn "You may need to restart your computer"
+            return $false
+        }
+
+        # 再次测试
+        $wslTest2 = wsl --version 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Err "WSL still not responding after service restart"
+            return $false
+        }
+    }
+
+    return $true
+}
+
 # ========== Configure WSL Global Network ==========
 function Configure-WSLGlobalNetwork {
     Write-Step "Configure WSL Global Network..."
-    
+
     $wslConfigPath = "$env:USERPROFILE\.wslconfig"
-    
+
     $existingConfig = ""
     if (Test-Path $wslConfigPath) {
         try {
@@ -131,14 +213,12 @@ function Configure-WSLGlobalNetwork {
             Write-Warn "Cannot read existing .wslconfig: $_"
         }
     }
-    
+
     if ($existingConfig -match "networkingMode\s*=\s*mirrored") {
         Write-Ok "WSL already configured with mirrored networking mode"
         return
     }
-    
-    # 修复：使用简单的 ASCII 编码，避免 UTF-8 BOM 问题
-    # 修复：使用保守的配置值，确保兼容性
+
     $configContent = @"
 [wsl2]
 networkingMode=mirrored
@@ -146,22 +226,18 @@ autoProxy=true
 dnsTunneling=true
 firewall=true
 "@
-    
-    # 注意：移除了 autoMemoryReclaim=gradual，因为它需要 WSL 2.0.0+
-    # 旧版本 WSL 不支持这个值会导致 "键未知" 错误
-    
+
     try {
         if (Test-Path $wslConfigPath) {
             $backupPath = "$wslConfigPath.backup.$(Get-Date -Format 'yyyyMMddHHmmss')"
             Copy-Item $wslConfigPath $backupPath -Force -ErrorAction Stop
             Write-Ok "Backup created at $backupPath"
         }
-        
-        # 修复：使用 ASCII 编码并确保没有 BOM
+
         [System.IO.File]::WriteAllText($wslConfigPath, $configContent, [System.Text.Encoding]::ASCII)
         Write-Ok ".wslconfig created with ASCII encoding (no BOM)"
         Write-Warn "Please run 'wsl --shutdown' and restart WSL to apply network changes"
-        
+
     } catch {
         Write-Err "Failed to write .wslconfig: $_"
     }
@@ -170,11 +246,9 @@ firewall=true
 # ========== 新增：离线安装函数（使用 Ubuntu 官方云镜像，国内可访问） ==========
 function Install-WSL-Offline {
     param([string]$Distro)
-    
+
     Write-Step "Preparing offline installation for $Distro..."
-    
-    # Ubuntu 官方云镜像 URL（已测试验证可用）
-    # 注意：24.04 使用 releases 目录，22.04 使用 daily builds 目录
+
     $distroUrls = @{
         "Ubuntu-24.04" = "https://cloud-images.ubuntu.com/wsl/releases/24.04/current/ubuntu-noble-wsl-amd64-24.04lts.rootfs.tar.gz"
         "Ubuntu-22.04" = "https://cloud-images.ubuntu.com/wsl/jammy/current/ubuntu-jammy-wsl-amd64-ubuntu22.04lts.rootfs.tar.gz"
@@ -182,32 +256,29 @@ function Install-WSL-Offline {
         "Ubuntu"       = "https://cloud-images.ubuntu.com/wsl/releases/24.04/current/ubuntu-noble-wsl-amd64-24.04lts.rootfs.tar.gz"
     }
 
-    # 备选：中科大镜像（国内访问，但有浏览器验证机制，可能需要用浏览器下载）
-    # 清华镜像已测试：403 拒绝访问（反爬虫），不建议使用
     $mirrorUrls = @{
         "Ubuntu-24.04" = "https://mirrors.ustc.edu.cn/ubuntu-cloud-images/wsl/releases/24.04/current/ubuntu-noble-wsl-amd64-24.04lts.rootfs.tar.gz"
         "Ubuntu-22.04" = "https://mirrors.ustc.edu.cn/ubuntu-cloud-images/wsl/jammy/current/ubuntu-jammy-wsl-amd64-ubuntu22.04lts.rootfs.tar.gz"
         "Ubuntu-20.04" = "https://mirrors.ustc.edu.cn/ubuntu-cloud-images/wsl/releases/20.04/current/ubuntu-focal-wsl-amd64-ubuntu20.04lts.rootfs.tar.gz"
         "Ubuntu"       = "https://mirrors.ustc.edu.cn/ubuntu-cloud-images/wsl/releases/24.04/current/ubuntu-noble-wsl-amd64-24.04lts.rootfs.tar.gz"
     }
-    
+
     $url = $distroUrls[$Distro]
     if (-not $url) {
         Write-Warn "Unknown distro: $Distro, defaulting to Ubuntu-24.04"
         $url = $distroUrls["Ubuntu-24.04"]
     }
-    
+
     $tempFile = "$env:TEMP\wsl-$Distro-rootfs.tar.gz"
-    
+
     # 尝试下载（主源 + 镜像源）
     $downloadSuccess = $false
     foreach ($source in @($url, $mirrorUrls[$Distro])) {
         if (-not $source) { continue }
-        
+
         try {
             Write-Info "Trying download from: $source"
-            
-            # 使用后台作业下载，带 2 分钟超时
+
             $job = Start-Job {
                 param($uri, $out)
                 try {
@@ -217,14 +288,14 @@ function Install-WSL-Offline {
                     return $false
                 }
             } -ArgumentList $source, $tempFile
-            
+
             Write-Info "Downloading... (timeout: 120s)"
             $jobResult = Wait-Job $job -Timeout 120
-            
+
             if ($jobResult) {
                 $downloadResult = Receive-Job $job
                 Remove-Job $job
-                
+
                 if ($downloadResult -and (Test-Path $tempFile)) {
                     $fileSize = (Get-Item $tempFile).Length
                     if ($fileSize -gt 100MB) {
@@ -245,41 +316,90 @@ function Install-WSL-Offline {
             Write-Warn "Download failed: $_"
         }
     }
-    
+
     if (-not $downloadSuccess) {
         Write-Err "All download sources failed"
         Write-Info "Please manually download the rootfs file from:"
         Write-Info "  https://cloud-images.ubuntu.com/wsl/"
-        Write-Info "Or Tsinghua mirror:"
-        Write-Info "  https://mirrors.tuna.tsinghua.edu.cn/ubuntu-cloud-images/wsl/"
         Write-Info "Then run: wsl --import $Distro <install-path> <downloaded-file> --version 2"
         return $false
     }
-    
-    # 导入到 WSL
-    try {
-        Write-Step "Importing to WSL..."
-        
-        $installPath = "$env:LOCALAPPDATA\Packages\WSL\$Distro"
-        if (-not (Test-Path $installPath)) {
-            New-Item -ItemType Directory -Path $installPath -Force | Out-Null
+
+    # 导入到 WSL - 修复：添加重试机制和错误处理
+    $maxImportAttempts = 3
+    $importSuccess = $false
+
+    for ($attempt = 1; $attempt -le $maxImportAttempts; $attempt++) {
+        try {
+            Write-Step "Importing to WSL (attempt $attempt/$maxImportAttempts)..."
+
+            # 修复：先确保 WSL 服务可用
+            if (-not (Test-AndRepair-WSLService)) {
+                Write-Warn "WSL service not available, waiting..."
+                Start-Sleep -Seconds 5
+                continue
+            }
+
+            $installPath = "$env:LOCALAPPDATA\Packages\WSL\$Distro"
+            if (-not (Test-Path $installPath)) {
+                New-Item -ItemType Directory -Path $installPath -Force | Out-Null
+            }
+
+            Write-Info "Importing to: $installPath"
+
+            # 修复：使用 Start-Process 捕获详细输出
+            $psi = New-Object System.Diagnostics.ProcessStartInfo
+            $psi.FileName = "wsl.exe"
+            $psi.Arguments = "--import `"$Distro`" `"$installPath`" `"$tempFile`" --version 2"
+            $psi.RedirectStandardError = $true
+            $psi.RedirectStandardOutput = $true
+            $psi.UseShellExecute = $false
+            $psi.CreateNoWindow = $true
+
+            $process = [System.Diagnostics.Process]::Start($psi)
+            $stdout = $process.StandardOutput.ReadToEnd()
+            $stderr = $process.StandardError.ReadToEnd()
+            $process.WaitForExit()
+
+            $importOutput = $stdout + $stderr
+
+            if ($process.ExitCode -ne 0) {
+                # 修复：检测特定错误并提供解决方案
+                if ($importOutput -match "HCS_E_SERVICE_NOT_AVAILABLE|service not available") {
+                    Write-Warn "Hyper-V Container Service unavailable"
+                    Write-Info "Attempting to repair WSL service..."
+                    Test-AndRepair-WSLService
+                    Start-Sleep -Seconds 3
+                    continue  # 重试
+                }
+                throw "WSL import failed with exit code $($process.ExitCode): $importOutput"
+            }
+
+            # 验证导入是否成功
+            Start-Sleep -Seconds 2
+            $checkDistro = wsl --list --quiet 2>$null | Where-Object { $_ -eq $Distro }
+            if ($checkDistro) {
+                $importSuccess = $true
+                break
+            } else {
+                throw "Import appeared to succeed but distro not found in list"
+            }
+
+        } catch {
+            Write-Err "Import attempt $attempt failed: $_"
+            if ($attempt -lt $maxImportAttempts) {
+                Write-Info "Waiting 5 seconds before retry..."
+                Start-Sleep -Seconds 5
+            }
         }
-        
-        Write-Info "Importing to: $installPath"
-        $importOutput = wsl --import $Distro $installPath $tempFile --version 2 2>&1
-        
-        if ($LASTEXITCODE -ne 0) {
-            throw "WSL import failed: $importOutput"
-        }
-        
-        # 清理临时文件
+    }
+
+    if ($importSuccess) {
         Remove-Item $tempFile -Force -ErrorAction SilentlyContinue
         Write-Ok "Offline installation completed successfully"
         return $true
-        
-    } catch {
-        Write-Err "Import failed: $_"
-        # 保留文件供用户手动导入
+    } else {
+        Write-Err "All import attempts failed"
         Write-Info "Rootfs file preserved at: $tempFile"
         Write-Info "You can manually import with:"
         Write-Info "  wsl --import $Distro <path> `"$tempFile`" --version 2"
@@ -290,9 +410,20 @@ function Install-WSL-Offline {
 # ========== Install with better error handling ==========
 function Install-WSL {
     Write-Host "=== WSL Installation ===" -ForegroundColor Cyan
-    
+
+    # 修复：先检查并修复 WSL 服务
+    if (-not (Test-AndRepair-WSLService)) {
+        Write-Err "WSL services are not available"
+        Write-Host "`nTroubleshooting:" -ForegroundColor Yellow
+        Write-Host "  1. Ensure virtualization is enabled in BIOS (Intel VT-x / AMD-V)" -ForegroundColor White
+        Write-Host "  2. Run: wsl --update" -ForegroundColor White
+        Write-Host "  3. Restart your computer" -ForegroundColor White
+        Write-Host "  4. If problem persists, try: dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all" -ForegroundColor White
+        return
+    }
+
     Configure-WSLGlobalNetwork
-    
+
     if ([string]::IsNullOrWhiteSpace($Distro)) {
         Write-Step "Detecting available Ubuntu versions..."
         $available = Get-UbuntuVersions
@@ -332,7 +463,7 @@ function Install-WSL {
     try {
         $dismOutput = dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart 2>&1
         if ($LASTEXITCODE -ne 0) { Write-Warn "WSL feature enable returned code: $LASTEXITCODE" }
-        
+
         $dismOutput = dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart 2>&1
         if ($LASTEXITCODE -ne 0) { Write-Warn "VirtualMachinePlatform feature enable returned code: $LASTEXITCODE" }
     } catch {
@@ -368,37 +499,37 @@ function Install-WSL {
     if (-not $existing) {
         Write-Step "Installing $Distro..."
         Write-Info "This may take 5-10 minutes..."
-        
+
         # 尝试在线安装（短时间检测），失败则转离线安装
         $installSuccess = $false
         $useOffline = $false
-        
+
         try {
             Write-Info "Attempting online installation (Microsoft Store)..."
             Write-Info "Waiting 60 seconds to detect if store is accessible..."
-            
+
             $proc = Start-Process -FilePath "wsl.exe" -ArgumentList "--install", "-d", $Distro, "--no-launch" -PassThru -WindowStyle Normal
-            
+
             # 等待最多 60 秒检测安装进度
             $timer = 0
             $installDetected = $false
             while (-not $proc.HasExited -and $timer -lt 60) {
                 Start-Sleep -Seconds 5
                 $timer += 5
-                
+
                 # 检查是否已安装
                 if (Test-DistroInstalled $Distro) {
                     $installDetected = $true
                     Write-Ok "Online installation detected"
                     break
                 }
-                
+
                 # 每 30 秒显示进度
                 if ($timer % 30 -eq 0) {
                     Write-Host "    ... waited $timer seconds" -ForegroundColor Gray
                 }
             }
-            
+
             # 根据检测结果决定后续操作
             if ($installDetected) {
                 # 等待安装完成（最多再等待 5 分钟）
@@ -411,12 +542,12 @@ function Install-WSL {
                         Write-Host "    ... configuring for $completionTimer seconds" -ForegroundColor Gray
                     }
                 }
-                
+
                 if (Test-DistroInstalled $Distro) {
                     $installSuccess = $true
                     Write-Ok "$Distro installed via Microsoft Store"
                 }
-                
+
                 # 确保进程结束
                 if (-not $proc.HasExited) {
                     Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
@@ -429,18 +560,18 @@ function Install-WSL {
                 Write-Warn "Microsoft Store installation appears blocked (network issue)"
                 $useOffline = $true
             }
-            
+
         } catch {
             Write-Warn "Online installation error: $_"
             $useOffline = $true
         }
-        
+
         # 如果在线安装失败，使用离线安装
         if (-not $installSuccess -and $useOffline) {
             Write-Info "Switching to offline installation method..."
             $installSuccess = Install-WSL-Offline -Distro $Distro
         }
-        
+
         # 最终检查
         if (-not $installSuccess) {
             Write-Err "Failed to install $Distro"
@@ -467,35 +598,35 @@ function Configure-Distro($distroName) {
     # Better wait logic with timeout and progress display
     Write-Host "  Waiting for WSL to be responsive..." -ForegroundColor Gray
     Write-Info "This may take up to 30 seconds. Press Ctrl+C to cancel."
-    
+
     $maxAttempts = 30
     $attempt = 0
     $ready = $false
-    
+
     while ($attempt -lt $maxAttempts -and -not $ready) {
         $attempt++
-        
+
         # Show progress every 5 attempts
         if ($attempt % 5 -eq 0) {
             Write-Host "    ... attempt $attempt of $maxAttempts" -ForegroundColor Gray
         }
-        
+
         $ready = Test-WSLResponsive $distroName 3
-        
+
         if (-not $ready) {
             Start-Sleep -Seconds 1
         }
     }
-    
+
     if (-not $ready) {
         Write-Warn "WSL is not responding after $maxAttempts attempts"
         Write-Info "Trying to restart WSL..."
         wsl --terminate $distroName 2>$null
         Start-Sleep -Seconds 3
-        
+
         # Try once more
         $ready = Test-WSLResponsive $distroName 5
-        
+
         if (-not $ready) {
             Write-Err "WSL is still not responding"
             Write-Host "`nTroubleshooting steps:" -ForegroundColor Yellow
@@ -508,7 +639,7 @@ function Configure-Distro($distroName) {
 
     # Create wsl.conf
     Write-Host "  Creating wsl.conf..." -ForegroundColor Gray
-    
+
     $configContent = @"
 [boot]
 systemd=true
@@ -516,13 +647,13 @@ systemd=true
 [user]
 default=root
 "@
-    
+
     $bytes = [System.Text.Encoding]::UTF8.GetBytes($configContent)
     $base64 = [Convert]::ToBase64String($bytes)
-    
+
     try {
         $result = wsl -d $distroName -u root -- bash -c "echo '$base64' | base64 -d > /etc/wsl.conf && chmod 644 /etc/wsl.conf" 2>&1
-        
+
         if ($LASTEXITCODE -eq 0) {
             Write-Ok "wsl.conf created"
         } else {
@@ -532,7 +663,9 @@ default=root
         Write-Warn "Failed to create wsl.conf: $_"
         Write-Info "Trying minimal config..."
         try {
-            wsl -d $distroName -u root -- bash -c 'printf "[user]\ndefault=root\n" > /etc/wsl.conf'
+            wsl -d $distroName -u root -- bash -c 'printf "[user]
+default=root
+" > /etc/wsl.conf'
             if ($LASTEXITCODE -eq 0) {
                 Write-Ok "Minimal wsl.conf created"
             }
@@ -550,20 +683,20 @@ default=root
     $defaultName = $env:USERNAME
     $username = Read-Host "`nEnter Linux username (empty for '$defaultName')"
     if ([string]::IsNullOrWhiteSpace($username)) { $username = $defaultName }
-    
+
     # Sanitize username
     $username = $username -replace '[^\w\-]', ''
     if ([string]::IsNullOrWhiteSpace($username)) { $username = "user" }
 
     Write-Host "Creating user '$username'..." -ForegroundColor Yellow
-    
+
     try {
         wsl -d $distroName -u root -- useradd -m -G sudo -s /bin/bash $username 2>$null
         wsl -d $distroName -u root -- bash -c "echo '$username ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/$username && chmod 440 /etc/sudoers.d/$username"
-        
+
         Write-Host "Set password for ${username}:" -ForegroundColor Yellow
         wsl -d $distroName -u root -- passwd $username
-        
+
         # Update wsl.conf with user
         $updateConfig = @"
 [boot]
@@ -575,15 +708,15 @@ default=$username
         $bytes2 = [System.Text.Encoding]::UTF8.GetBytes($updateConfig)
         $base642 = [Convert]::ToBase64String($bytes2)
         wsl -d $distroName -u root -- bash -c "echo '$base642' | base64 -d > /etc/wsl.conf"
-        
+
         if ($LASTEXITCODE -ne 0) {
             Write-Warn "Failed to update wsl.conf with user"
         }
-        
+
         wsl --terminate $distroName 2>$null
-        
+
         Write-Ok "Configuration complete, default user: $username"
-        
+
         Write-Host "`n========================================" -ForegroundColor Green
         Write-Host "  Installation Complete!" -ForegroundColor Green
         Write-Host "========================================" -ForegroundColor Green
@@ -593,7 +726,7 @@ default=$username
         Write-Host "`nCommands:" -ForegroundColor Cyan
         Write-Host "  Start: wsl -d $distroName" -ForegroundColor White
         Write-Host "  Test:  wsl -d $distroName -e curl -I http://127.0.0.1" -ForegroundColor White
-        
+
         $startNow = Read-Host "`nPress Enter to start $distroName (or type 'n' to skip)"
         if ($startNow -ne "n") {
             wsl -d $distroName
@@ -613,7 +746,7 @@ function Uninstall-WSL {
             $confirm = Read-Host "Delete all WSL distros and configs? (yes/N)"
             if ($confirm -ne "yes") { return }
         }
-        
+
         $installedDistros = Get-InstalledDistros
         if ($installedDistros.Count -gt 0) {
             $installedDistros | ForEach-Object {
@@ -621,7 +754,7 @@ function Uninstall-WSL {
                 wsl --unregister $_ 2>$null
             }
         }
-        
+
         $wslConfigPath = "$env:USERPROFILE\.wslconfig"
         if (Test-Path $wslConfigPath) {
             $removeConfig = Read-Host "Remove .wslconfig? (y/N)"
@@ -630,12 +763,12 @@ function Uninstall-WSL {
                 Write-Ok ".wslconfig removed"
             }
         }
-        
+
         Write-Step "Disabling WSL features..."
         dism.exe /online /disable-feature /featurename:Microsoft-Windows-Subsystem-Linux /norestart 2>$null
         dism.exe /online /disable-feature /featurename:VirtualMachinePlatform /norestart 2>$null
         Write-Ok "WSL completely uninstalled"
-        
+
     } else {
         if ([string]::IsNullOrWhiteSpace($Distro)) {
             $installed = Get-InstalledDistros
@@ -643,10 +776,10 @@ function Uninstall-WSL {
                 Write-Err "No distros installed"
                 return 
             }
-            
+
             Write-Host "`nInstalled distros:" -ForegroundColor Cyan
             for ($i = 0; $i -lt $installed.Count; $i++) { Write-Host "  [$i] $($installed[$i])" }
-            
+
             $sel = Read-Host "Select number to uninstall (or type name)"
             if ($sel -match "^\d+$" -and [int]$sel -lt $installed.Count) {
                 $Distro = $installed[[int]$sel]
