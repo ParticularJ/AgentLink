@@ -1,0 +1,69 @@
+# 涨停板连板分析定时任务配置
+# 交易日自动抓取和分析
+
+jobs:
+  # 早盘数据抓取 (9:30)
+  - name: "早盘涨停数据抓取"
+    schedule: "30 9 * * 1-5"  # 周一至周五 9:30
+    enabled: true
+    command: "python -m skills.limit_up_analyzer.scripts.analyzer --all --save"
+    description: "抓取并分析当日早盘涨停股票"
+    
+  # 午盘数据更新 (13:00)
+  - name: "午盘涨停数据更新"
+    schedule: "0 13 * * 1-5"  # 周一至周五 13:00
+    enabled: true
+    command: "python -m skills.limit_up_analyzer.scripts.analyzer --all --save"
+    description: "更新午盘涨停股票数据"
+    
+  # 收盘数据汇总 (15:05)
+  - name: "收盘涨停数据汇总"
+    schedule: "5 15 * * 1-5"  # 周一至周五 15:05
+    enabled: true
+    command: "python -m skills.limit_up_analyzer.scripts.analyzer --all --save --report"
+    description: "生成收盘涨停分析报告"
+    
+  # 龙虎榜数据更新 (17:00)
+  - name: "龙虎榜数据更新"
+    schedule: "0 17 * * 1-5"  # 周一至周五 17:00
+    enabled: true
+    command: "python -m skills.limit_up_analyzer.scripts.analyzer --dragon-tiger"
+    description: "更新龙虎榜数据"
+    
+  # 历史数据清理 (每周日凌晨)
+  - name: "历史数据清理"
+    schedule: "0 0 * * 0"  # 每周日 00:00
+    enabled: true
+    command: "python -m skills.limit_up_analyzer.scripts.analyzer --cleanup"
+    description: "清理过期历史数据"
+
+# 节假日休市配置（自动跳过）
+market_holidays:
+  - "2024-01-01"  # 元旦
+  - "2024-02-09"  # 春节
+  - "2024-02-10"
+  - "2024-02-11"
+  - "2024-02-12"
+  - "2024-02-13"
+  - "2024-02-14"
+  - "2024-02-15"
+  - "2024-02-16"
+  - "2024-04-04"  # 清明节
+  - "2024-04-05"
+  - "2024-04-06"
+  - "2024-05-01"  # 劳动节
+  - "2024-05-02"
+  - "2024-05-03"
+  - "2024-05-04"
+  - "2024-05-05"
+  - "2024-06-10"  # 端午节
+  - "2024-09-15"  # 中秋节
+  - "2024-09-16"
+  - "2024-09-17"
+  - "2024-10-01"  # 国庆节
+  - "2024-10-02"
+  - "2024-10-03"
+  - "2024-10-04"
+  - "2024-10-05"
+  - "2024-10-06"
+  - "2024-10-07"

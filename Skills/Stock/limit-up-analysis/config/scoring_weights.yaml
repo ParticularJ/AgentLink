@@ -1,0 +1,116 @@
+# 涨停板连板分析评分权重配置
+# 总权重应为 100%
+
+weights:
+  # 封板强度分析 (30%)
+  sealing_strength:
+    weight: 30
+    sub_weights:
+      seal_ratio: 40           # 封单比 (封单金额/流通市值)
+      seal_time: 35            # 封板时间 (开盘到首次封板的时间)
+      open_count: 25           # 炸板次数
+    scoring:
+      seal_ratio:
+        excellent: 10.0        # ≥10% 优秀
+        good: 5.0              # 5%-10% 良好
+        average: 2.0           # 2%-5% 一般
+        poor: 0.0              # <2% 较差
+      seal_time:
+        excellent: 5           # ≤5分钟
+        good: 15               # 5-15分钟
+        average: 30            # 15-30分钟
+        poor: 60               # >30分钟
+      open_count:
+        excellent: 0           # 0次
+        good: 1                # 1次
+        average: 2             # 2次
+        poor: 3                # ≥3次
+
+  # 板块效应分析 (25%)
+  sector_effect:
+    weight: 25
+    sub_weights:
+      sector_limit_up_count: 40    # 同板块涨停数量
+      sector_heat: 35              # 板块热度排名
+      leading_status: 25           # 龙头地位
+    scoring:
+      sector_limit_up_count:
+        excellent: 10              # ≥10只
+        good: 5                    # 5-9只
+        average: 3                 # 3-4只
+        poor: 1                    # 1-2只
+      sector_heat:
+        excellent: 3               # 前3名
+        good: 5                    # 前5名
+        average: 10                # 前10名
+        poor: 20                   # 前20名
+
+  # 资金流向分析 (20%)
+  capital_flow:
+    weight: 20
+    sub_weights:
+      main_net_inflow: 50          # 主力净流入占比
+      dragon_tiger: 30             # 龙虎榜席位质量
+      retail_ratio: 20             # 散户占比（越低越好）
+    scoring:
+      main_net_inflow:
+        excellent: 20.0            # ≥20%
+        good: 10.0                 # 10%-20%
+        average: 5.0               # 5%-10%
+        poor: 0.0                  # <5%
+
+  # 技术形态分析 (15%)
+  technical_pattern:
+    weight: 15
+    sub_weights:
+      breakout: 40                 # 突破形态
+      volume_price: 35             # 量价配合
+      chip_distribution: 25        # 筹码分布
+    scoring:
+      breakout:
+        new_high: 100              # 历史新高
+        platform_breakout: 80      # 平台突破
+        trend_continuation: 60     # 趋势延续
+        resistance_test: 40        # 阻力测试
+
+  # 市场情绪分析 (10%)
+  market_sentiment:
+    weight: 10
+    sub_weights:
+      market_height: 40            # 市场连板高度
+      yesterday_performance: 30    # 昨日涨停表现
+      profit_effect: 30            # 整体赚钱效应
+    scoring:
+      market_height:
+        excellent: 7               # ≥7板
+        good: 5                    # 5-6板
+        average: 3                 # 3-4板
+        poor: 1                    # 1-2板
+
+# 评分等级
+categories:
+  excellent:
+    min_score: 85
+    label: "极高"
+    description: "龙头气质，重点关注"
+  good:
+    min_score: 75
+    label: "高"
+    description: "连板可能性大"
+  average:
+    min_score: 65
+    label: "中等"
+    description: "需结合盘面判断"
+  poor:
+    min_score: 55
+    label: "低"
+    description: "谨慎参与"
+  very_poor:
+    min_score: 0
+    label: "极低"
+    description: "建议观望"
+
+# 数据缓存配置
+cache:
+  ttl_minutes: 5                   # 缓存有效期（分钟）
+  max_history_days: 90             # 历史数据保留天数
