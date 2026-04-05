@@ -25,6 +25,26 @@ python skills/limit_up/scripts/analyzer.py --all
 
 ---
 
+### 2. 均线多头排列策略 (ma-bullish-strategy)
+
+基于均线多头排列的技术分析策略，识别上升趋势中的买入机会。
+
+**功能特性：**
+- 📈 均线多头排列识别（5日>10日>20日）
+- 🎯 五维度评分系统
+- 💰 自动计算入场价、止损位、目标价
+- 📊 风险收益比分析
+
+**使用方法：**
+```bash
+cd ma-bullish-strategy
+python skills/ma_bullish/scripts/ma_analyzer.py --scan
+```
+
+**详细文档：** [ma-bullish-strategy/README.md](ma-bullish-strategy/README.md)
+
+---
+
 ## 添加新策略
 
 要添加新的交易策略 skill，请创建独立的子目录：

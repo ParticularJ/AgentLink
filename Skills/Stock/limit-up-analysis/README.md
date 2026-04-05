@@ -44,13 +44,35 @@ pip install -r requirements.txt
 bash setup.sh
 ```
 
+## 数据源配置
+
+系统支持多数据源，会自动按优先级选择最佳可用数据源：
+
+| 优先级 | 数据源 | 质量评分 | 说明 |
+|--------|--------|---------|------|
+| 1 | **tushare** | 5/5 | 数据最全面稳定，需要token |
+| 2 | **akshare** | 4/5 | 免费，数据丰富，推荐 |
+| 3 | **baostock** | 3/5 | 免费，数据稳定 |
+| 4 | **yfinance** | 2/5 | 有限支持A股 |
+
+### 安装数据源
+```bash
+pip install tushare      # 质量最高(5/5)，需要token
+pip install akshare      # 质量高(4/5)，推荐，免费
+pip install baostock     # 质量中(3/5)，免费，稳定
+pip install yfinance     # 质量低(2/5)，有限支持A股
+```
+
 ## 使用方法
 
 ### 1. 命令行分析
 
 ```bash
-# 分析单只股票
+# 分析单只股票（自动选择数据源）
 python skills/limit_up/scripts/analyzer.py --code 000001
+
+# 指定数据源分析
+python skills/limit_up/scripts/analyzer.py --source akshare --code 000001
 
 # 分析当日所有涨停股
 python skills/limit_up/scripts/analyzer.py --all
@@ -78,7 +100,11 @@ python skills/limit_up/scripts/analyzer.py --all --top 20
 ```python
 from skills.limit_up.scripts.analyzer import LimitUpAnalyzer
 
+# 创建分析器（自动选择最佳数据源）
 analyzer = LimitUpAnalyzer()
+
+# 或指定数据源
+analyzer = LimitUpAnalyzer(data_source='akshare')
 
 # 分析单只股票
 result = analyzer.analyze_stock("000001")
@@ -161,7 +187,10 @@ for r in results[:10]:
 ## 依赖
 
 - Python 3.8+
-- akshare: A股数据获取
+- akshare: A股数据获取 (推荐)
+- tushare: A股数据获取 (质量最高，需token)
+- baostock: A股数据获取 (稳定)
+- yfinance: A股数据获取 (有限支持)
 - pandas: 数据处理
 - numpy: 数值计算
 - pyyaml: 配置管理

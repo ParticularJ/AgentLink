@@ -2,6 +2,7 @@
 """
 A股涨停板连板分析器
 基于多维度量化分析的涨停板连板可能性评估系统
+支持多数据源：akshare、tushare、baostock、yfinance
 """
 
 import argparse
@@ -16,38 +17,87 @@ for key in ['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY']:
     if key in os.environ:
         del os.environ[key]
 
-import akshare as ak
 import pandas as pd
 from colorama import Fore, Style, init
+
+# 导入数据源适配器
+try:
+    from skills.limit_up.scripts.data_source_adapter import DataSourceAdapter
+except ImportError:
+    sys.path.insert(0, '/home/qinliming/.npm-global/lib/node_modules/openclaw/skills/Stock/limit-up-analysis')
+    from skills.limit_up.scripts.data_source_adapter import DataSourceAdapter
 
 # 初始化颜色输出
 init(autoreset=True)
 
 
 class StockDataFetcher:
-    """股票数据获取器"""
+    """股票数据获取器 - 支持多数据源"""
     
-    def __init__(self, cache_ttl: int = 5):
+    def __init__(self, data_source: str = "auto", cache_ttl: int = 5):
         self.cache_ttl = cache_ttl
         self.cache_dir = os.path.expanduser("~/.openclaw/stock/data/cache")
         os.makedirs(self.cache_dir, exist_ok=True)
+        
+        # 初始化数据源适配器
+        self.data_adapter = DataSourceAdapter(data_source)
+        if not self.data_adapter.data_source:
+            raise RuntimeError("没有可用的数据源，请安装akshare、tushare、baostock或yfinance")
     
     def get_limit_up_stocks(self, date: Optional[str] = None) -> pd.DataFrame:
         """获取涨停股票列表"""
         try:
-            date = date or datetime.now().strftime("%Y%m%d")
-            df = ak.stock_zt_pool_em(date=date)
-            return df
+            # 涨停数据目前只有akshare支持
+            if self.data_adapter.source == "akshare":
+                import akshare as ak
+                date = date or datetime.now().strftime("%Y%m%d")
+                df = ak.stock_zt_pool_em(date=date)
+                return df
+            else:
+                # 其他数据源不支持涨停数据，提示用户安装akshare
+                print(f"{Fore.YELLOW}⚠️ 当前数据源 {self.data_adapter.source} 不支持涨停数据获取{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}   涨停数据需要 akshare 数据源{Style.RESET_ALL}")
+                print(f"{Fore.CYAN}   请安装: pip install akshare{Style.RESET_ALL}")
+                print(f"{Fore.CYAN}   或使用: python skills/limit_up/scripts/analyzer.py --source akshare --all{Style.RESET_ALL}")
+                return pd.DataFrame()
         except Exception as e:
             print(f"{Fore.RED}❌ 获取涨停数据失败: {e}{Style.RESET_ALL}")
             return pd.DataFrame()
+    
+    def get_stock_data(self, stock_code: str, days: int = 30) -> Optional[pd.DataFrame]:
+        """获取股票历史数据"""
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=days)
+        
+        return self.data_adapter.get_stock_data(
+            stock_code,
+            start_date=start_date.strftime('%Y-%m-%d'),
+            end_date=end_date.strftime('%Y-%m-%d')
+        )
 
 
 class LimitUpAnalyzer:
     """涨停板连板分析器"""
     
-    def __init__(self):
-        self.fetcher = StockDataFetcher()
+    # 评分权重配置（与scoring_weights.yaml一致）
+    WEIGHTS = {
+        'sealing_strength': 0.30,    # 封板强度
+        'sector_effect': 0.25,       # 板块效应
+        'capital_flow': 0.20,        # 资金流向
+        'technical_pattern': 0.15,   # 技术形态
+        'market_sentiment': 0.10     # 市场情绪
+    }
+    
+    # 评分阈值（与scoring_weights.yaml一致）
+    THRESHOLDS = {
+        'strong_buy': 85,    # 极高
+        'buy': 75,           # 高
+        'watch': 65,         # 中等
+        'exclude': 55        # 低
+    }
+    
+    def __init__(self, data_source: str = "auto"):
+        self.fetcher = StockDataFetcher(data_source)
         self.data_dir = os.path.expanduser("~/.openclaw/stock/data")
         self.history_dir = os.path.join(self.data_dir, "history")
         self._ensure_dirs()
@@ -156,13 +206,13 @@ class LimitUpAnalyzer:
         
         scores['market_sentiment'] = min(100, sentiment_score)
         
-        # 总分
+        # 总分（使用配置的权重）
         total = (
-            scores['sealing_strength'] * 0.30 +
-            scores['sector_effect'] * 0.25 +
-            scores['capital_flow'] * 0.20 +
-            scores['technical_pattern'] * 0.15 +
-            scores['market_sentiment'] * 0.10
+            scores['sealing_strength'] * self.WEIGHTS['sealing_strength'] +
+            scores['sector_effect'] * self.WEIGHTS['sector_effect'] +
+            scores['capital_flow'] * self.WEIGHTS['capital_flow'] +
+            scores['technical_pattern'] * self.WEIGHTS['technical_pattern'] +
+            scores['market_sentiment'] * self.WEIGHTS['market_sentiment']
         )
         scores['total'] = round(total, 1)
         
@@ -170,26 +220,26 @@ class LimitUpAnalyzer:
     
     def get_rating(self, score: float) -> Dict:
         """获取评级"""
-        if score >= 85:
+        if score >= self.THRESHOLDS['strong_buy']:
             return {'label': '极高', 'description': '龙头气质'}
-        elif score >= 75:
+        elif score >= self.THRESHOLDS['buy']:
             return {'label': '高', 'description': '连板可能性大'}
-        elif score >= 65:
+        elif score >= self.THRESHOLDS['watch']:
             return {'label': '中等', 'description': '需结合盘面'}
-        elif score >= 55:
+        elif score >= self.THRESHOLDS['exclude']:
             return {'label': '低', 'description': '谨慎参与'}
         else:
             return {'label': '极低', 'description': '建议观望'}
     
     def get_recommendation(self, score: float) -> str:
         """获取操作建议"""
-        if score >= 85:
+        if score >= self.THRESHOLDS['strong_buy']:
             return f"{Fore.GREEN}✅ 重点关注 - 龙头气质，明日高开概率极大{Style.RESET_ALL}"
-        elif score >= 75:
+        elif score >= self.THRESHOLDS['buy']:
             return f"{Fore.GREEN}✅ 关注 - 连板可能性大，可考虑打板{Style.RESET_ALL}"
-        elif score >= 65:
+        elif score >= self.THRESHOLDS['watch']:
             return f"{Fore.YELLOW}⚠️ 观察 - 需结合明日开盘情况判断{Style.RESET_ALL}"
-        elif score >= 55:
+        elif score >= self.THRESHOLDS['exclude']:
             return f"{Fore.YELLOW}⚠️ 谨慎 - 连板概率较低，不建议追高{Style.RESET_ALL}"
         else:
             return f"{Fore.RED}❌ 观望 - 连板可能性极低{Style.RESET_ALL}"
@@ -197,6 +247,7 @@ class LimitUpAnalyzer:
     def analyze_all_limit_up(self) -> List[Dict]:
         """分析当日所有涨停股票"""
         print(f"{Fore.CYAN}📊 正在获取当日涨停股票数据...{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}   使用数据源: {self.fetcher.data_adapter.source}{Style.RESET_ALL}")
         
         limit_up_df = self.fetcher.get_limit_up_stocks()
         if limit_up_df.empty:
@@ -263,9 +314,9 @@ class LimitUpAnalyzer:
         rating = result['rating']
         
         # 根据分数设置颜色
-        if total >= 75:
+        if total >= self.THRESHOLDS['buy']:
             color = Fore.GREEN
-        elif total >= 65:
+        elif total >= self.THRESHOLDS['watch']:
             color = Fore.YELLOW
         else:
             color = Fore.WHITE
@@ -290,7 +341,7 @@ class LimitUpAnalyzer:
         for dim_name, score in dimensions:
             filled = int(score / 100 * bar_width)
             bar = "█" * filled + "░" * (bar_width - filled)
-            score_color = Fore.GREEN if score >= 75 else (Fore.YELLOW if score >= 65 else Fore.WHITE)
+            score_color = Fore.GREEN if score >= self.THRESHOLDS['buy'] else (Fore.YELLOW if score >= self.THRESHOLDS['watch'] else Fore.WHITE)
             print(f"  {dim_name}: {bar} {score_color}{score:.0f}{Style.RESET_ALL}")
         
         print(f"\n{Fore.WHITE}【操作建议】{Style.RESET_ALL}")
@@ -329,16 +380,28 @@ class LimitUpAnalyzer:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='A股涨停板连板分析器')
+    parser = argparse.ArgumentParser(description='A股涨停板连板分析器 - 支持多数据源')
     parser.add_argument('--code', type=str, help='分析单只股票，如 000001')
     parser.add_argument('--all', action='store_true', help='分析当日所有涨停股')
     parser.add_argument('--history', type=str, help='查看历史分析，格式 YYYY-MM-DD')
     parser.add_argument('--save', action='store_true', help='保存分析结果')
     parser.add_argument('--top', type=int, default=10, help='显示前N名，默认10')
+    parser.add_argument('--source', type=str, default='auto', 
+                       choices=['auto', 'akshare', 'tushare', 'baostock', 'yfinance'],
+                       help='数据源选择 (默认auto自动选择)')
     
     args = parser.parse_args()
     
-    analyzer = LimitUpAnalyzer()
+    try:
+        analyzer = LimitUpAnalyzer(data_source=args.source)
+    except RuntimeError as e:
+        print(f"{Fore.RED}错误: {e}{Style.RESET_ALL}")
+        print("\n请安装以下数据源之一:")
+        print("  pip install akshare    # 推荐，免费")
+        print("  pip install tushare    # 需要token")
+        print("  pip install baostock   # 免费")
+        print("  pip install yfinance   # 有限支持A股")
+        return
     
     if args.code:
         result = analyzer.analyze_stock(args.code)

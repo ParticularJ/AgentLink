@@ -1,0 +1,41 @@
+# 风险管理规则
+risk_management:
+  # 止损设置
+  stop_loss:
+    method: "ma20_minus_2pct"  # 止损方法: MA20下方2%
+    atr_multiple: 2            # ATR倍数止损
+    fixed_pct: 0.08            # 固定百分比止损(8%)
+  
+  # 止盈设置
+  take_profit:
+    method: "atr_based"        # 基于ATR的止盈
+    atr_multiple: 3            # ATR倍数
+    target1: 0.10              # 第一目标10%
+    target2: 0.15              # 第二目标15%
+    target3: 0.20              # 第三目标20%
+  
+  # 移动止盈
+  trailing_stop:
+    enabled: true
+    trailing_stop_pct: 0.08    # 最高点回撤8%止盈
+    activate_after: 0.10       # 盈利10%后激活
+  
+  # 仓位管理
+  position_sizing:
+    max_position_pct: 0.30     # 单只股票最大仓位30%
+    risk_per_trade: 0.02       # 每笔交易风险2%
+    volatility_adjust: true    # 根据波动率调整仓位
+
+# 风险控制规则
+risk_limits:
+  max_daily_trades: 5          # 每日最大交易次数
+  max_concurrent_positions: 10 # 最大持仓数量
+  max_sector_exposure: 0.40    # 单一行业最大暴露40%
+  max_drawdown_limit: 0.15     # 最大回撤限制15%
+
+# 过滤规则
+filters:
+  exclude_st: true             # 排除ST股票
+  exclude_bj: true             # 排除北交所
+  min_market_cap: 10           # 最小市值10亿
+  min_daily_volume: 1000000    # 最小日成交量100万
