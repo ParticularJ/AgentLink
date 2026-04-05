@@ -1,0 +1,43 @@
+# 策略核心配置
+strategy:
+  name: "均线多头排列策略"
+  version: "v1.2.0"
+  description: "基于均线多头排列的趋势跟踪策略"
+
+# 均线参数
+moving_averages:
+  short_term: 5      # 短期均线（MA5）
+  mid_term: 10       # 中期均线（MA10）
+  long_term: 20      # 长期均线（MA20）
+  # long_term: 60    # 长期均线（预留，当前策略未使用）
+
+# 成交量参数
+volume:
+  ma_period: 20              # 成交量均线周期
+  min_volume_ratio: 1.2      # 最小放量倍数
+  ideal_volume_ratio: 1.5    # 理想放量倍数
+
+# 信号条件
+signal_conditions:
+  # 核心条件（必须全部满足）
+  core:
+    - ma_bullish: true       # MA5 > MA10 > MA20
+    - price_above_ma20: true # 价格站上MA20
+    - volume_surge: true     # 成交量放大
+  
+  # 确认条件（增强信号质量）
+  confirmation:
+    - price_up: true         # 当日收涨
+    - volume_increasing: true # 成交量趋势向上
+
+# 数据获取
+data:
+  history_days: 120          # 历史数据天数
+  min_data_points: 60        # 最小数据点数
+  adjust: "qfq"              # 前复权
+
+# 扫描配置
+scan:
+  batch_size: 100            # 批量处理大小
+  delay_between_requests: 0.1 # 请求间隔(秒)
+  max_workers: 4             # 最大并发数

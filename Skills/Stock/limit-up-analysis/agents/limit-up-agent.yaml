@@ -1,6 +1,7 @@
-# ~/.openclaw/agents/limit-up-agent.yaml
+# limit-up-analysis/agents/limit-up-agent.yaml
 name: "涨停板连板分析专家"
-description: "专注于A股涨停板股票的连板可能性分析，基于多维度量化模型提供智能评分和操作建议"
+description: "专注于A股涨停板股票的连板可能性分析，基于多维度量化模型提供智能评分和操作建议，支持多数据源"
+version: "v1.1.0"
 model: "kimi-k2.5"
 temperature: 0.3
 max_tokens: 4000
@@ -45,6 +46,14 @@ system_prompt: |
   | 55-64 | 低 | 概率低 | 谨慎参与 |
   | <55 | 极低 | 极难连板 | 建议观望 |
   
+  ## 数据源支持（按优先级排序）
+  1. **tushare** (质量5/5) - 数据最全面稳定，需要token
+  2. **akshare** (质量4/5) - 免费，数据丰富，推荐
+  3. **baostock** (质量3/5) - 免费，数据稳定
+  4. **yfinance** (质量2/5) - 有限支持A股
+  
+  系统会自动选择最佳可用数据源，获取失败时自动降级。
+  
   ## 输出格式
   
   分析结果应包含：
@@ -60,6 +69,11 @@ system_prompt: |
   - 需结合次日开盘情况动态调整
   - 市场环境变化可能影响连板概率
   - 龙头股和跟风股要区别对待
+  
+  ## 使用示例
+  - 分析个股：分析 000001 的连板可能性
+  - 查看全部：查看今日涨停分析
+  - 指定数据源：使用akshare分析今日涨停
 
 tools:
   - name: "analyze_stock"

@@ -1,0 +1,46 @@
+# 评分权重配置
+weights:
+  ma_arrangement: 0.35      # 均线排列质量
+  price_position: 0.20      # 价格位置
+  volume_trend: 0.20        # 成交量趋势
+  trend_strength: 0.15      # 趋势强度
+  market_environment: 0.10  # 市场环境
+
+# 评分阈值
+thresholds:
+  strong_buy: 85    # 强烈推荐
+  buy: 75           # 推荐买入
+  watch: 70         # 观望
+  exclude: 0        # 排除
+
+# 各维度详细评分标准
+scoring_criteria:
+  ma_arrangement:
+    excellent: 100    # MA5>MA10>MA20，发散>2%
+    good: 85          # MA5>MA10>MA20，发散1-2%
+    fair: 70          # MA5>MA10>MA20，发散<1%
+    poor: 0           # 非多头排列
+  
+  price_position:
+    excellent: 100    # 刚站上MA20(<5%)
+    good: 85          # 均线上方5-10%
+    fair: 70          # 均线上方10-15%
+    poor: 0           # 均线下方
+  
+  volume_trend:
+    excellent: 100    # 放量>1.5倍
+    good: 85          # 放量1.2-1.5倍
+    fair: 70          # 放量1.0-1.2倍
+    poor: 50          # 缩量
+  
+  trend_strength:
+    excellent: 100    # 强势上涨(>30%斜率)
+    good: 85          # 稳定上涨(15-30%)
+    fair: 70          # 温和上涨(0-15%)
+    poor: 40          # 下跌趋势
+  
+  market_environment:
+    excellent: 100    # 牛市氛围
+    good: 85          # 震荡偏多
+    fair: 60          # 震荡偏空
+    poor: 40          # 熊市氛围
