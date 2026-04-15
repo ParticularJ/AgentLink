@@ -1,0 +1,18 @@
+{
+  "optimized_params": {
+    "min_net_profit_yoy": 20,
+    "min_revenue_yoy": 10,
+    "min_surprise_pct": 5,
+    "holding_days": 5
+  },
+  "validation": {
+    "win_rate_improvement": 0.0,
+    "sharpe_improvement": 0.0,
+    "drawdown_reduction": 0.0,
+    "suggestions": [
+      "优化效果不佳，建议检查参数范围或增加数据量"
+    ]
+  },
+  "report": "======================================================================\n策略优化报告 - earnings-surprise-strategy\n生成时间: 2026-04-06 22:05:35\n======================================================================\n\n【当前策略表现】\n  胜率: 63.00%\n  夏普比率: 5.17\n  最大回撤: 135.87%\n  盈亏比: 1.33\n\n【优化参数建议】\n  min_net_profit_yoy: 20\n  min_revenue_yoy: 10\n  min_surprise_pct: 5\n  holding_days: 5\n\n【预期改善效果】\n  胜率提升: +0.00%\n  夏普提升: +0.00\n  回撤降低: -0.00%\n\n【优化建议】\n  • 优化效果不佳，建议检查参数范围或增加数据量\n\n======================================================================",
+  "timestamp": "2026-04-06T22:05:35.758445"
+}

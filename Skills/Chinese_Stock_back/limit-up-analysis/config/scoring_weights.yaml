@@ -1,0 +1,37 @@
+# 涨停板连板分析评分权重配置
+# 总权重应为 100%
+
+weights:
+  sealing_strength: 0.30      # 封板强度分析 (30%)
+  sector_effect: 0.25         # 板块效应分析 (25%)
+  capital_flow: 0.20          # 资金流向分析 (20%)
+  technical_pattern: 0.15     # 技术形态分析 (15%)
+  market_sentiment: 0.10      # 市场情绪分析 (10%)
+
+# 评分等级
+categories:
+  excellent:
+    min_score: 85
+    label: "极高"
+    description: "龙头气质，重点关注"
+  good:
+    min_score: 75
+    label: "高"
+    description: "连板可能性大"
+  average:
+    min_score: 65
+    label: "中等"
+    description: "需结合盘面判断"
+  poor:
+    min_score: 55
+    label: "低"
+    description: "谨慎参与"
+  very_poor:
+    min_score: 0
+    label: "极低"
+    description: "建议观望"
+
+# 数据缓存配置
+cache:
+  ttl_minutes: 5                   # 缓存有效期（分钟）
+  max_history_days: 90             # 历史数据保留天数

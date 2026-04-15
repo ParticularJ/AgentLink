@@ -1,0 +1,25 @@
+# MACD底背离策略定时任务配置
+version: "v1.0.0"
+description: "MACD底背离策略定时任务"
+
+jobs:
+  # 收盘后扫描
+  - name: "收盘背离扫描"
+    schedule: "5 15 * * 1-5"  # 周一至周五 15:05
+    enabled: true
+    command: "python3 skills/scripts/macd_divergence_scanner.py --scan --top 20"
+    description: "收盘后扫描MACD底背离机会"
+  
+  # 盘前提醒
+  - name: "盘前背离提醒"
+    schedule: "15 9 * * 1-5"  # 周一至周五 9:15
+    enabled: true
+    command: "python3 skills/scripts/macd_divergence_scanner.py --scan --top 10"
+    description: "盘前提醒底背离机会"
+
+# 节假日休市配置
+market_holidays:
+  - "2026-01-01"  # 元旦
+  - "2026-02-17"  # 春节
+  - "2026-04-05"  # 清明节
+  - "2026-05-01"  # 劳动节

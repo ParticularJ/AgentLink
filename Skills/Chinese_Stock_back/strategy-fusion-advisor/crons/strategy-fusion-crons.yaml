@@ -1,0 +1,59 @@
+# strategy-fusion-crons.yaml
+version: "1.0.0"
+description: "融合策略运行器定时任务"
+comment: |
+  14:30 (尾盘买) → 运行 EVENING 策略组
+  16:00 (早盘买) → 运行 MORNING 策略组
+  输出路径：
+    ../recommendations/
+    统一入口: ~/.openclaw/stock/recommendations.json
+
+crons:
+  # ── 每天 14:30 尾盘买 ──────────────────────────────
+  - name: "fusion-evening-buy"
+    schedule: "30 14 * * 1-5"
+    tz: "Asia/Shanghai"
+    sessionTarget: "isolated"
+    payload:
+      kind: "agentTurn"
+      message: |
+        执行尾盘买策略融合，运行以下策略并输出 top5 推荐：
+        - 缺口填充(gap-fill-strategy)
+        - 涨停回踩(limit-up-retrace-strategy)
+        - MACD底背离(macd-divergence-strategy)
+        - RSI超卖(rsi-oversold-strategy)
+        - 地量见底(volume-extreme-strategy)
+        - 缩量回踩均线(volume-retrace-ma-strategy)
+        - 均线多头(ma-bullish-strategy)
+
+        命令：
+        python3 ~/.npm-global/lib/node_modules/openclaw/skills/Stock/Chinese_Stock/strategy-fusion-advisor/skills/scripts/fusion_runner.py --session EVENING --top 5
+
+        将脚本输出（报告+推荐列表）直接发送到当前飞书会话。
+        推荐写入：../recommendations/YYYYMMDD_EVENING_BUY_recommendation.json
+    enabled: true
+
+  # ── 每天 16:00 早盘买（次日）───────────────────────
+  - name: "fusion-morning-buy"
+    schedule: "0 16 * * 1-5"
+    tz: "Asia/Shanghai"
+    sessionTarget: "isolated"
+    payload:
+      kind: "agentTurn"
+      message: |
+        执行早盘买策略融合（为次日早盘准备），运行以下策略并输出 top5 推荐：
+        - 突破新高(breakout-high-strategy)
+        - 涨停分析/打板(limit-up-analysis)
+        - 业绩超预期(earnings-surprise-strategy)
+        - 早晨之星(morning-star-strategy)
+
+        命令：
+        python3 ~/.npm-global/lib/node_modules/openclaw/skills/Stock/Chinese_Stock/strategy-fusion-advisor/skills/scripts/fusion_runner.py --session MORNING --top 5
+
+        将脚本输出（报告+推荐列表）直接发送到当前飞书会话。
+        推荐写入：../recommendations/YYYYMMDD_MORNING_BUY_recommendation.json
+    enabled: true
+
+execution:
+  timeout: 600
+  retry: 2

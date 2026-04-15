@@ -1,0 +1,49 @@
+# crons/gap-fill-crons.yaml
+
+version: "1.0.0"
+description: "缺口回补策略定时任务"
+
+crons:
+  # 收盘后扫描 - 15:30
+  - name: "afternoon-gap-scan"
+    schedule: "30 15 * * 1-5"
+    agent: "gap-fill-agent"
+    enabled: true
+    prompt: |
+      扫描今日出现突破性缺口的股票。
+      重点关注：
+      1. 跳空幅度>3%的股票
+      2. 放量配合的股票
+      3. 均线多头的股票
+      输出前10只评分最高的股票。
+  
+  # 回踩监控 - 10:30
+  - name: "pullback-monitor"
+    schedule: "30 10 * * 1-5"
+    agent: "gap-fill-agent"
+    enabled: true
+    prompt: |
+      监控昨日缺口股票是否出现回踩。
+      重点关注：
+      1. 是否回踩缺口上沿
+      2. 是否获得支撑
+      3. 是否出现买入机会
+  
+  # 买入确认 - 14:30
+  - name: "buy-confirmation"
+    schedule: "30 14 * * 1-5"
+    agent: "gap-fill-agent"
+    enabled: true
+    prompt: |
+      确认缺口回踩买入信号。
+      检查：
+      1. 回踩是否有效
+      2. 是否出现企稳阳线
+      3. 成交量是否配合
+
+execution:
+  timeout: 300
+  retry: 3
+  notification:
+    on_success: false
+    on_failure: true

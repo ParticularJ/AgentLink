@@ -1,0 +1,70 @@
+# earnings-surprise-strategy/cron/earnings-surprise-crons.yaml
+
+version: "1.0.0"
+description: "财报超预期策略定时任务"
+
+crons:
+  # 财报季每日扫描 - 每天9:00执行
+  - name: "daily-earnings-scan"
+    schedule: "0 9 * * 1-5"
+    agent: "earnings-surprise-agent"
+    enabled: true
+    prompt: |
+      扫描昨日和今日发布的财报公告。
+      重点关注：
+      1. 净利润同比增长>30%的公司
+      2. 业绩超预期幅度>10%的公司
+      3. 业绩创历史新高的公司
+      输出前10只评分最高的股票，附详细分析。
+  
+  # 盘中监控 - 9:45执行
+  - name: "intraday-earnings-monitor"
+    schedule: "45 9 * * 1-5"
+    agent: "earnings-surprise-agent"
+    enabled: true
+    prompt: |
+      监控昨日公告超预期股票今日开盘表现。
+      重点关注：
+      1. 跳空高开>3%的股票
+      2. 开盘后成交量明显放大的股票
+      3. 是否有机构大幅买入
+      输出需要重点关注的股票和操作建议。
+  
+  # 收盘复盘 - 15:30执行
+  - name: "daily-earnings-review"
+    schedule: "30 15 * * 1-5"
+    agent: "earnings-surprise-agent"
+    enabled: true
+    prompt: |
+      生成今日财报超预期策略复盘报告。
+      包括：
+      1. 今日符合条件的股票及评分
+      2. 持仓股票表现跟踪
+      3. 机构研报观点汇总
+      4. 明日重点关注股票
+      输出Markdown格式报告。
+  
+  # 周末总结 - 周六10:00执行
+  - name: "weekly-earnings-summary"
+    schedule: "0 10 * * 6"
+    agent: "earnings-surprise-agent"
+    enabled: true
+    prompt: |
+      生成本周财报超预期策略周报。
+      包括：
+      1. 本周财报汇总（超预期/不及预期）
+      2. 策略本周表现
+      3. 持仓股票周度点评
+      4. 下周财报预告
+      5. 策略优化建议
+
+# 任务执行配置
+execution:
+  timeout: 300
+  retry: 3
+  retry_delay: 60
+  
+  notification:
+    on_success: true
+    on_failure: true
+    channels: ["console", "log", "wechat"]

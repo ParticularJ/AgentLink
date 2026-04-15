@@ -1,0 +1,42 @@
+# config/scoring_weights.yaml
+
+# 突破前期高点策略评分权重配置
+version: "1.0.0"
+
+weights:
+  breakout_quality: 0.35
+  volume_confirmation: 0.25
+  trend_cooperation: 0.25
+  pullback_confirmation: 0.15
+
+# 突破质量评分标准
+breakout_quality:
+  perfect: 100      # 突破幅度>5%，收盘在最高点
+  good: 85          # 突破幅度3-5%，收盘较高
+  normal: 70        # 突破幅度3%，收盘一般
+  weak: 50          # 突破幅度<3%
+  poor: 0           # 未突破
+
+# 成交量确认评分标准
+volume_confirmation:
+  extreme: 100      # 放量>2倍
+  strong: 85        # 放量1.5-2倍
+  normal: 70        # 放量1.2-1.5倍
+  weak: 50          # 放量1-1.2倍
+  none: 0           # 缩量
+
+# 趋势配合评分标准
+trend_cooperation:
+  perfect: 100      # 均线多头，股价在均线上方
+  good: 85          # 均线多头，股价在部分均线上方
+  normal: 70        # 均线走平
+  weak: 50          # 均线空头
+  poor: 0           # 下跌趋势
+
+# 回踩确认评分标准
+pullback_confirmation:
+  strong: 100       # 回踩不破，缩量企稳
+  good: 85          # 轻微回踩，快速收回
+  normal: 70        # 回踩幅度适中
+  weak: 50          # 回踩过深
+  none: 40          # 无回踩或跌破

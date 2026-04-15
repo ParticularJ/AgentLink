@@ -1,0 +1,15 @@
+# sell-monitor 定时任务配置
+# 运行时间：工作日 09:20 和 14:30
+
+jobs:
+  - name: "sell-monitor-morning"
+    description: "早盘监控 - 09:20 分析持仓与推荐"
+    schedule: "0 20 9 * * 1-5"
+    command: "cd ~/.npm-global/lib/node_modules/openclaw/skills/Stock/Chinese_Stock/sell-monitor/scripts && python3 monitor.py"
+    enabled: true
+    
+  - name: "sell-monitor-afternoon"
+    description: "午盘监控 - 14:30 分析持仓与推荐"
+    schedule: "0 30 14 * * 1-5"
+    command: "cd ~/.npm-global/lib/node_modules/openclaw/skills/Stock/Chinese_Stock/sell-monitor/scripts && python3 monitor.py"
+    enabled: true

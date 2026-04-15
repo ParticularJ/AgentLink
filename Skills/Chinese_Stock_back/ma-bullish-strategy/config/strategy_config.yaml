@@ -1,0 +1,70 @@
+# ma-bullish-strategy/config/strategy_config.yaml
+
+# 均线策略参数配置
+strategy:
+  name: "均线多头排列策略"
+  version: "1.0.0"
+  
+  # 均线参数
+  ma_parameters:
+    short: 5      # 短期均线
+    mid: 10       # 中期均线
+    long: 20      # 长期均线
+    volume_ma: 20 # 成交量均线周期
+  
+  # 入场条件
+  entry_conditions:
+    ma_arrangement: "ma5 > ma10 > ma20"     # 均线排列
+    price_above_ma: true                     # 价格在均线上方
+    price_above_ma_long: "close > ma20"     # 收盘价>20日线
+    volume_ratio_min: 1.2                   # 最小放量倍数
+    volume_trend: "increasing"              # 成交量趋势
+  
+  # 出场条件
+  exit_conditions:
+    stop_loss: "close < ma20"               # 止损条件
+    take_profit: "ma5_cross_below_ma10"     # 止盈条件
+    trailing_stop_pct: 0.08                 # 移动止盈比例
+  
+  # 过滤条件
+  filters:
+    exclude_st: true                         # 排除ST股
+    exclude_new_stock: true                  # 排除新股
+    min_listing_days: 60                     # 最小上市天数
+    max_market_cap: 1000                     # 最大市值(亿)
+    min_market_cap: 20                       # 最小市值(亿)
+
+# 评分权重
+scoring:
+  weights:
+    ma_arrangement: 0.35     # 均线排列
+    price_position: 0.20     # 价格位置
+    volume_trend: 0.20       # 成交量趋势
+    trend_strength: 0.15     # 趋势强度
+    market_environment: 0.10 # 市场环境
+  
+  thresholds:
+    strong: 85                # 强烈推荐阈值
+    recommend: 75             # 推荐阈值
+    watch: 70                 # 关注阈值
+
+# 风险管理
+risk_management:
+  max_position_size: 0.30     # 单只股票最大仓位30%
+  max_portfolio_risk: 0.05    # 组合最大风险5%
+  stop_loss_atr_multiple: 2   # ATR止损倍数
+  risk_per_trade: 0.02        # 单笔交易风险2%
+  
+  # 不同市场环境下的仓位
+  position_sizing:
+    bull_market: 0.30         # 牛市仓位上限
+    range_market: 0.20        # 震荡市仓位上限
+    bear_market: 0.10         # 熊市仓位上限
+
+# 回测配置
+backtest:
+  default_start: "2024-01-01"
+  default_end: "2024-12-31"
+  initial_capital: 1000000
+  commission_rate: 0.0003     # 手续费率
+  slippage: 0.0001            # 滑点

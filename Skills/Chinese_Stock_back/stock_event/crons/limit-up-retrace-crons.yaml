@@ -1,0 +1,25 @@
+# 涨停板回调策略定时任务配置
+version: "v1.0.0"
+description: "涨停板首次回调策略定时任务"
+
+jobs:
+  # 收盘后扫描涨停股
+  - name: "收盘涨停扫描"
+    schedule: "5 15 * * 1-5"  # 周一至周五 15:05
+    enabled: true
+    command: "python3 skills/scripts/limit_up_retrace_scanner.py --scan --top 20"
+    description: "收盘后扫描涨停回调机会"
+  
+  # 盘前提醒
+  - name: "盘前机会提醒"
+    schedule: "15 9 * * 1-5"  # 周一至周五 9:15
+    enabled: true
+    command: "python3 skills/scripts/limit_up_retrace_scanner.py --scan --top 10"
+    description: "盘前提醒涨停回调机会"
+
+# 节假日休市配置
+market_holidays:
+  - "2026-01-01"  # 元旦
+  - "2026-02-17"  # 春节
+  - "2026-04-05"  # 清明节
+  - "2026-05-01"  # 劳动节

@@ -1,0 +1,49 @@
+# crons/morning-star-crons.yaml
+
+version: "1.0.0"
+description: "早晨之星形态策略定时任务"
+
+crons:
+  # 收盘后扫描 - 15:30
+  - name: "afternoon-morning-star-scan"
+    schedule: "30 15 * * 1-5"
+    agent: "morning-star-agent"
+    enabled: true
+    prompt: |
+      扫描今日出现的早晨之星形态。
+      重点关注：
+      1. 第三根阳线放量确认的股票
+      2. 处于相对低位的股票
+      3. 形态完美的股票
+      输出前10只评分最高的股票。
+  
+  # 次日确认监控 - 9:45
+  - name: "next-day-confirmation"
+    schedule: "45 9 * * 1-5"
+    agent: "morning-star-agent"
+    enabled: true
+    prompt: |
+      监控昨日早晨之星股票今日表现。
+      重点关注：
+      1. 是否高开
+      2. 成交量是否持续放大
+      3. 是否出现买入机会
+  
+  # 持仓跟踪 - 14:30
+  - name: "position-tracking"
+    schedule: "30 14 * * 1-5"
+    agent: "morning-star-agent"
+    enabled: true
+    prompt: |
+      跟踪早晨之星策略持仓股票。
+      检查：
+      1. 是否触发止损
+      2. 是否达到止盈目标
+      3. 是否需要调整仓位
+
+execution:
+  timeout: 300
+  retry: 3
+  notification:
+    on_success: false
+    on_failure: true

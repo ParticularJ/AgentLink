@@ -1,0 +1,72 @@
+# config/risk_rules.yaml
+
+# 成交量地量见底策略风险管理规则
+version: "1.0.0"
+
+# 止损规则
+stop_loss_rules:
+  volume_low_stop:
+    enabled: true
+    condition: "close < volume_extreme_day_low"
+    description: "跌破地量日最低点止损"
+  
+  hard_stop:
+    enabled: true
+    percentage: 0.05
+    description: "固定5%止损"
+  
+  ma_stop:
+    enabled: true
+    ma_period: 10
+    description: "跌破10日线止损"
+  
+  time_stop:
+    enabled: true
+    days: 15
+    min_profit: 0.03
+    description: "持仓15天盈利<3%离场"
+
+# 止盈规则
+take_profit_rules:
+  target_profit:
+    enabled: true
+    levels:
+      - percentage: 0.08
+        action: "减仓30%"
+      - percentage: 0.12
+        action: "减仓30%"
+      - percentage: 0.15
+        action: "清仓"
+  
+  trailing_stop:
+    enabled: true
+    percentage: 0.08
+    description: "最高点回撤8%止盈"
+  
+  volume_profit:
+    enabled: true
+    condition: "volume > volume_ma20 * 1.5"
+    description: "放量过大止盈"
+
+# 仓位管理
+position_sizing:
+  based_on_signal:
+    strong: 0.25    # 评分≥85
+    normal: 0.15    # 评分75-84
+    weak: 0.10      # 评分70-74
+  
+  based_on_volume_level:
+    extreme: 0.25   # 地量<40%
+    significant: 0.15 # 地量40-50%
+  
+  max_single_position: 0.25
+  max_portfolio_risk: 0.06
+
+# 见底失败信号
+failure_signals:
+  conditions:
+    - "地量后继续放量下跌"
+    - "地量后3日内跌破地量日最低点"
+    - "地量后成交量持续萎缩"
+  
+  action: "立即止损离场"
