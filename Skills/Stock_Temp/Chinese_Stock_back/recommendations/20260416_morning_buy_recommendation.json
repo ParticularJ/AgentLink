@@ -1,0 +1,26 @@
+{
+  "date": "20260416",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-04-16T23:47:20.328052",
+  "recommendations": [
+    {
+      "code": "002361",
+      "name": "神剑股份",
+      "source": "突破新高",
+      "recommend_date": "2026-04-16",
+      "entry_price": 0.0,
+      "target_reason": "突破动量强劲，早盘追涨，综合得分100；突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 100,
+      "best_score": 94.75,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    }
+  ],
+  "total_position": 23.0,
+  "stock_count": 1
+}

@@ -1,0 +1,42 @@
+# config/scoring_weights.yaml
+
+# 缺口回补策略评分权重配置
+version: "1.0.0"
+
+weights:
+  gap_quality: 0.35
+  pullback_confirm: 0.30
+  trend_cooperation: 0.20
+  follow_up: 0.15
+
+# 缺口质量评分标准
+gap_quality:
+  perfect: 100      # 跳空>5%，放量>2倍
+  strong: 85        # 跳空3-5%，放量1.5-2倍
+  normal: 70        # 跳空3%，放量1.2-1.5倍
+  weak: 50          # 跳空<3%，放量不足
+  none: 0           # 无缺口
+
+# 回踩确认评分标准
+pullback_confirm:
+  perfect: 100      # 精准回踩缺口上沿，缩量企稳
+  strong: 85        # 回踩缺口附近，获得支撑
+  normal: 70        # 回踩但未完全确认
+  weak: 50          # 回踩过深或未回踩
+  none: 0           # 缺口已回补
+
+# 趋势配合评分标准
+trend_cooperation:
+  perfect: 100      # 均线多头，趋势向上
+  strong: 85        # 均线多头，短期趋势向上
+  normal: 70        # 均线走平
+  weak: 50          # 均线空头
+  none: 0           # 下跌趋势
+
+# 后续确认评分标准
+follow_up:
+  strong: 100       # 回踩后放量上涨>3%
+  good: 85          # 回踩后放量上涨1-3%
+  normal: 70        # 回踩后小幅上涨
+  weak: 50          # 回踩后横盘
+  none: 0           # 回踩后继续下跌

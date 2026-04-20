@@ -1,0 +1,70 @@
+# config/strategy_config.yaml
+
+# RSI超卖反弹策略参数配置
+strategy:
+  name: "RSI超卖反弹策略"
+  version: "1.0.0"
+  
+  # RSI参数
+  rsi_parameters:
+    period: 14                 # RSI周期
+    oversold_threshold: 30     # 超卖阈值
+    extreme_oversold: 20       # 极度超卖阈值
+    overbought_threshold: 70   # 超买阈值
+  
+  # 价格偏离参数
+  deviation_parameters:
+    ma_period: 20              # 均线周期
+    min_deviation: 8           # 最小偏离度(%)
+    significant_deviation: 12  # 显著偏离度(%)
+    max_deviation: 20          # 最大偏离度(%)
+  
+  # 成交量参数
+  volume_parameters:
+    volume_ma_period: 20       # 成交量均线周期
+    extreme_shrink_ratio: 0.5  # 极度缩量比例
+    significant_shrink: 0.6    # 显著缩量比例
+    mild_shrink: 0.7           # 温和缩量比例
+  
+  # 企稳信号参数
+  stability_signals:
+    require_hammer: true       # 锤头线
+    require_engulfing: true    # 阳包阴
+    require_doji: true         # 十字星
+    require_support: true      # 支撑确认
+  
+  # 反弹目标参数
+    target_rsi: 50             # 目标RSI值
+    target_percentage: 0.08    # 目标涨幅8%
+
+# 评分权重
+scoring:
+  weights:
+    rsi_oversold: 0.35         # RSI超卖程度
+    price_deviation: 0.25      # 价格偏离度
+    volume_shrink: 0.20        # 成交量特征
+    stability_signal: 0.20     # 企稳信号
+  
+  thresholds:
+    strong: 85
+    recommend: 75
+    watch: 70
+
+# 风险管理
+risk_management:
+  stop_loss:
+    type: "recent_low"
+    condition: "close < recent_5day_low"
+    hard_stop: 0.05
+  
+  take_profit:
+    target1: 0.05    # 第一目标5%
+    target2: 0.08    # 第二目标8%
+    target3: 0.10    # 第三目标10%
+  
+  position_sizing:
+    strong_signal: 0.20
+    normal_signal: 0.15
+    weak_signal: 0.10
+  
+  max_holding_days: 7

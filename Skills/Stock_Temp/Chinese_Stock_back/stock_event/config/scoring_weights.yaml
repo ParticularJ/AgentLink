@@ -1,0 +1,46 @@
+# 评分权重配置
+weights:
+  limit_up_quality: 0.25       # 涨停质量 25%
+  retrace_quality: 0.20        # 回调质量 20%
+  support_strength: 0.20       # 支撑强度 20%
+  volume_shrink: 0.20          # 缩量程度 20%
+  stop_signal: 0.15            # 止跌信号 15%
+
+# 评分阈值
+thresholds:
+  strong_buy: 85    # 强烈买入
+  buy: 75           # 买入
+  watch: 65         # 观望
+  exclude: 0        # 排除
+
+# 各维度详细评分标准
+scoring_criteria:
+  limit_up_quality:
+    excellent: 100    # 一字板+大封单
+    good: 85          # 快速封板+封单充足
+    fair: 70          # 盘中封板+封单一般
+    poor: 0           # 反复炸板
+  
+  retrace_quality:
+    excellent: 100    # 回调<5%且时间短
+    good: 85          # 回调<10%且时间适中
+    fair: 70          # 回调<15%
+    poor: 0           # 回调>15%
+  
+  support_strength:
+    excellent: 100    # 精准回踩涨停价
+    good: 85          # 回踩5日线+涨停价
+    fair: 70          # 回踩5日线
+    poor: 0           # 跌破支撑位
+  
+  volume_shrink:
+    excellent: 100    # 缩量至30%以下
+    good: 85          # 缩量至40%以下
+    fair: 70          # 缩量至50%以下
+    poor: 0           # 缩量不足50%
+  
+  stop_signal:
+    excellent: 100    # 锤子线+缩量
+    good: 85          # 十字星+缩量
+    fair: 70          # 小阳线+缩量
+    poor: 0           # 无明显止跌信号
