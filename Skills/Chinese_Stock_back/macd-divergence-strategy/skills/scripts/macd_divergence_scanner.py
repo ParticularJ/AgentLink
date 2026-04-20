@@ -13,12 +13,12 @@ from typing import List, Dict, Optional
 import pandas as pd
 import yaml
 
-from macd_divergence_analyzer import MACDDivergenceAnalyzer
+from macd_divergence_strategy_analyzer import MACDDivergenceAnalyzer
 
 
 def _load_watchlist() -> Optional[pd.DataFrame]:
     """加载自选股池"""
-    watchlist_path = os.path.join(os.getcwd(), 'watchlist.yaml')
+    watchlist_path = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/watchlist.yaml'
     if not os.path.exists(watchlist_path):
         print(f"watchlist.yaml 文件不存在: {watchlist_path}")
         return None

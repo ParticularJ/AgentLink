@@ -17,12 +17,12 @@ from typing import List, Dict, Optional
 import pandas as pd
 import yaml
 
-from analyzer import MorningStarAnalyzer
+from morning_star_strategy_analyzer import MorningStarAnalyzer
 
 
 def _load_watchlist() -> Optional[pd.DataFrame]:
     """加载自选股池"""
-    watchlist_path = os.path.join(os.getcwd(), 'watchlist.yaml')
+    watchlist_path = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/watchlist.yaml'
     if not os.path.exists(watchlist_path):
         print(f"watchlist.yaml 文件不存在: {watchlist_path}")
         return None
@@ -88,6 +88,8 @@ def scan_all_stocks(analyzer: MorningStarAnalyzer, top_n: int = 20) -> List[Dict
         
         # 分析
         result = analyzer.analyze_stock(stock_code, stock_name)
+
+        # print("morning star result: ", result)
         if result and result['score'] >= 70:
             candidates.append(result)
             print(f"  ✅ {stock_name}({stock_code}): {result['score']}分")

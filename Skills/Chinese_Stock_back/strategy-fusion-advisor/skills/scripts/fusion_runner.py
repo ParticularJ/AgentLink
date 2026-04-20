@@ -10,10 +10,15 @@
 import os
 import sys
 import json
+from unittest import result
 import yaml
 import argparse
 from datetime import datetime
 from typing import Dict, List, Optional
+import importlib
+
+from news_sentiment import search_stock_news, calc_news_penalty
+
 
 # ── 路径设置（相对路径，基于脚本所在目录）────────────────────
 # fusion_runner.py 位于 strategy-fusion-advisor/skills/scripts/
@@ -25,22 +30,26 @@ _BASE_DIR = os.path.dirname(_SKILL_DIR)  # .../Chinese_Stock
 # 推荐文件写入位置：Chinese_Stock/recommendations/
 SKILL_RECO_DIR = os.path.join(_BASE_DIR, 'recommendations')
 
+
+
+
+
 # ── 策略分组 ────────────────────────────────────────────
-EVENING_STRATEGIES = [  # 尾盘买（14:30）
-    'gap-fill-strategy',
-    'limit-up-retrace-strategy',
+EVENING_STRATEGIES = [  # 尾盘买（14:30）  
+    #'gap-fill-strategy',
+    #'limit-up-retrace-strategy',
     'macd-divergence-strategy',
-    'rsi-oversold-strategy',
-    'volume-extreme-strategy',
-    'volume-retrace-ma-strategy',
-    'ma-bullish-strategy',
+    #'rsi-oversold-strategy',
+    #'volume-extreme-strategy',
+    #'volume-retrace-ma-strategy',
+    #'ma-bullish-strategy'
 ]
 
 MORNING_STRATEGIES = [  # 早盘买次日（16:00）
     'breakout-high-strategy',
     'limit-up-analysis',
     'earnings-surprise-strategy',
-    'morning-star-strategy',
+    'morning-star-strategy'
 ]
 
 # 策略元数据
@@ -73,40 +82,13 @@ ANALYZER_CLASS = {
     'earnings-surprise-strategy': 'EarningsSurpriseScanner'
 }
 
-# ── 自选股池加载 ────────────────────────────────────────
-def load_watchlist() -> Dict:
-    path = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/watchlist.yaml'
-    if not os.path.exists(path):
-        return {}
-    with open(path, 'r', encoding='utf-8') as f:
-        data = yaml.safe_load(f)
-    return data.get('watchlist', {})
-
-
-def get_watchlist_stocks() -> List[tuple]:
-    """返回 [(名称, 代码), ...] 所有自选股"""
-    wl = load_watchlist()
-    stocks = []
-    for sector, data in wl.items():
-        for entry in data.get('core', []) + data.get('focus', []):
-            if isinstance(entry, list) and len(entry) >= 2:
-                stocks.append((entry[0], entry[1], sector))
-            elif isinstance(entry, str) and len(entry) == 6:
-                stocks.append((entry, entry, sector))
-    return stocks
-
 
 # ── 策略扫描 ────────────────────────────────────────────
 
-def scan_strategy(strategy_name: str, all_stocks: List[tuple], top_n: int = 5) -> List[Dict]:
+def scan_strategy(strategy_name: str, top_n: int = 5) -> List[Dict]:
     """运行单个策略，返回推荐列表"""
     meta = STRATEGY_META.get(strategy_name, {})
-
-
-    # limit-up-retrace-strategy 用 subprocess
-    if strategy_name == 'limit-up-retrace-strategy':
-        return scan_limit_up_retrace(top_n)
-
+    print("meta: ", meta)
     analyzer = get_analyzer(strategy_name)
     if analyzer is None:
         return []
@@ -117,25 +99,20 @@ def scan_strategy(strategy_name: str, all_stocks: List[tuple], top_n: int = 5) -
         result = None
         if(strategy_name == 'limit-up-analysis'):
             result = analyzer.analyze_all_limit_up()
-            print(result)
+        
         elif(strategy_name == 'earnings-surprise-strategy'):
-            result = analyzer.scan_daily_earnings(datetime.now().strftime('%Y%m%d'))
+            result = analyzer.scan_daily_earnings(datetime.now())
         else:
             result = analyzer.scan_all_stocks(top_n=top_n)
-
-        print(result)
-
-        # if save and result:
-        #     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        #     from ../../data_collector import DataCollector
-        #     collector = DataCollector()
-        #     filepath = collector.save(strategy_name, results, datetime.now().strftime('%Y%m%d'))
-      
+            # print(result)
+        print(f"✅ 策略 {strategy_name} 运行完成，结果：")
+       # print(result)
+        
         for res in result:
-            print(res.get('score', 0))
+            # print(res)
             if res.get('score', 0) >= 70:     
                 result_sig = {}      
-                # result['sector'] = sector
+                # result['sector'] = res.get('sector')
                 result_sig['stock_code'] = res.get('stock_code')
                 result_sig['stock_name'] = res.get('stock_name')
                 result_sig['strategy_name'] = strategy_name
@@ -146,7 +123,7 @@ def scan_strategy(strategy_name: str, all_stocks: List[tuple], top_n: int = 5) -
                 results.append(result_sig)
     except Exception:
         pass
-
+    # print("results: ", results)
     results.sort(key=lambda x: x.get('score', 0), reverse=True)
     return results[:top_n]
 
@@ -154,23 +131,31 @@ def scan_strategy(strategy_name: str, all_stocks: List[tuple], top_n: int = 5) -
 def get_analyzer(strategy_name: str):
     """获取策略分析器实例"""
     cls_name = ANALYZER_CLASS.get(strategy_name)
-    print(cls_name)
+    #print("cls_name: ", cls_name)
     if not cls_name:
         return None
 
     # 添加策略根目录（包含 skills/ 的那一层）
     strategy_root = os.path.join(_BASE_DIR, strategy_name)
-    if strategy_root not in sys.path:
-        sys.path.insert(0, strategy_root)
-    print("strategy_root: ", strategy_root)
+    if strategy_root in sys.path:
+        sys.path.remove(strategy_root)
+    # 追加到末尾，不影响主项目路径优先级
+    sys.path.append(strategy_root)
     # 动态导入
     try:
-        import importlib
-        # print("11111111111111111")
-        mod = importlib.import_module('skills.scripts.analyzer')
-        #print(mod)
+      
+        import_module = "skills.scripts." +strategy_name.replace('-', '_') + "_analyzer"
+        print("import_module: ", import_module)
+        if import_module in sys.modules:
+            del sys.modules[import_module]
+        # 清理污染
+        if 'skills' in sys.modules:
+            del sys.modules['skills']
+        if 'skills.scripts' in sys.modules:
+            del sys.modules['skills.scripts']
+
+        mod = importlib.import_module(import_module)
         AnalyzerCls = getattr(mod, cls_name, None)
-        # print(AnalyzerCls)
         if AnalyzerCls is None:
             return None
         analyzer = AnalyzerCls()
@@ -179,95 +164,21 @@ def get_analyzer(strategy_name: str):
         print("error: ", e)
         return None
 
-def parse_limit_up_output(output: str, strategy_name: str = 'limit-up-analysis') -> List[Dict]:
-    """解析涨停分析/回踩输出"""
-    import re
-    results = []
-    combined = output.replace('\\n', '\n')
-    meta = STRATEGY_META.get(strategy_name, {})
-
-    for line in combined.split('\n'):
-        line = line.strip()
-        if not line or '分析' in line or '时间' in line or '==' in line:
-            continue
-        m = re.search(r'(\d{6})', line)
-        if not m:
-            continue
-        code = m.group(1)
-        name_m = re.search(r'([\u4e00-\u9fa5]+)\s*[\(（]', line)
-        name = name_m.group(1) if name_m else code
-        score_m = re.search(r'(\d+\.?\d*)\s*分', line)
-        score = float(score_m.group(1)) if score_m else 70.0
-
-        if score >= 70:
-            results.append({
-                'strategy_name': strategy_name,
-                'strategy_display': meta.get('display', '涨停分析'),
-                'strategy_win_rate': meta.get('win_rate', 0.65),
-                'strategy_weight': meta.get('weight', 1.0),
-                'strategy_score': score,
-                'stock_code': code,
-                'stock_name': name,
-                'sector': '',
-                'current_price': 0.0,
-                'expected_return': 0.15,
-                'score': score,
-            })
-
-    results.sort(key=lambda x: x.get('score', 0), reverse=True)
-    return results[:5]
 
 
-def scan_limit_up_retrace(top_n: int) -> List[Dict]:
-    """涨停回踩：通过 subprocess 运行 scanner"""
-    import subprocess
-    script = os.path.join(_BASE_DIR, 'limit-up-retrace-strategy', 'skills', 'scripts', 'scanner.py')
-    if not os.path.exists(script):
-        return []
+def recommendations_penalty(stock_code: str, stock_name: str) -> int:
+   # ——— 新闻情绪检测（仅对前10名候选股）——
     try:
-        result = subprocess.run(
-            ['python3', script, '--pool', 'all', '--top', str(top_n)],
-            capture_output=True, text=True, timeout=120
+        news = search_stock_news(stock_code,stock_name, days=7)
+        penalty = calc_news_penalty(
+            news['sentiment'],
+            news['sentiment_score'],
+            1
         )
-        return parse_limit_up_output(result.stdout, 'limit-up-retrace-strategy')
-    except Exception:
-        return []
-
-
-def parse_earnings_output(stdout: str) -> List[Dict]:
-    """解析财报超预期输出"""
-    import re
-    results = []
-    meta = STRATEGY_META.get('earnings-surprise-strategy', {})
-
-    for line in stdout.split('\n'):
-        line = line.strip()
-        m = re.search(r'(\d{6})', line)
-        if not m:
-            continue
-        code = m.group(1)
-        name_m = re.search(r'([\u4e00-\u9fa5]+)\s*[\(（]', line)
-        name = name_m.group(1) if name_m else code
-        score_m = re.search(r'(\d+\.?\d*)\s*分', line)
-        score = float(score_m.group(1)) if score_m else 70.0
-
-        if score >= 70:
-            results.append({
-                'strategy_name': 'earnings-surprise-strategy',
-                'strategy_display': meta.get('display', '业绩超预期'),
-                'strategy_win_rate': meta.get('win_rate', 0.70),
-                'strategy_weight': meta.get('weight', 1.2),
-                'strategy_score': score,
-                'stock_code': code,
-                'stock_name': name,
-                'sector': '',
-                'current_price': 0.0,
-                'expected_return': 0.15,
-                'score': score,
-            })
-
-    results.sort(key=lambda x: x.get('score', 0), reverse=True)
-    return results[:5]
+        print(news)
+        return penalty
+    except Exception as e:
+        print("Error: ", e)
 
 
 # ── 融合评分 ────────────────────────────────────────────
@@ -283,6 +194,12 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
         code = rec.get('stock_code', '')
         if not code:
             continue
+
+        ## 添加惩罚策略
+        penalty=recommendations_penalty(rec.get('stock_code', ''), rec.get('stock_name', ''))
+
+        print(penalty)
+
         if code not in stock_map:
             stock_map[code] = {
                 'stock_code': code,
@@ -305,6 +222,9 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
         contribution = (score * 0.6 + win_rate * 100 * 0.4) * weight
         e['total_contribution'] += contribution
         e['best_score'] = max(e['best_score'], score)
+        e['best_score'] = max(e['best_score'] + penalty, 0)  # 扣除新闻情绪惩罚
+        if  e['best_score'] < 70:
+            continue
         e['recs'].append(rec)
 
     scored = []
@@ -316,6 +236,7 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
 
         if session == 'MORNING' and data['best_score'] > 70:
             combined = min(combined + min(data['best_score'] - 70, 20), 100)
+
 
         scored.append({
             'stock_code': code,
@@ -329,8 +250,9 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
         })
 
     scored.sort(key=lambda x: x['combined_score'], reverse=True)
+    print("The all recommendations are: ", scored)
     top = scored[:top_n]
-    print("top: ", top)
+    # print("top: ", top)
     for i, s in enumerate(top):
         base = 0.20 - i * 0.03
         adj = (s['combined_score'] - 70) / 100 * 0.10
@@ -459,6 +381,7 @@ def write_recommendations(top: List[Dict], session: str):
 # ── 主运行 ──────────────────────────────────────────────
 
 def run_fusion(session: str, top_n: int = 5):
+    print(session)
     strategies = EVENING_STRATEGIES if session == 'EVENING' else MORNING_STRATEGIES
     label = '尾盘买策略融合' if session == 'EVENING' else '早盘买策略融合'
 
@@ -467,9 +390,9 @@ def run_fusion(session: str, top_n: int = 5):
     print(f'时间: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     print(f'{"="*60}')
 
-    all_stocks = get_watchlist_stocks()
-    print(f'📋 自选股池共 {len(all_stocks)} 只股票')
-    print()
+    # all_stocks = get_watchlist_stocks()
+    # print(f'📋 自选股池共 {len(all_stocks)} 只股票')
+    # print()
 
     all_recs = []
     success = 0
@@ -480,7 +403,8 @@ def run_fusion(session: str, top_n: int = 5):
         print(f'▶️  运行 {display}...', end=' ', flush=True)
 
         try:
-            recs = scan_strategy(strategy, all_stocks, top_n=top_n)
+            recs = scan_strategy(strategy, top_n=top_n)
+            print(strategy,": ", recs )
             if recs:
                 all_recs.extend(recs)
                 success += 1
@@ -495,7 +419,6 @@ def run_fusion(session: str, top_n: int = 5):
     print(f'共收集 {len(all_recs)} 条推荐')
 
     top = fuse_recommendations(all_recs, top_n=top_n, session=session)
-    print(top)
     report = build_report(top, session, len(all_recs))
     print('\n' + report)
 

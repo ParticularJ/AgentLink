@@ -19,7 +19,7 @@ class EarningsDataFetcher:
         
     def _load_watchlist_codes(self) -> List[str]:
         """加载自选池股票代码列表"""
-        watchlist_path = os.path.join(os.getcwd(), 'watchlist_all.yaml')
+        watchlist_path = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/watchlist.yaml'
         if not os.path.exists(watchlist_path):
             print(f"watchlist_all.yaml 文件不存在: {watchlist_path}")
             return []

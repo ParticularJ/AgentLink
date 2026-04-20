@@ -5,7 +5,7 @@
 
 import sys
 import os
-sys.path.insert(0, os.path.dirname(__file__))
+# sys.path.insert(0, os.path.dirname(__file__))
 
 import argparse
 from datetime import datetime
@@ -14,11 +14,11 @@ import pandas as pd
 import yaml
 
 
-from retrace_analyzer import VolumeRetraceAnalyzer
+from volume_retrace_ma_strategy_analyzer import VolumeRetraceAnalyzer
 
 def _load_watchlist() -> Optional[pd.DataFrame]:
     """加载自选股池"""
-    watchlist_path = os.path.join(os.getcwd(), 'watchlist.yaml')
+    watchlist_path = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/watchlist.yaml'
     if not os.path.exists(watchlist_path):
         print(f"watchlist.yaml 文件不存在: {watchlist_path}")
         return None
@@ -69,7 +69,8 @@ def scan_all_stocks(analyzer: VolumeRetraceAnalyzer, top_n: int = 20) -> List[Di
     
     candidates = []
     total = len(stock_list)
-    
+    print("total_score", total)
+
     for idx, (_, row) in enumerate(stock_list.iterrows(), 1):
         stock_code = row['code']
         stock_name = row.get('name', stock_code)
@@ -79,10 +80,11 @@ def scan_all_stocks(analyzer: VolumeRetraceAnalyzer, top_n: int = 20) -> List[Di
             print(f"进度: {idx}/{total} ({idx/total*100:.1f}%)")
         
       
-        
+        # print(stock_code, stock_name)  
         # 分析
         result = analyzer.analyze_stock(stock_code, stock_name)
-        if result and result['score'] >= 70:
+        # print("retrace result:", result)
+        if result is not None and result['score'] >= 70:
             candidates.append(result)
             print(f"  ✅ {stock_name}({stock_code}): {result['score']}分")
     

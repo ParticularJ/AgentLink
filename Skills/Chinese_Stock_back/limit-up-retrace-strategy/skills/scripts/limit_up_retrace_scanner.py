@@ -11,7 +11,7 @@ import argparse
 from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 
-from limit_up_retrace_analyzer import LimitUpRetraceAnalyzer
+from limit_up_retrace_strategy_analyzer import LimitUpRetraceAnalyzer
 
 
 def _scan_all_stocks_fallback(analyzer: LimitUpRetraceAnalyzer, top_n: int) -> List[Dict]:
@@ -93,7 +93,7 @@ def _get_recent_limit_up_stocks() -> List[Tuple[str, str]]:
             except Exception:
                 continue
 
-        if len(results) >= 200:  # 最多收集200只，避免重复遍历
+        if len(results) >= 300:  # 最多收集200只，避免重复遍历
             break
 
     return results
@@ -123,7 +123,7 @@ def scan_all_stocks(analyzer: LimitUpRetraceAnalyzer, top_n: int = 20) -> List[D
     for idx, (stock_code, stock_name) in enumerate(limit_up_candidates, 1):
         print(stock_code, stock_name)
         # 进度显示
-        if idx % 100 == 0:
+        if idx % 20 == 0:
             print(f"进度: {idx}/{total} ({idx/total*100:.1f}%)")
         
         # 分析
