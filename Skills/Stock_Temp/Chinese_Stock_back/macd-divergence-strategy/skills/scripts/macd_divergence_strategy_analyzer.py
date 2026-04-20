@@ -221,7 +221,7 @@ class MACDDivergenceAnalyzer:
         if len(df) < 30:
             return []
         
-        df = self.calculate_macd(df)
+        df = self._calculate_macd(df)
         divergences = []
         
         for i in range(20, len(df)):
@@ -378,7 +378,7 @@ class MACDDivergenceAnalyzer:
                 return None
             
             # 计算MACD指标（find_divergence内部也会算，这里提前算好供后续使用）
-            df = self.calculate_macd(df)
+            df = self._calculate_macd(df)
             
             # 查找底背离
             divergences = self.find_divergence(df)
