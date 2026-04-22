@@ -1,0 +1,12 @@
+[
+  {
+    "code": "600105",
+    "name": "永鼎股份",
+    "buy_price": 38.10,
+    "shares": 1000,
+    "position_ratio": 0.20,
+    "position_value": 38100,
+    "buy_reason": "breakout_high",
+    "buy_date": "2026-04-11"
+  }
+]

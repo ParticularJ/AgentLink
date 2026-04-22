@@ -135,7 +135,8 @@ class GapFillAnalyzer:
                     'gap': gap_analysis,
                     'pullback': pullback_analysis,
                     'trend': trend_analysis,
-                    'follow_up': follow_up_analysis
+                    'follow_up': follow_up_analysis,
+                    'market': market_env
                 }
             }
             

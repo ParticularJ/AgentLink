@@ -18,10 +18,13 @@ from macd_divergence_strategy_analyzer import MACDDivergenceAnalyzer
 
 def _load_watchlist() -> Optional[pd.DataFrame]:
     """加载自选股池"""
-    watchlist_path = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/watchlist.yaml'
+    watchlist_path = './my_stock_pool/watchlist.yaml'
     if not os.path.exists(watchlist_path):
-        print(f"watchlist.yaml 文件不存在: {watchlist_path}")
-        return None
+        
+        watchlist_path = '../../../my_stock_pool/watchlist.yaml'
+        if not os.path.exists(watchlist_path):
+            print(f"watchlist.yaml 文件不存在: {watchlist_path}")
+            return None
     
     try:
         with open(watchlist_path, 'r', encoding='utf-8') as f:

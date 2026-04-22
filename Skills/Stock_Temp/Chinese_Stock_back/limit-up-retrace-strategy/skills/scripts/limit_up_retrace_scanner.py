@@ -93,7 +93,7 @@ def _get_recent_limit_up_stocks() -> List[Tuple[str, str]]:
             except Exception:
                 continue
 
-        if len(results) >= 300:  # 最多收集200只，避免重复遍历
+        if len(results) >= 200:  # 最多收集200只，避免重复遍历
             break
 
     return results

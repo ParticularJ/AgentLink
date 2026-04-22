@@ -1,0 +1,29 @@
+[
+  {
+    "code": "600105",
+    "name": "永鼎股份",
+    "buy_price": 100.00,
+    "shares": 1000,
+    "buy_reason": "breakout_high",
+    "buy_date": "2026-04-11",
+    "high_price": 130.00
+  },
+  {
+    "code": "000001",
+    "name": "平安银行",
+    "buy_price": 50.00,
+    "shares": 2000,
+    "buy_reason": "ma_bullish",
+    "buy_date": "2026-04-10",
+    "high_price": 55.00
+  },
+  {
+    "code": "000002",
+    "name": "万科A",
+    "buy_price": 80.00,
+    "shares": 1500,
+    "buy_reason": "macd_divergence",
+    "buy_date": "2026-04-09",
+    "high_price": 82.00
+  }
+]
