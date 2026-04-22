@@ -393,7 +393,6 @@ def get_watchlist_stocks() -> Optional[pd.DataFrame]:
     try:
         with open(watchlist_path, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
-        print(data)
         stocks = []
         if 'watchlist' in data:
             for sector, categories in data['watchlist'].items():
@@ -425,8 +424,8 @@ def run_fusion(session: str, top_n: int = 5):
     print(f'时间: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     print(f'{"="*60}')
 
-    all_stocks = get_watchlist_stocks()
-    print(all_stocks)
+    #all_stocks = get_watchlist_stocks()
+   # print(all_stocks)
     #print(f'📋 自选股池共 {len(all_stocks)} 只股票')
     # print()
 
