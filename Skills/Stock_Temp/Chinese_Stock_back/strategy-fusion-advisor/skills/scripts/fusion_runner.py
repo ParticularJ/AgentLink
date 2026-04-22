@@ -36,13 +36,13 @@ SKILL_RECO_DIR = os.path.join(_BASE_DIR, 'recommendations')
 
 # ── 策略分组 ────────────────────────────────────────────
 EVENING_STRATEGIES = [  # 尾盘买（14:30）  
-    'gap-fill-strategy',
-    'limit-up-retrace-strategy',
-    'macd-divergence-strategy',
-    'rsi-oversold-strategy',
-    'volume-extreme-strategy',
+    #'gap-fill-strategy',
+    #'limit-up-retrace-strategy',
+    #'macd-divergence-strategy',
+   # 'rsi-oversold-strategy',
+    #'volume-extreme-strategy',
     'volume-retrace-ma-strategy',
-    'ma-bullish-strategy'
+    #'ma-bullish-strategy'
 ]
 
 MORNING_STRATEGIES = [  # 早盘买次日（16:00）

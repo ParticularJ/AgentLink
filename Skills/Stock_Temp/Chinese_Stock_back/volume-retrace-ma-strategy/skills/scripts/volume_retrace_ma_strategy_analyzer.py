@@ -31,27 +31,40 @@ except ImportError:
 class VolumeRetraceAnalyzer:
     """缩量回踩均线分析器"""
     
+    # 评分权重配置（参考涨停板策略标准）
+    WEIGHTS = {
+        'retrace_quality': 0.25,     # 回踩质量 (25%)
+        'volume_shrink': 0.20,       # 缩量程度 (20%)
+        'trend_strength': 0.20,      # 趋势强度 (20%)
+        'stop_signal': 0.15,         # 止跌信号 (15%)
+        'support_strength': 0.15,    # 支撑强度 (15%)
+        'market_environment': 0.05,  # 市场环境 (5%)
+    }
+    
+    # 评分阈值（与涨停板策略一致）
+    THRESHOLDS = {
+        'strong_buy': 85,    # 极高
+        'buy': 75,           # 高
+        'watch': 65,         # 中等
+        'exclude': 55        # 低
+    }
+    
     def __init__(self, data_source: str = "auto"):
-        self.name = "缩量回踩重要均线策略"
-        self.version = "v1.0.0"
+        self.name = "缩量回踩均线策略"
+        self.version = "v1.1.0"
+        self.win_rate = 0.62
         
-        # 加载配置
-        self.config = self._load_config()
+        # 均线参数
+        self.ma_periods = [5, 10, 20, 60]
+        self.volume_ma_period = 20
+        self.volume_shrink_ratio = 0.5  # 缩量标准：低于均量50%
         
-        # 评分权重
-        self.weights = {
-            'trend_strength': 0.25,
-            'retrace_quality': 0.20,
-            'volume_shrink': 0.20,
-            'stop_signal': 0.20,
-            'support_strength': 0.15
-        }
-        
-        # 初始化数据源
         self.data_adapter = DataSourceAdapter(data_source)
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源")
         
+        # 缓存市场情绪
+        self._market_sentiment = None
     def scan_all_stocks(self, top_n: int = 20) -> List[Dict]:
         """扫描全市场，返回前N名 MACD 底背离候选"""
         try:
@@ -61,305 +74,355 @@ class VolumeRetraceAnalyzer:
             sys.path.insert(0, os.path.dirname(__file__))
             from retrace_scanner import scan_all_stocks as scanner
         return scanner(self, top_n)
-       
-    def _load_config(self) -> Dict:
-        """加载策略配置"""
-        config_path = '/home/qinliming/.npm-global/lib/node_modules/openclaw/skills/Stock/volume-retrace-ma-strategy/config/strategy_config.yaml'
-        try:
-            with open(config_path, 'r') as f:
-                return yaml.safe_load(f)
-        except:
-            return {}
-    
-    def analyze_stock(self, stock_code: str, stock_name: str = None) -> Optional[Dict]:
-        """
-        分析单只股票是否出现缩量回踩买入信号
+
+    def calculate_ma(self, df: pd.DataFrame) -> pd.DataFrame:
+        """计算均线"""
+        df = df.copy()
         
-        Args:
-            stock_code: 股票代码
-            stock_name: 股票名称
+        for period in self.ma_periods:
+            df[f'ma{period}'] = df['close'].rolling(window=period, min_periods=1).mean()
+        
+        return df
+
+    def calculate_volume_ma(self, df: pd.DataFrame) -> pd.DataFrame:
+        """计算成交量均线"""
+        df = df.copy()
+        df['volume_ma'] = df['volume'].rolling(window=self.volume_ma_period, min_periods=1).mean()
+        df['volume_ratio'] = df['volume'] / df['volume_ma']
+        
+        return df
+
+    def find_retrace_signals(self, df: pd.DataFrame, lookback: int = 60) -> List[Dict]:
+        """查找缩量回踩均线信号"""
+        if len(df) < 30:
+            return []
+        
+        df = self.calculate_ma(df)
+        df = self.calculate_volume_ma(df)
+        
+        signals = []
+        
+        for i in range(20, len(df)):
+            current = df.iloc[i]
             
-        Returns:
-            分析结果字典
+            # 检查是否回踩均线
+            for period in [10, 20]:
+                ma_col = f'ma{period}'
+                if ma_col not in current.index or pd.isna(current[ma_col]):
+                    continue
+                
+                ma_value = current[ma_col]
+                price = current['close']
+                
+                # 价格回踩均线（下影线触及或接近均线）
+                retrace_ratio = abs(price - ma_value) / ma_value
+                
+                if retrace_ratio < 0.02:  # 价格在均线2%以内
+                    # 检查成交量是否萎缩
+                    volume_ratio = current['volume_ratio']
+                    
+                    if volume_ratio < self.volume_shrink_ratio:
+                        # 确认是缩量回踩
+                        # 检查之前是否是上涨趋势
+                        prev_closes = df['close'].iloc[max(0, i-10):i]
+                        ma_alignment = all(prev_closes > df[f'ma{period}'].iloc[max(0, i-10):i])
+                        
+                        signals.append({
+                            'index': i,
+                            'date': df.index[i] if hasattr(df.index[i], 'strftime') else str(df.index[i]),
+                            'price': price,
+                            'ma_value': ma_value,
+                            'ma_period': period,
+                            'volume_ratio': volume_ratio,
+                            'trend_aligned': ma_alignment,
+                            'retrace_ratio': retrace_ratio
+                        })
+                        break
+        
+        return signals
+
+    def calculate_score(self, df: pd.DataFrame, signal: Dict) -> Tuple[float, str]:
+        """计算评分"""
+        score = 0
+        reasons = []
+        
+        # 1. 均线支撑得分 (0-30)
+        retrace_ratio = signal['retrace_ratio']
+        if retrace_ratio < 0.005:
+            score += 30
+            reasons.append(f"价格精确回踩MA{signal['ma_period']}")
+        elif retrace_ratio < 0.01:
+            score += 25
+            reasons.append(f"价格接近回踩MA{signal['ma_period']}")
+        else:
+            score += 20
+            reasons.append(f"价格回踩MA{signal['ma_period']}")
+        
+        # 2. 缩量程度得分 (0-25)
+        vol_ratio = signal['volume_ratio']
+        if vol_ratio < 0.3:
+            score += 25
+            reasons.append("成交量极度萎缩(<30%均量)")
+        elif vol_ratio < 0.4:
+            score += 20
+            reasons.append("成交量大幅萎缩(<40%均量)")
+        elif vol_ratio < 0.5:
+            score += 15
+            reasons.append("成交量明显萎缩(<50%均量)")
+        
+        # 3. 价格稳定性得分 (0-20)
+        if signal['index'] >= 5:
+            recent_volatility = df['close'].iloc[signal['index']-5:signal['index']].std() / df['close'].iloc[signal['index']-5:signal['index']].mean()
+            if recent_volatility < 0.02:
+                score += 20
+                reasons.append("价格极度稳定")
+            elif recent_volatility < 0.05:
+                score += 15
+                reasons.append("价格相对稳定")
+            elif recent_volatility < 0.1:
+                score += 10
+                reasons.append("价格波动正常")
+        
+        # 4. 趋势对齐得分 (0-15)
+        if signal['trend_aligned']:
+            score += 15
+            reasons.append("回踩在上涨趋势中")
+        else:
+            score += 5
+            reasons.append("等待趋势确认")
+        
+        # 5. 市场环境得分 (0-10) - 实际计算
+        market_env_score = self._calc_market_environment()
+        score += int(market_env_score * 0.1)
+        if market_env_score >= 70:
+            reasons.append(f"市场环境良好({market_env_score:.0f}分)")
+        elif market_env_score >= 50:
+            reasons.append(f"市场环境中性({market_env_score:.0f}分)")
+        else:
+            reasons.append(f"市场环境偏弱({market_env_score:.0f}分)")
+        
+        return score, "; ".join(reasons)
+    
+    def _get_index_code(self, index_name: str) -> str:
         """
+        获取指数代码（根据数据源自动调整格式）
+        """
+        codes = {
+            'sh': '000001', 'sz': '399001', 'cy': '399006', 'kc': '000688'
+        }
+        if self.data_adapter.source == 'baostock':
+            codes = {
+                'sh': 'sh.000001', 'sz': 'sz.399001', 'cy': 'sz.399006', 'kc': 'sh.000688'
+            }
+        return codes.get(index_name, '000001')
+    
+    def _get_market_index_data(self) -> Dict:
+        """
+        获取大盘指数数据（上证指数、深证成指、创业板指、科创板指）
+        返回指数涨跌幅和成交量信息
+        """
+        market_data = {
+            'sh_change': 0, 'sz_change': 0, 'cy_change': 0, 'kc_change': 0,
+            'sh_volume_ratio': 1.0, 'total_score': 50
+        }
+        
         try:
-            # 获取历史数据
-            df = self._get_stock_data(stock_code)
-            # print(df)
-            if df is None or len(df) < 80:
-                return None
-            
-            # 计算均线
-            df = self._calculate_ma(df)
-           
-            # 获取最新数据
-            latest = df.iloc[-1]
-            # print(latest)
-            # 1. 趋势判断
-            trend = self._analyze_trend(df)
-           # print("trend: ",trend['is_uptrend'])    
-            if not trend['is_uptrend']:
-                return None
-            
-            # 2. 回踩分析
-            retrace = self._analyze_retrace(df)
+            df_sh = self.data_adapter.get_stock_data(self._get_index_code('sh'))
+            if df_sh is not None and len(df_sh) >= 2:
+                latest = df_sh.iloc[-1]
+                prev = df_sh.iloc[-2]
+                market_data['sh_change'] = (latest['close'] - prev['close']) / prev['close'] * 100
+                if 'volume' in latest and 'volume' in prev and prev['volume'] > 0:
+                    market_data['sh_volume_ratio'] = latest['volume'] / prev['volume']
+        except Exception:
+            pass
+        
+        try:
+            df_sz = self.data_adapter.get_stock_data(self._get_index_code('sz'))
+            if df_sz is not None and len(df_sz) >= 2:
+                latest = df_sz.iloc[-1]
+                prev = df_sz.iloc[-2]
+                market_data['sz_change'] = (latest['close'] - prev['close']) / prev['close'] * 100
+        except Exception:
+            pass
+        
+        try:
+            df_cy = self.data_adapter.get_stock_data(self._get_index_code('cy'))
+            if df_cy is not None and len(df_cy) >= 2:
+                latest = df_cy.iloc[-1]
+                prev = df_cy.iloc[-2]
+                market_data['cy_change'] = (latest['close'] - prev['close']) / prev['close'] * 100
+        except Exception:
+            pass
+        
+        try:
+            df_kc = self.data_adapter.get_stock_data(self._get_index_code('kc'))
+            if df_kc is not None and len(df_kc) >= 2:
+                latest = df_kc.iloc[-1]
+                prev = df_kc.iloc[-2]
+                market_data['kc_change'] = (latest['close'] - prev['close']) / prev['close'] * 100
+        except Exception:
+            pass
+        
+        return market_data
+    
+    def _calc_market_environment(self) -> float:
+        """
+        计算市场环境评分（参考涨停板策略）
+        基于大盘指数涨跌幅、成交量、趋势综合判断
+        返回0-100的评分
+        """
+        if self._market_sentiment is not None:
+            return self._market_sentiment
+        
+        score = 50  # 基础分
+        market_data = self._get_market_index_data()
+        
+        # 大盘指数涨跌幅评分 (40%)
+        index_changes = [market_data['sh_change'], market_data['sz_change'], 
+                        market_data['cy_change'], market_data['kc_change']]
+        valid_changes = [c for c in index_changes if c != 0]
+        if valid_changes:
+            avg_index_change = sum(valid_changes) / len(valid_changes)
+        else:
+            avg_index_change = 0
+        
+        if avg_index_change >= 2:
+            score += 20
+        elif avg_index_change >= 1:
+            score += 15
+        elif avg_index_change >= 0.5:
+            score += 10
+        elif avg_index_change >= 0:
+            score += 5
+        elif avg_index_change >= -0.5:
+            score -= 5
+        elif avg_index_change >= -1:
+            score -= 10
+        else:
+            score -= 15
+        
+        # 成交量评分 (30%)
+        volume_ratio = market_data['sh_volume_ratio']
+        if volume_ratio >= 1.5:
+            score += 15
+        elif volume_ratio >= 1.2:
+            score += 10
+        elif volume_ratio >= 1.0:
+            score += 5
+        elif volume_ratio >= 0.8:
+            score += 2
+        else:
+            score -= 5
+        
+        # 市场趋势评分 (30%)
+        try:
+            df_sh = self.data_adapter.get_stock_data(self._get_index_code('sh'))
+            if df_sh is not None and len(df_sh) >= 20:
+                df_sh['ma5'] = df_sh['close'].rolling(window=5).mean()
+                df_sh['ma10'] = df_sh['close'].rolling(window=10).mean()
+                df_sh['ma20'] = df_sh['close'].rolling(window=20).mean()
+                latest = df_sh.iloc[-1]
+                if latest['close'] > latest['ma5'] > latest['ma10'] > latest['ma20']:
+                    score += 15
+                elif latest['close'] > latest['ma5'] > latest['ma10']:
+                    score += 10
+                elif latest['close'] > latest['ma5']:
+                    score += 5
+                elif latest['close'] < latest['ma5'] < latest['ma10'] < latest['ma20']:
+                    score -= 10
+                elif latest['close'] < latest['ma5'] < latest['ma10']:
+                    score -= 5
+        except Exception:
+            pass
+        
+        final_score = min(100, max(0, round(score, 1)))
+        self._market_sentiment = final_score
+        return final_score
+    
+    def get_rating(self, score: float) -> Dict:
+        """获取评级（参考涨停板策略）"""
+        if score >= self.THRESHOLDS['strong_buy']:
+            return {'label': '极高', 'description': '缩量回踩信号强烈，重点关注'}
+        elif score >= self.THRESHOLDS['buy']:
+            return {'label': '高', 'description': '缩量回踩可能性大'}
+        elif score >= self.THRESHOLDS['watch']:
+            return {'label': '中等', 'description': '需结合盘面判断'}
+        elif score >= self.THRESHOLDS['exclude']:
+            return {'label': '低', 'description': '谨慎参与'}
+        else:
+            return {'label': '极低', 'description': '建议观望'}
+    
+    def get_recommendation(self, score: float) -> str:
+        """获取操作建议（参考涨停板策略）"""
+        if score >= self.THRESHOLDS['strong_buy']:
+            return "✅ 重点关注 - 缩量回踩信号强烈，反弹概率极大"
+        elif score >= self.THRESHOLDS['buy']:
+            return "✅ 关注 - 缩量回踩可能性大，可考虑建仓"
+        elif score >= self.THRESHOLDS['watch']:
+            return "⚠️ 观察 - 需结合明日开盘情况判断"
+        elif score >= self.THRESHOLDS['exclude']:
+            return "⚠️ 谨慎 - 回踩信号不明确，不建议参与"
+        else:
+            return "❌ 观望 - 未见明显回踩信号"
 
-            #print("retrace: ", retrace['is_retracing'])
-            if not retrace['is_retracing']:
+    def analyze_stock(self, stock_code: str, stock_name: str = None) -> Optional[Dict]:
+        """分析单只股票（改进版，包含详细评分维度）"""
+        try:
+            df = self.data_adapter.get_stock_data(stock_code)
+            if df is None or len(df) < 30:
                 return None
             
-            # 3. 缩量分析
-            volume = self._analyze_volume(df)
-            #print("volume: ", volume['is_shrinking'])
-            if not volume['is_shrinking']:
+           # df = self.data_adapter.normalize_columns(df)
+            
+            signals = self.find_retrace_signals(df)
+            
+            if not signals:
                 return None
             
-            # 4. 止跌信号
-            stop_signal = self._analyze_stop_signal(df)
-            #print("stop_signal: ", stop_signal['signal_type'])
-
-            # 5. 支撑强度
-            support = self._analyze_support(df, retrace['ma_type'])
-            #print("support: ", support['is_strong'])
-
-            # 计算综合得分
-            total_score = self._calculate_score(trend, retrace, volume, stop_signal, support)
+            signal = signals[-1]
+            score, reasons = self.calculate_score(df, signal)
             
-            #print("total_score", total_score)
-            # 判断是否出现买入信号
-            if total_score < 60:
-                return None
+            # 获取评级和建议
+            rating = self.get_rating(score)
+            recommendation = self.get_recommendation(score)
             
-            # 生成交易建议
-            signal = '强烈买入' if total_score >= 80 else '买入' if total_score >= 70 else '观望'
+            current = df.iloc[-1]
             
             return {
                 'stock_code': stock_code,
                 'stock_name': stock_name or stock_code,
-                'signal': signal,
-                'score': round(total_score, 2),
-                'current_price': round(latest['close'], 2),
-                'retrace_ma': retrace['ma_type'],
-                'ma_price': round(retrace['ma_price'], 2),
-                'retrace_pct': round(retrace['retrace_pct'], 2),
-                'volume_shrink': round(volume['shrink_ratio'] * 100, 1),
-                'stop_signal': stop_signal['signal_type'],
-                'details': {
-                    'trend': trend,
-                    'retrace': retrace,
-                    'volume': volume,
-                    'stop_signal': stop_signal,
-                    'support': support
-                }
+                'score': score,
+                'rating': rating,
+                'recommendation': recommendation,
+                'reasons': reasons,
+                'current_price': round(current['close'], 2),
+                'ma_value': round(signal['ma_value'], 2),
+                'ma_period': signal['ma_period'],
+                'volume_ratio': round(signal['volume_ratio'] * 100, 1),
+                'trend_aligned': signal['trend_aligned'],
+                'strategy': self.name,
+                'win_rate': self.win_rate,
+                'market_environment': self._calc_market_environment()
             }
             
         except Exception as e:
-            print(f"分析{stock_code}失败: {e}")
             return None
-    
-    def _get_stock_data(self, stock_code: str) -> Optional[pd.DataFrame]:
-        """获取股票历史数据"""
-        try:
-            df = self.data_adapter.get_stock_data(stock_code)
-            if df is None or df.empty:
-                return None
-            return df
-        except Exception as e:
-            print(f"获取{stock_code}数据失败: {e}")
-            return None
-    
-    def _calculate_ma(self, df: pd.DataFrame) -> pd.DataFrame:
-        """计算均线"""
-        df['MA20'] = df['close'].rolling(window=20).mean()
-        df['MA30'] = df['close'].rolling(window=30).mean()
-        df['MA60'] = df['close'].rolling(window=60).mean()
-        df['volume_ma5'] = df['volume'].rolling(window=5).mean()
-        return df
-    
-    def _analyze_trend(self, df: pd.DataFrame) -> Dict:
-        """分析趋势"""
-        latest = df.iloc[-1]
+
+    def batch_analyze(self, stock_list: List[tuple], top_n: int = 10) -> List[Dict]:
+        """批量分析"""
+        results = []
         
-        # 判断均线多头排列
-        ma20_gt_ma60 = latest['MA20'] > latest['MA60']
+        for name, code in stock_list:
+            try:
+                result = self.analyze_stock(code, name)
+                if result and result['score'] > 0:
+                    results.append(result)
+            except Exception:
+                continue
         
-        # 计算均线斜率（简化版）
-        ma20_slope = (latest['MA20'] - df.iloc[-5]['MA20']) / latest['MA20'] * 100
-        
-        is_uptrend = ma20_gt_ma60 and ma20_slope > 0
-        
-        # 评分
-        if ma20_gt_ma60 and ma20_slope > 2:
-            score = 100
-        elif ma20_gt_ma60 and ma20_slope > 0:
-            score = 85
-        elif ma20_gt_ma60:
-            score = 70
-        else:
-            score = 0
-        
-        return {
-            'is_uptrend': is_uptrend,
-            'ma20_slope': round(ma20_slope, 2),
-            'ma20_gt_ma60': ma20_gt_ma60,
-            'score': score
-        }
-    
-    def _analyze_retrace(self, df: pd.DataFrame) -> Dict:
-        """分析回踩情况"""
-        latest = df.iloc[-1]
-        prev_high = df['close'].rolling(window=20).max().iloc[-1]
-        
-        # 计算回调幅度
-        retrace_pct = (prev_high - latest['close']) / prev_high * 100
-        
-        # 判断回踩哪条均线
-        ma_types = [
-            ('MA20', latest['MA20']),
-            ('MA30', latest['MA30']),
-            ('MA60', latest['MA60'])
-        ]
-        
-        closest_ma = None
-        min_distance = float('inf')
-        
-        for ma_name, ma_price in ma_types:
-            distance = abs(latest['close'] - ma_price) / latest['close'] * 100
-            if distance < min_distance:
-                min_distance = distance
-                closest_ma = (ma_name, ma_price)
-        
-        is_retracing = min_distance <= 3 and 2 <= retrace_pct <= 15
-        
-        # 评分
-        if min_distance <= 1:
-            score = 100
-        elif min_distance <= 3:
-            score = 85
-        elif min_distance <= 5:
-            score = 70
-        else:
-            score = 0
-        
-        return {
-            'is_retracing': is_retracing,
-            'ma_type': closest_ma[0] if closest_ma else None,
-            'ma_price': closest_ma[1] if closest_ma else None,
-            'retrace_pct': retrace_pct,
-            'distance_to_ma': round(min_distance, 2),
-            'score': score
-        }
-    
-    def _analyze_volume(self, df: pd.DataFrame) -> Dict:
-        """分析成交量"""
-        latest = df.iloc[-1]
-        volume_ma5 = latest['volume_ma5']
-        
-        if volume_ma5 == 0:
-            return {'is_shrinking': False, 'score': 0}
-        
-        shrink_ratio = latest['volume'] / volume_ma5
-        is_shrinking = shrink_ratio < 0.6
-        
-        # 评分
-        if shrink_ratio < 0.4:
-            score = 100
-        elif shrink_ratio < 0.5:
-            score = 85
-        elif shrink_ratio < 0.6:
-            score = 70
-        else:
-            score = max(0, 100 - (shrink_ratio - 0.6) * 200)
-        
-        return {
-            'is_shrinking': is_shrinking,
-            'shrink_ratio': shrink_ratio,
-            'current_volume': latest['volume'],
-            'volume_ma5': volume_ma5,
-            'score': round(score, 2)
-        }
-    
-    def _analyze_stop_signal(self, df: pd.DataFrame) -> Dict:
-        """分析止跌信号"""
-        latest = df.iloc[-1]
-        
-        # 计算K线形态
-        open_price = latest['open']
-        close_price = latest['close']
-        high_price = latest['high']
-        low_price = latest['low']
-        
-        body = abs(close_price - open_price)
-        upper_shadow = high_price - max(open_price, close_price)
-        lower_shadow = min(open_price, close_price) - low_price
-        
-        # 判断锤子线（下影线长，实体小）
-        is_hammer = lower_shadow > body * 2 and upper_shadow < body * 0.5
-        
-        # 判断十字星（实体很小）
-        is_doji = body < (high_price - low_price) * 0.1
-        
-        # 判断小阳线
-        is_small_yang = close_price > open_price and body < (high_price - low_price) * 0.3
-        
-        if is_hammer:
-            signal_type = '锤子线'
-            score = 100
-        elif is_doji:
-            signal_type = '十字星'
-            score = 85
-        elif is_small_yang:
-            signal_type = '小阳线'
-            score = 70
-        else:
-            signal_type = '无明显信号'
-            score = 40
-        
-        return {
-            'signal_type': signal_type,
-            'is_hammer': is_hammer,
-            'is_doji': is_doji,
-            'is_small_yang': is_small_yang,
-            'score': score
-        }
-    
-    def _analyze_support(self, df: pd.DataFrame, ma_type: str) -> Dict:
-        """分析支撑强度"""
-        if ma_type is None:
-            return {'score': 0}
-        
-        latest = df.iloc[-1]
-        ma_col = ma_type
-        
-        # 计算均线斜率
-        ma_slope = (latest[ma_col] - df.iloc[-5][ma_col]) / latest[ma_col] * 100
-        
-        # 评分
-        if ma_slope > 2:
-            score = 100
-        elif ma_slope > 1:
-            score = 85
-        elif ma_slope > 0:
-            score = 70
-        else:
-            score = max(0, 70 + ma_slope * 10)
-        
-        return {
-            'ma_slope': round(ma_slope, 2),
-            'score': score
-        }
-    
-    def _calculate_score(self, trend: Dict, retrace: Dict, volume: Dict, 
-                        stop_signal: Dict, support: Dict) -> float:
-        """计算综合得分"""
-        total_score = (
-            trend['score'] * self.weights['trend_strength'] +
-            retrace['score'] * self.weights['retrace_quality'] +
-            volume['score'] * self.weights['volume_shrink'] +
-            stop_signal['score'] * self.weights['stop_signal'] +
-            support['score'] * self.weights['support_strength']
-        )
-        return total_score
+        results.sort(key=lambda x: x['score'], reverse=True)
+        return results[:top_n]
 
 
 if __name__ == '__main__':

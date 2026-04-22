@@ -58,7 +58,6 @@ def search_stock_news(code: str, name: str, days: int = 7) -> Dict:
 
     api_key = "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"
 
-    print("11111111111111111111111111111111")
     if not api_key:
         # 尝试从配置读取
         cfg_path = os.path.expanduser("~/.openclaw/config.json")
