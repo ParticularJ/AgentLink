@@ -16,6 +16,7 @@ import argparse
 from datetime import datetime
 from typing import Dict, List, Optional
 import importlib
+import pandas as pd
 
 from news_sentiment import search_stock_news, calc_news_penalty
 
@@ -41,8 +42,8 @@ EVENING_STRATEGIES = [  # 尾盘买（14:30）
     #'macd-divergence-strategy',
    # 'rsi-oversold-strategy',
     #'volume-extreme-strategy',
-    'volume-retrace-ma-strategy',
-    #'ma-bullish-strategy'
+    #'volume-retrace-ma-strategy',
+    'ma-bullish-strategy'
 ]
 
 MORNING_STRATEGIES = [  # 早盘买次日（16:00）
@@ -379,6 +380,40 @@ def write_recommendations(top: List[Dict], session: str):
 
 
 # ── 主运行 ──────────────────────────────────────────────
+def get_watchlist_stocks() -> Optional[pd.DataFrame]:
+    """加载自选股池"""
+    watchlist_path = './my_stock_pool/watchlist.yaml'
+    if not os.path.exists(watchlist_path):
+        
+        watchlist_path = '../../../my_stock_pool/watchlist.yaml'
+        if not os.path.exists(watchlist_path):
+            print(f"watchlist.yaml 文件不存在: {watchlist_path}")
+            return None
+    
+    try:
+        with open(watchlist_path, 'r', encoding='utf-8') as f:
+            data = yaml.safe_load(f)
+        print(data)
+        stocks = []
+        if 'watchlist' in data:
+            for sector, categories in data['watchlist'].items():
+                for category, stock_list in categories.items():
+                    for stock in stock_list:
+                        if len(stock) >= 2:
+                            stocks.append({
+                                'code': stock[1],
+                                'name': stock[0]
+                            })
+        
+        if stocks:     
+            return pd.DataFrame(stocks)
+        return None
+        
+    except Exception as e:
+        print(f"加载自选股池失败: {e}")
+        return None
+
+
 
 def run_fusion(session: str, top_n: int = 5):
     print(session)
@@ -390,8 +425,9 @@ def run_fusion(session: str, top_n: int = 5):
     print(f'时间: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     print(f'{"="*60}')
 
-    # all_stocks = get_watchlist_stocks()
-    # print(f'📋 自选股池共 {len(all_stocks)} 只股票')
+    all_stocks = get_watchlist_stocks()
+    print(all_stocks)
+    #print(f'📋 自选股池共 {len(all_stocks)} 只股票')
     # print()
 
     all_recs = []
