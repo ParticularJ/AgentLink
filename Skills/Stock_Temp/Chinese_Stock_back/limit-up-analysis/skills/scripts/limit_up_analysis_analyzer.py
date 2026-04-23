@@ -477,47 +477,9 @@ class LimitUpAnalyzer:
 
         # 按总分排序
         results.sort(key=lambda x: x['scores']['total'], reverse=True)
-        # print(results[:5])  # 打印前5条结果预览
-        # # ——— 新闻情绪检测（仅对前10名候选股）——
-
-        # if search_stock_news and calc_news_penalty:
-        #     print(f"\n{Fore.CYAN}📰 正在检测新闻情绪（前10名候选股）...{Style.RESET_ALL}")
-        #     for r in results[:1]:
-        #         try:
-        #             print("The r is: ", r)
-        #             news = search_stock_news(r['stock_code'], r['stock_name'], days=7)
-        #             penalty = calc_news_penalty(
-        #                 news['sentiment'],
-        #                 news['sentiment_score'],
-        #                 r['limit_up_days']
-        #             )
-        #             r['news'] = news
-        #             # 新闻情绪作为加减分项，而不是维度
-        #             # penalty 范围: -20 ~ +5
-        #             r['scores']['news_adjustment'] = penalty
-        #             print("Penalty is: ", penalty)
-        #             # 修正总分：直接加减
-        #             r['scores']['total'] = round(r['scores']['total'] + penalty, 1)
-        #             r['score']= r['scores']['total']
-        #             # 重新评级
-        #             r['rating'] = self.get_rating(r['scores']['total'])
-        #             r['recommendation'] = self.get_recommendation(r['scores']['total'])
-
-        #             if news['sentiment'] == 'negative':
-        #                 print(f"  {Fore.RED}⚠️ {r['stock_name']}({r['stock_code']}) 利空: {news['risk_warnings'][0][:50] if news['risk_warnings'] else news['news_summary']}{Style.RESET_ALL}")
-        #             elif news['sentiment'] == 'positive':
-        #                 print(f"  {Fore.GREEN}✅ {r['stock_name']}({r['stock_code']}) 利好: {news['highlights'][0][:50] if news['highlights'] else ''}{Style.RESET_ALL}")
-        #         except Exception as e:
-        #             print("Error: ", e)
-        #             print(f"  {Fore.YELLOW}⚠️ {r['stock_name']} 新闻检测失败: {e}{Style.RESET_ALL}")
-
-        #     # 重新排序
-        #     results.sort(key=lambda x: x['scores']['total'], reverse=True)
-        # else:
-        #     print(f"\n{Fore.YELLOW}⚠️ 新闻情绪模块不可用，跳过新闻检测（ Tavily API 或 news_sentiment 模块未安装）{Style.RESET_ALL}")
-
-        print("The final is: ", results[:5])  # 打印前5条结果预览
-        return results
+       
+        #print("The final is: ", results[:5])  # 打印前5条结果预览
+        return results[:5]
     
     def analyze_stock(self, code: str) -> Optional[Dict]:
         """分析单只股票"""
