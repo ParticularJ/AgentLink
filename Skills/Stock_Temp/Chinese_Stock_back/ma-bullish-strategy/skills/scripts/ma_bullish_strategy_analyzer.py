@@ -538,6 +538,7 @@ class MABullishAnalyzer:
             self.score_market_environment(df) * self.weights['market_environment']
         )
 def main():
+    """命令行入口"""
     import argparse
     parser = argparse.ArgumentParser(description='均线多头排列策略分析器')
     parser.add_argument('--scan', action='store_true', help='扫描全市场（分析所有股票，较慢）')
@@ -550,6 +551,7 @@ def main():
     parser.add_argument('--sector', type=str, help='分析指定板块 (科技/医药/金融/消费/新能源/军工)')
     parser.add_argument('--all-sectors', action='store_true', help='分析所有板块')
     parser.add_argument('--stocks', type=str, help='分析指定股票列表，逗号分隔，如: 000001,000002,600000')
+    
     args = parser.parse_args()
 
     try:
@@ -559,6 +561,8 @@ def main():
         return
 
     if args.scan:
+        # 扫描功能暂不支持指定日期（需要遍历所有股票，较慢）
+        print("注意: 扫描模式使用最新数据，单只股票分析支持指定日期")
         results = analyzer.scan_all_stocks(top_n=args.top)
         for r in results:
             analyzer.print_analysis(r)

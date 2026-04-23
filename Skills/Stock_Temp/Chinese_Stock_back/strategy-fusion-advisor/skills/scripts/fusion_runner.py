@@ -126,7 +126,7 @@ def scan_strategy(strategy_name: str, top_n: int = 5) -> List[Dict]:
         pass
     # print("results: ", results)
     results.sort(key=lambda x: x.get('score', 0), reverse=True)
-    return results[:top_n]
+    return results
 
 
 def get_analyzer(strategy_name: str):
