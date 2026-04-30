@@ -178,7 +178,7 @@ class MACDDivergenceAnalyzer:
         }
         
         # 初始化数据源
-        self.data_adapter = DataSourceAdapter(data_source)
+        self.data_adapter = DataSourceAdapter()
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源")
      	 # 全局市场环境（只加载一次）

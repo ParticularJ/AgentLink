@@ -79,11 +79,13 @@ def scan_all_stocks(analyzer: MACDDivergenceAnalyzer, top_n: int = 20) -> List[D
         stock_name = row.get('name', stock_code)
         
         # 进度显示
-        if idx % 100 == 0:
+        if idx % 20 == 0:
             print(f"进度: {idx}/{total} ({idx/total*100:.1f}%)")
         
         # 分析
         result = analyzer.analyze_stock(stock_code, stock_name)
+        print("分析结果: ", result)
+
         if result and result['score'] >= 75:
             candidates.append(result)
             print(f"  ✅ {stock_name}({stock_code}): {result['score']}分")

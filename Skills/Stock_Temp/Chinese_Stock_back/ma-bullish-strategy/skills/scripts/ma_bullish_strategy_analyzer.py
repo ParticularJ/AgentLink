@@ -180,7 +180,7 @@ class MABullishAnalyzer:
         else:
             self.analysis_date = None
 
-        self.data_adapter = DataSourceAdapter(data_source)
+        self.data_adapter = DataSourceAdapter()
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源，请安装akshare、tushare、baostock或yfinance")
         
@@ -237,6 +237,7 @@ class MABullishAnalyzer:
             start_date = (self.analysis_date - timedelta(days=60)).strftime('%Y-%m-%d') if self.analysis_date else None
 
             df = self.data_adapter.get_stock_data(stock_code, start_date, end_date)
+           
             if df is None or df.empty:
                 result['error'] = '获取数据失败'
                 return result
@@ -246,7 +247,7 @@ class MABullishAnalyzer:
 
             is_bullish = self.is_ma_bullish(df)
             result['is_bullish'] = is_bullish
-
+            print("result['is_bullish']: ", result['is_bullish'])
             if is_bullish:
                 result['score'] = round(self.calculate_total_score(df), 2)
                 
@@ -272,6 +273,7 @@ class MABullishAnalyzer:
 
         except Exception as e:
             result['error'] = str(e)
+            print(f"分析股票 {stock_code} 失败: {e}")
             return result
     
     def scan_all_stocks(self, top_n: int = 20) -> List[Dict]:
@@ -310,7 +312,8 @@ class MABullishAnalyzer:
             
             # 分析个股
             result = self.analyze_stock(stock_code, stock_name)
-            if result and result['signal'] == 'BUY' and result['score'] >= 70:
+            print(result['signals'], result['score'])
+            if result and result['score'] >= 70:
                 candidates.append(result)
         
         # 按得分排序

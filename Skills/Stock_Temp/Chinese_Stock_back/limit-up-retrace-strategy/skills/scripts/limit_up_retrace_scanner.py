@@ -64,9 +64,9 @@ def _get_recent_limit_up_stocks() -> List[Tuple[str, str]]:
     results = []
     today = datetime.now()
 
-    # 近10个交易日（含今日，若已收盘则含今日涨停）
-    # 周末不交易，最多往前找14个自然日
-    for days_back in range(0, 14):
+    # 近5个交易日（含今日，若已收盘则含今日涨停）
+    # 周末不交易，最多往前找7个自然日
+    for days_back in range(0, 7):
         check_date = today - timedelta(days=days_back)
         if check_date.weekday() >= 5:  # 跳过周末
             continue

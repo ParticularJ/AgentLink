@@ -18,13 +18,13 @@ try:
     from data_source_adapter import DataSourceAdapter
 except ImportError:
     # 尝试从 ma-bullish-strategy 导入共享的数据源适配器
-    adapter_path = os.path.join(os.path.dirname(__file__), '../../../ma-bullish-strategy/skills/ma_bullish/scripts')
+    adapter_path = os.path.join(os.path.dirname(__file__), '../../../ma-bullish-strategy/skills/scripts')
     sys.path.insert(0, adapter_path)
     try:
         from data_source_adapter import DataSourceAdapter
     except ImportError:
         # 备选：从项目根目录相对导入
-        sys.path.insert(0, os.path.join(os.getcwd(), 'ma-bullish-strategy/skills/ma_bullish/scripts'))
+        sys.path.insert(0, os.path.join(os.getcwd(), 'ma-bullish-strategy/skills/scripts'))
         from data_source_adapter import DataSourceAdapter
 
 
@@ -48,7 +48,7 @@ class LimitUpRetraceAnalyzer:
         }
         
         # 初始化数据源
-        self.data_adapter = DataSourceAdapter(data_source)
+        self.data_adapter = DataSourceAdapter()
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源")
     
@@ -87,7 +87,7 @@ class LimitUpRetraceAnalyzer:
         try:
             # 获取历史数据
             df = self._get_stock_data(stock_code)
-            if df is None or len(df) < 30:
+            if df is None or len(df) < 20:
                 return None
             
             # 计算均线

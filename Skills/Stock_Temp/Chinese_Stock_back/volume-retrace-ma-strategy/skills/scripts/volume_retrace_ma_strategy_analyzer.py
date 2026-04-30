@@ -59,7 +59,7 @@ class VolumeRetraceAnalyzer:
         self.volume_ma_period = 20
         self.volume_shrink_ratio = 0.5  # 缩量标准：低于均量50%
         
-        self.data_adapter = DataSourceAdapter(data_source)
+        self.data_adapter = DataSourceAdapter()
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源")
         
@@ -92,53 +92,70 @@ class VolumeRetraceAnalyzer:
         
         return df
 
-    def find_retrace_signals(self, df: pd.DataFrame, lookback: int = 60) -> List[Dict]:
-        """查找缩量回踩均线信号"""
-        if len(df) < 30:
+    def find_retrace_signals(self, df: pd.DataFrame, lookback: int = 35) -> List[Dict]:
+        """
+        经典短线买点：缩量回踩 MA10 / MA20 均线
+        优化版 → 灵敏、稳定、适配 35 根K线
+        """
+        if len(df) < 15:
             return []
-        
+
         df = self.calculate_ma(df)
         df = self.calculate_volume_ma(df)
-        
+
         signals = []
-        
-        for i in range(20, len(df)):
+        start_i = 12  # 降低起点，适配短数据
+
+        for i in range(start_i, len(df)):
             current = df.iloc[i]
-            
-            # 检查是否回踩均线
+
+            # 只回踩 MA10 / MA20
             for period in [10, 20]:
-                ma_col = f'ma{period}'
-                if ma_col not in current.index or pd.isna(current[ma_col]):
+                ma_col = f"ma{period}"
+                if ma_col not in df.columns or pd.isna(current[ma_col]):
                     continue
-                
-                ma_value = current[ma_col]
-                price = current['close']
-                
-                # 价格回踩均线（下影线触及或接近均线）
-                retrace_ratio = abs(price - ma_value) / ma_value
-                
-                if retrace_ratio < 0.02:  # 价格在均线2%以内
-                    # 检查成交量是否萎缩
-                    volume_ratio = current['volume_ratio']
-                    
-                    if volume_ratio < self.volume_shrink_ratio:
-                        # 确认是缩量回踩
-                        # 检查之前是否是上涨趋势
-                        prev_closes = df['close'].iloc[max(0, i-10):i]
-                        ma_alignment = all(prev_closes > df[f'ma{period}'].iloc[max(0, i-10):i])
-                        
-                        signals.append({
-                            'index': i,
-                            'date': df.index[i] if hasattr(df.index[i], 'strftime') else str(df.index[i]),
-                            'price': price,
-                            'ma_value': ma_value,
-                            'ma_period': period,
-                            'volume_ratio': volume_ratio,
-                            'trend_aligned': ma_alignment,
-                            'retrace_ratio': retrace_ratio
-                        })
-                        break
-        
+
+                ma = current[ma_col]
+                close = current["close"]
+                low = current["low"]  # 用最低价更实战（下影线回踩）
+
+                # ===================== 核心条件 =====================
+                # 1. 回踩均线（最低价贴近均线）
+                retrace_dist = min(abs(close - ma), abs(low - ma))
+                retrace_ratio = retrace_dist / ma
+
+                # 偏离 ≤ 2.5% 就算回踩（比你原来更灵敏）
+                if retrace_ratio > 0.025:
+                   # print(f"回踩条件不满足: 日期={df.index[i]}, 收盘价={close:.2f}, 最低价={low:.2f}, {ma_col}={ma:.2f}, 回踩偏离={retrace_ratio*100:.2f}%")
+                    continue
+
+                # 2. 缩量（成交量小于均量 60%）
+                volume_ratio = current.get("volume_ratio", 999)
+                if volume_ratio > 0.6:
+                  #  print(f"缩量条件不满足: 日期={df.index[i]}, 成交量={current['volume']}, 均量={current['volume_ma']:.2f}, 缩量比={volume_ratio*100:.2f}%")
+                    continue
+
+                # 3. 趋势：最近 8 天整体在均线上（不要求全部）
+                recent = df.iloc[max(0, i-8): i+1]
+                trend_up = recent["close"].mean() > recent[ma_col].mean()
+
+                # 4. 当天收红/十字星（企稳信号）
+                bullish = current["close"] >= current["open"]
+
+                if trend_up and bullish:
+                    signals.append({
+                        "index": i,
+                        "date": df.index[i] if hasattr(df.index[i], "strftime") else str(df.index[i]),
+                        "price": round(close, 2),
+                        "ma_type": f"MA{period}",
+                        "ma_value": round(ma, 2),
+                        "volume_ratio": round(volume_ratio, 2),
+                        "retrace_ratio": round(retrace_ratio, 4),
+                        "trend_up": trend_up,
+                        "signal": "缩量回踩均线"
+                    })
+                    break  # 找到一个均线就跳出，避免重复信号
+
         return signals
 
     def calculate_score(self, df: pd.DataFrame, signal: Dict) -> Tuple[float, str]:
@@ -370,7 +387,7 @@ class VolumeRetraceAnalyzer:
         """分析单只股票（改进版，包含详细评分维度）"""
         try:
             df = self.data_adapter.get_stock_data(stock_code)
-            if df is None or len(df) < 30:
+            if df is None or len(df) < 20:
                 return None
             
            # df = self.data_adapter.normalize_columns(df)

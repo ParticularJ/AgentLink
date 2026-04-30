@@ -61,7 +61,7 @@ class VolumeExtremeAnalyzer:
         self.volume_threshold = 0.4  # 地量标准：成交量低于均量的40%
         self.price_recovery_threshold = 0.02  # 价格恢复阈值
         
-        self.data_adapter = DataSourceAdapter(data_source)
+        self.data_adapter = DataSourceAdapter()
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源")
         
@@ -103,50 +103,48 @@ class VolumeExtremeAnalyzer:
         
         return df
 
-    def find_volume_extreme(self, df: pd.DataFrame, lookback: int = 60) -> List[Dict]:
-        """查找成交量极度萎缩的位置"""
+    def find_volume_extreme(self, df: pd.DataFrame, lookback: int = 35) -> List[Dict]:
+        """
+        地量见底（短线稳定版）
+        适配 35 根K线，条件合理，容易出信号
+        """
+        # 你的数据只有35根，最低门槛降低
         if len(df) < 20:
             return []
-        
+
         df = self.calculate_volume_stats(df)
         extremes = []
-        
-        for i in range(self.volume_ma_period, len(df)):
+
+        # 从第10根开始判断（适配短数据）
+        start = 10
+
+        for i in range(start, len(df)):
             row = df.iloc[i]
-            prev_volumes = df['volume'].iloc[max(0, i-20):i]
-            
-            # 条件1：当前成交量低于均量的30%
-            if row['volume_ratio'] > self.volume_threshold:
+
+            # ===================== 核心条件 =====================
+            # 1. 成交量是近 12 日最低（短线最灵敏、最有效）
+            vol_12 = df['volume'].iloc[max(0, i-12):i+1]
+            if vol_12.idxmin() != i:
                 continue
-            
-            # 条件2：最近20日成交量持续萎缩
-            if len(prev_volumes) < 10:
+
+            # 2. 成交量小于均量的 40%（地量标准）
+            if row['volume_ratio'] > 0.4:  
                 continue
-                
-            # 检查是否持续萎缩（后10日均量 < 前10日均量）
-            mid_point = len(prev_volumes) // 2
-            recent_avg = prev_volumes.iloc[mid_point:].mean()
-            older_avg = prev_volumes.iloc[:mid_point].mean()
-            
-            if recent_avg >= older_avg:
+
+            # 3. 最近 6 日价格波动小（企稳）
+            price_range = df['close'].iloc[max(0, i-6):i+1]
+            if price_range.max() / price_range.min() > 1.08:
                 continue
-            
-            # 条件3：价格相对稳定（波动 < 5%）
-            price_std = df['price_change'].iloc[max(0, i-5):i].std()
-            if price_std > 0.05:
-                continue
-            
-            # 找到极值点
-            local_min_idx = df['volume'].iloc[max(0, i-10):i].idxmin()
-            if local_min_idx == i:
-                extremes.append({
-                    'index': i,
-                    'date': df.index[i] if hasattr(df.index[i], 'strftime') else str(df.index[i]),
-                    'volume_ratio': row['volume_ratio'],
-                    'volume_ma': row['volume_ma'],
-                    'price': row['close']
-                })
-        
+
+            # ===================== 符合条件 =====================
+            extremes.append({
+                'index': i,
+                'date': df.index[i] if hasattr(df.index[i], 'strftime') else str(df.index[i]),
+                'volume_ratio': round(row['volume_ratio'], 2),
+                'volume_ma': row['volume_ma'],
+                'price': row['close']
+            })
+
         return extremes
 
     def analyze_volume_recovery(self, df: pd.DataFrame, extreme_idx: int) -> Dict:
@@ -433,7 +431,7 @@ class VolumeExtremeAnalyzer:
         try:
             # 获取数据
             df = self.data_adapter.get_stock_data(stock_code)
-            if df is None or len(df) < 60:
+            if df is None or len(df) < 20:
                 return None
             
             # 标准化列名

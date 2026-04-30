@@ -85,7 +85,7 @@ def search_stock_news(code: str, name: str, days: int = 7) -> Dict:
 
         articles = results.get("results", [])
 
-        print("articles: ", articles)
+
         return _analyze_sentiment(code, name, articles)
 
     except Exception as e:

@@ -58,7 +58,7 @@ class GapFillAnalyzer:
         }
         
         # 初始化数据源
-        self.data_adapter = DataSourceAdapter(data_source)
+        self.data_adapter = DataSourceAdapter()
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源")
         
@@ -77,7 +77,7 @@ class GapFillAnalyzer:
         try:
             # 获取数据
             df = self._get_stock_data(stock_code)
-            if df is None or len(df) < 50:
+            if df is None or len(df) < 20:
                 return None
             
             # 计算指标

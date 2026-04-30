@@ -60,7 +60,7 @@ class MorningStarAnalyzer:
         }
         
         # 初始化数据源
-        self.data_adapter = DataSourceAdapter(data_source)
+        self.data_adapter = DataSourceAdapter()
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源")
 
@@ -97,7 +97,7 @@ class MorningStarAnalyzer:
 
     def find_morning_star(self, df: pd.DataFrame) -> Dict | None:
         """
-        只判断【最近 3 天】是否形成早晨之星形态
+        判断【最近 3 天】是否形成早晨之星形态
         输入：df 最后3行 = 最近3天K线
         输出：今天的形态信号 / None
         """
@@ -106,61 +106,162 @@ class MorningStarAnalyzer:
             return None
 
         # =======================
-        # 只取最近3天！！！
+        # 只取最近3天
         # =======================
         day1 = df.iloc[-3]  # 第一天（前前天）
         day2 = df.iloc[-2]  # 第二天（昨天）
         day3 = df.iloc[-1]  # 第三天（今天）
 
-        # -----------------------
-        # 条件1：第一天 → 大阴线
-        # -----------------------
+        # =======================
+        # 条件1：第一天 → 大阴线（处于下跌趋势中）
+        # =======================
+        # 1.1 必须是阴线
         if not self.is_bearish_candle(day1):
+            print(f"Day1 - Not a bearish candle")
             return None
 
+        # 1.2 实体占比要够大（真阴线，非十字星）
         body1 = self.get_body_size(day1)
         total_range1 = day1['high'] - day1['low']
         if total_range1 <= 0:
             return None
         body_ratio1 = body1 / total_range1
+        print(f"Day1 - Body Ratio: {body_ratio1:.2f}")
+        if body_ratio1 < 0.5:  # 阴线实体占比至少50%
+            print(f"Day1 - Body ratio too small: {body_ratio1:.2f}")
+            return None
 
-        # -----------------------
-        # 条件2：第二天 → 星线（小实体 + 下影线）
-        # -----------------------
+        # 1.3 验证前期趋势（至少看前5根K线，确保处于下跌中）
+        if len(df) >= 5:
+            prev_close = df.iloc[-6]['close'] if len(df) >= 6 else df.iloc[-4]['open']
+            recent_close = df.iloc[-4]['close'] if len(df) >= 6 else day1['open']
+            trend_change = (recent_close - prev_close) / prev_close
+            print(f"Pre-trend change: {trend_change:.2%}")
+            if trend_change > 0.02:  # 前期不能是上涨趋势（允许小反弹）
+                print(f"Day1 - Not in downtrend, prev trend: {trend_change:.2%}")
+                return None
+
+        # =======================
+        # 条件2：第二天 → 星线（小实体 + 明显下影线 + 跳空低开）
+        # =======================
+        # 2.1 跳空低开（开盘价低于第一天收盘价）
+        if day2['open'] >= day1['close'] * 0.98:  # 允许2%容差
+            print(f"Day2 - No gap down: open={day2['open']}, day1_close={day1['close']}")
+            return None
+
+        # 2.2 星线实体必须小
         body2 = self.get_body_size(day2)
         total_range2 = day2['high'] - day2['low']
         if total_range2 <= 0:
             return None
 
         body_ratio2 = body2 / total_range2
-        if body_ratio2 > 0.4:  # 实体不能大
+        print(f"Day2 - Body Ratio: {body_ratio2:.2f}")
+        if body_ratio2 > 0.3:  # 实体占比不超过30%（更严格）
+            print(f"Day2 - Body too large: {body_ratio2:.2f}")
             return None
 
+        # 2.3 下影线要明显（至少占总振幅50%）
         lower_shadow2 = self.get_lower_shadow(day2)
-        if lower_shadow2 < total_range2 * 0.2:  # 下影线要明显
+        lower_shadow_ratio = lower_shadow2 / total_range2
+        print(f"Day2 - Lower Shadow Ratio: {lower_shadow_ratio:.2f}")
+        if lower_shadow_ratio < 0.5:
+            print(f"Day2 - Lower shadow too small: {lower_shadow_ratio:.2f}")
             return None
 
-        # -----------------------
-        # 条件3：第三天 → 大阳线
-        # -----------------------
+        # 2.4 星线收盘价应该在第一天收盘价附近或更低（不能反弹太多）
+        if day2['close'] > day1['close'] * 1.01:  # 允许1%容差
+            print(f"Day2 - Close too high vs day1")
+            return None
+
+        # =======================
+        # 条件3：第三天 → 大阳线（强势反转确认）
+        # =======================
+        # 3.1 必须是阳线
         if not self.is_bullish_candle(day3):
+            print(f"Day3 - Not a bullish candle")
             return None
 
+        # 3.2 跳空高开（开盘价高于第二天收盘价）
+        gap_up = (day3['open'] - day2['close']) / day2['close']
+        print(f"Day3 - Gap up: {gap_up:.2%}")
+        # 不强求跳空高开，但有跳空加分
+
+        # 3.3 阳线实体占比要够大
         body3 = self.get_body_size(day3)
         total_range3 = day3['high'] - day3['low']
         if total_range3 <= 0:
+            print(f"Day3 - Invalid total range")
             return None
 
         body_ratio3 = body3 / total_range3
-        if body_ratio3 < 0.5:  # 阳线实体要够大
+        print(f"Day3 - Body Ratio: {body_ratio3:.2f}")
+        if body_ratio3 < 0.5:  # 阳线实体至少50%
+            print(f"Day3 - Body ratio too small: {body_ratio3:.2f}")
             return None
 
-        # -----------------------
-        # 条件4：反弹幅度足够
-        # -----------------------
-        price_change = (day3['close'] - day1['open']) / day1['open']
-        if price_change < 0.02:
+        # 3.4 上影线不能太长（不能冲高回落）
+        upper_shadow3 = self.get_upper_shadow(day3)
+        if total_range3 > 0:
+            upper_shadow_ratio = upper_shadow3 / total_range3
+            if upper_shadow_ratio > 0.3:  # 上影线不超过30%
+                print(f"Day3 - Upper shadow too long: {upper_shadow_ratio:.2f}")
+                return None
+
+        # =======================
+        # 条件4：穿透率（第三天收盘价必须吞没第一天实体50%以上）
+        # =======================
+        day1_body_range = abs(day1['open'] - day1['close'])
+        if day1_body_range > 0:
+            # 计算穿透第一根阴线实体的比例
+            penetration = (day3['close'] - day1['close']) / day1_body_range
+            print(f"Penetration rate: {penetration:.2%}")
+            if penetration < 0.5:  # 至少穿透50%
+                print(f"Penetration insufficient: {penetration:.2%}")
+                return None
+        else:
             return None
+
+        # =======================
+        # 条件5：整体反弹幅度
+        # =======================
+        # 用第一天收盘价作为基准更合理
+        price_change = (day3['close'] - day1['close']) / day1['close']
+        print(f"Price Change (from day1 close): {price_change:.2%}")
+        if price_change < 0.02:  # 至少反弹2%
+            print(f"Price recovery too small: {price_change:.2%}")
+            return None
+
+        # =======================
+        # 条件6：量能确认（如果有成交量数据）
+        # =======================
+        volume_confirmation = False
+        if 'volume' in df.columns:
+            vol1 = day1.get('volume', 0)
+            vol2 = day2.get('volume', 0)
+            vol3 = day3.get('volume', 0)
+            if vol3 > vol2 and vol3 > vol1:  # 第三天放量
+                volume_confirmation = True
+                print(f"Volume confirmation: True (day3 > day1 & day2)")
+            else:
+                print(f"Volume not confirmed, but pattern still valid")
+
+        # =======================
+        # 综合评分（可选）
+        # =======================
+        score = 0
+        score += min(body_ratio1 * 40, 40)  # 第一天阴线越大越好
+        score += min((1 - body_ratio2) * 20, 20)  # 星线越小越好
+        score += min(lower_shadow_ratio * 20, 20)  # 下影线越长越好
+        score += min(body_ratio3 * 40, 40)  # 第三天阳线越大越好
+        score += min(penetration * 30, 30)  # 穿透率越高越好
+        if gap_up > 0:
+            score += 10  # 跳空高开加分
+        if volume_confirmation:
+            score += 10  # 放量加分
+        score = min(score, 100)  # 归一化到100
+
+        print(f"Pattern Score: {score:.0f}/100")
 
         # =======================
         # ✅ 最近3天 = 早晨之星
@@ -170,11 +271,20 @@ class MorningStarAnalyzer:
             'pattern_type': 'morning_star',
             'day1_open': day1['open'],
             'day1_close': day1['close'],
+            'day2_open': day2['open'],
+            'day2_close': day2['close'],
             'day2_low': day2['low'],
             'day3_open': day3['open'],
             'day3_close': day3['close'],
             'price_recovery': round(price_change * 100, 2),
-            'body_ratio3': round(body_ratio3, 2),
+            'penetration_rate': round(penetration * 100, 2),
+            'body_ratio_day1': round(body_ratio1, 2),
+            'body_ratio_day2': round(body_ratio2, 2),
+            'body_ratio_day3': round(body_ratio3, 2),
+            'gap_down': round((day2['open'] - day1['close']) / day1['close'] * 100, 2),
+            'gap_up': round(gap_up * 100, 2),
+            'volume_confirmed': volume_confirmation,
+            'pattern_score': round(score, 0),
             'is_recent_signal': True
         }
 
@@ -371,14 +481,12 @@ class MorningStarAnalyzer:
         """分析单只股票"""
         try:
             df = self.data_adapter.get_stock_data(stock_code)
-            if df is None or len(df) < 30:
+            if df is None or len(df) < 20:
                 return None
             
             # df = self.data_adapter.normalize_columns(df)
             
-            # print("df: ",df)
             patterns = self.find_morning_star(df)
-           # print("pattern: ", patterns)
             if not patterns:
                 return None
             

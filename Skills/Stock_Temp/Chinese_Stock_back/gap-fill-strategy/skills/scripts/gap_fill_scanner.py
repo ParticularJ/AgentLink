@@ -82,7 +82,7 @@ def scan_all_stocks(analyzer: GapFillAnalyzer, top_n: int = 20) -> List[Dict]:
         stock_name = row.get('name', stock_code)
         
         # 进度显示
-        if idx % 100 == 0:
+        if idx % 20 == 0:
             print(f"进度: {idx}/{total} ({idx/total*100:.1f}%)")
         
         # 分析

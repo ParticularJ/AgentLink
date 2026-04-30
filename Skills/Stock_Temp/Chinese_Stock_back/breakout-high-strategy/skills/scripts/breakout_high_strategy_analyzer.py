@@ -41,7 +41,7 @@ class BreakoutHighAnalyzer:
         self.win_rate = 0.68
         
         # 突破参数
-        self.lookback_days = 60
+        self.lookback_days = 20
         self.breakout_threshold = 0.02  # 突破确认阈值 2%
         self.volume_multiplier = 1.5  # 成交量放大倍数
         
@@ -56,7 +56,7 @@ class BreakoutHighAnalyzer:
         }
         
         # 初始化数据源
-        self.data_adapter = DataSourceAdapter(data_source)
+        self.data_adapter = DataSourceAdapter()
         if not self.data_adapter.data_source:
             raise RuntimeError("没有可用的数据源")
 
@@ -184,6 +184,7 @@ class BreakoutHighAnalyzer:
         检查最新交易日是否突破前期高点
         """
         if len(df) < self.lookback_days + 5:
+            print("数据不足，无法分析突破")  # 调试输出，提示数据不足
             return None
         
         df = self._calculate_indicators(df)
@@ -196,6 +197,7 @@ class BreakoutHighAnalyzer:
         highest_price = high_window.max()
         
         if current_price <= highest_price * (1 + self.breakout_threshold):
+            print(f"未突破前期高点: 当前价 {current_price:.2f} <= 前期高点 {highest_price:.2f} * (1 + {self.breakout_threshold*100:.1f}%)")  # 调试输出，提示未突破
             return None
         
         breakout_ratio = (current_price - highest_price) / highest_price
@@ -405,7 +407,7 @@ class BreakoutHighAnalyzer:
                 return None
             
             score, reasons = self.calculate_score(breakout, None)
-            
+            print("score: ", score, "reasons: ", reasons)  # 调试输出，查看评分和原因
             current = df.iloc[-1]
             
             return {
