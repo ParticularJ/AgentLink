@@ -1,0 +1,47 @@
+# 策略参数配置
+strategy_config:
+  name: "缩量回踩重要均线策略"
+  version: "v1.0.0"
+  description: "捕捉强势股缩量回踩均线后的二次启动机会"
+
+# 均线配置
+ma_settings:
+  short_term: 20      # 短期均线MA20
+  medium_term: 30     # 中期均线MA30
+  long_term: 60       # 长期均线MA60
+  ma_priority: [20, 30, 60]  # 均线优先级
+
+# 趋势判断
+trend_settings:
+  min_ma20_slope: 10       # MA20最小斜率（角度）
+  min_ma60_slope: 5        # MA60最小斜率（角度）
+  require_ma_alignment: true  # 要求均线多头排列
+
+# 回踩条件
+retrace_conditions:
+  max_retrace_pct: 15        # 最大回调幅度15%
+  ma_tolerance_pct: 3        # 均线容忍度±3%
+  volume_shrink_ratio: 0.6   # 缩量至60%以下
+  min_retrace_days: 2        # 最少回调天数
+  max_retrace_days: 10       # 最多回调天数
+
+# 止跌信号
+stop_signal:
+  enable_hammer: true        # 启用锤子线识别
+  enable_doji: true          # 启用十字星识别
+  enable_small_yang: true    # 启用小阳线识别
+  min_lower_shadow_ratio: 2  # 下影线至少是实体2倍
+
+# 买入确认
+entry_confirmation:
+  require_confirm: true      # 需要确认信号
+  min_up_days: 1             # 至少1天上涨确认
+  volume_expand_ratio: 1.2   # 放量1.2倍以上
+  confirm_within_days: 3     # 3天内确认有效
+
+# 过滤条件
+filters:
+  min_market_cap: 50         # 最小市值50亿
+  min_daily_volume: 5000000  # 最小日成交量500万
+  exclude_st: true           # 排除ST股票
+  exclude_new_ipo: true      # 排除次新股（上市<60天）

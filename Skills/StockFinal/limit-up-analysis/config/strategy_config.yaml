@@ -1,0 +1,38 @@
+# 涨停板连板分析策略配置
+
+strategy:
+  name: "limit-up-analysis"
+  version: "v1.1.0"
+  description: "涨停板连板概率分析"
+  win_rate: 0.65
+
+# 分析参数
+parameters:
+  # 封板强度参数
+  sealing_strength:
+    min_seal_ratio: 2.0           # 最小封单比 (%)
+    excellent_seal_ratio: 10.0    # 优秀封单比
+    max_seal_time: 30             # 最大封板时间 (分钟)
+    max_open_count: 2             # 最大炸板次数
+  
+  # 板块效应参数
+  sector_effect:
+    min_sector_limit_ups: 3       # 最小同板块涨停数
+    max_sector_heat_rank: 10      # 最大板块热度排名
+  
+  # 资金流向参数
+  capital_flow:
+    min_main_inflow: 5.0          # 最小主力净流入 (%)
+    excellent_main_inflow: 20.0   # 优秀主力净流入
+  
+  # 连板参数
+  consecutive:
+    min_boards: 1                 # 最小连板数
+    max_boards: 10                # 最大分析连板数
+
+# 数据源配置
+data_source:
+  primary: "akshare"              # 主要数据源
+  fallback: "baostock"            # 备用数据源
+  cache_enabled: true
+  cache_ttl_minutes: 5

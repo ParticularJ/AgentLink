@@ -1,0 +1,60 @@
+{
+  "date": "20260428",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-04-28T22:55:27.164035",
+  "recommendations": [
+    {
+      "code": "002281",
+      "name": "光迅科技",
+      "source": "缺口填充",
+      "recommend_date": "2026-04-28",
+      "entry_price": 0.0,
+      "target_reason": "缺口填充信号确认；趋势确认，尾盘买入博反弹",
+      "combined_score": 70.97,
+      "best_score": 75.75,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 20.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.201
+    },
+    {
+      "code": "688008",
+      "name": "澜起科技",
+      "source": "缺口填充",
+      "recommend_date": "2026-04-28",
+      "entry_price": 0.0,
+      "target_reason": "缺口填充信号确认",
+      "combined_score": 68.75,
+      "best_score": 72.75,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 16.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1688
+    },
+    {
+      "code": "603083",
+      "name": "剑桥科技",
+      "source": "缺口填充",
+      "recommend_date": "2026-04-28",
+      "entry_price": 0.0,
+      "target_reason": "缺口填充信号确认",
+      "combined_score": 67.64,
+      "best_score": 71.25,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 13.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1376
+    }
+  ],
+  "total_position": 50.8,
+  "stock_count": 3
+}

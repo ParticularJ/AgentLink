@@ -1,0 +1,46 @@
+# 评分权重配置
+weights:
+  divergence_strength: 0.25    # 背离强度 25%
+  macd_golden_cross: 0.20      # MACD金叉 20%
+  volume_confirmation: 0.20    # 量能确认 20%
+  candlestick_pattern: 0.20    # K线形态 20%
+  support_level: 0.15          # 支撑位置 15%
+
+# 评分阈值
+thresholds:
+  strong_buy: 85    # 强烈买入
+  buy: 75           # 买入
+  watch: 65         # 观望
+  exclude: 0        # 排除
+
+# 各维度详细评分标准
+scoring_criteria:
+  divergence_strength:
+    excellent: 100    # 双重背离+大幅背离
+    good: 85          # 明显背离
+    fair: 70          # 轻微背离
+    poor: 0           # 无背离
+  
+  macd_golden_cross:
+    excellent: 100    # 已金叉+柱状线转正
+    good: 85          # 刚金叉
+    fair: 70          # 即将金叉
+    poor: 0           # 无金叉
+  
+  volume_confirmation:
+    excellent: 100    # 放量1.5倍以上
+    good: 85          # 放量1.2-1.5倍
+    fair: 70          # 放量1.0-1.2倍
+    poor: 0           # 未放量
+  
+  candlestick_pattern:
+    excellent: 100    # 启明星/锤子线
+    good: 85          # 锤子线
+    fair: 70          # 小阳线
+    poor: 0           # 无明显形态
+  
+  support_level:
+    excellent: 100    # 前期低点+整数关口
+    good: 85          # 前期低点
+    fair: 70          # 整数关口
+    poor: 0           # 无支撑

@@ -1,0 +1,94 @@
+{
+  "date": "20260420",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-04-20T09:35:57.574714",
+  "recommendations": [
+    {
+      "code": "002384",
+      "name": "东山精密",
+      "source": "突破新高",
+      "recommend_date": "2026-04-20",
+      "entry_price": 0.0,
+      "target_reason": "突破动量强劲，早盘追涨，综合得分100；突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 100,
+      "best_score": 90.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "600330",
+      "name": "天通股份",
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-04-20",
+      "entry_price": 0.0,
+      "target_reason": "涨停分析/打板信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 95.24,
+      "best_score": 81.8,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 19.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1952
+    },
+    {
+      "code": "002418",
+      "name": "康盛股份",
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-04-20",
+      "entry_price": 0.0,
+      "target_reason": "涨停分析/打板信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 95.24,
+      "best_score": 81.8,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 16.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1652
+    },
+    {
+      "code": "002843",
+      "name": "泰嘉股份",
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-04-20",
+      "entry_price": 0.0,
+      "target_reason": "涨停分析/打板信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 93.62,
+      "best_score": 80.9,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 13.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1336
+    },
+    {
+      "code": "002491",
+      "name": "通鼎互联",
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-04-20",
+      "entry_price": 0.0,
+      "target_reason": "涨停分析/打板信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 93.62,
+      "best_score": 80.9,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 10.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1036
+    }
+  ],
+  "total_position": 82.8,
+  "stock_count": 5
+}

@@ -1,0 +1,85 @@
+# config/optimizer_config.yaml
+
+# 策略优化器配置
+optimizer:
+  name: "策略优化器"
+  version: "v1.0.0"
+  
+  # 优化目标
+  optimization_goals:
+    primary: "sharpe_ratio"      # 主要优化目标
+    secondary: "win_rate"        # 次要优化目标
+    constraints:
+      max_drawdown: 0.15         # 最大回撤约束
+      min_win_rate: 0.50         # 最小胜率约束
+      min_trades: 20             # 最小交易次数
+  
+  # 优化算法
+  algorithm:
+    type: "grid_search"          # 网格搜索
+    max_iterations: 100          # 最大迭代次数
+    cv_folds: 5                  # 交叉验证折数
+  
+  # 策略列表 - 11个策略
+  strategies:
+    - name: "ma-bullish-strategy"
+      path: "../ma-bullish-strategy"
+      enabled: true
+      description: "均线多头排列策略"
+    
+    - name: "limit-up-analysis"
+      path: "../limit-up-analysis"
+      enabled: true
+      description: "涨停板连板分析"
+    
+    - name: "earnings-surprise-strategy"
+      path: "../earnings-surprise-strategy"
+      enabled: true
+      description: "财报超预期策略"
+    
+    - name: "volume-retrace-ma-strategy"
+      path: "../volume-retrace-ma-strategy"
+      enabled: true
+      description: "缩量回踩重要均线策略"
+    
+    - name: "limit-up-retrace-strategy"
+      path: "../limit-up-retrace-strategy"
+      enabled: true
+      description: "涨停板首次回调策略"
+    
+    - name: "macd-divergence-strategy"
+      path: "../macd-divergence-strategy"
+      enabled: true
+      description: "MACD底背离策略"
+    
+    - name: "morning-star-strategy"
+      path: "../morning-star-strategy"
+      enabled: true
+      description: "早晨之星形态策略"
+    
+    - name: "breakout-high-strategy"
+      path: "../breakout-high-strategy"
+      enabled: true
+      description: "突破前期高点策略"
+    
+    - name: "rsi-oversold-strategy"
+      path: "../rsi-oversold-strategy"
+      enabled: true
+      description: "RSI超卖反弹策略"
+    
+    - name: "volume-extreme-strategy"
+      path: "../volume-extreme-strategy"
+      enabled: true
+      description: "成交量地量见底策略"
+    
+    - name: "gap-fill-strategy"
+      path: "../gap-fill-strategy"
+      enabled: true
+      description: "缺口回补策略"
+
+# 数据存储
+data_storage:
+  backtest_results: "./data/backtest_results/"
+  predictions: "./data/predictions/"
+  optimized_params: "./data/optimized_params/"
+  logs: "./data/logs/"

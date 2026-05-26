@@ -1,0 +1,27 @@
+
+## 8. requirements.txt
+
+```txt
+# ma-bullish-strategy/requirements.txt
+
+# 数据获取
+akshare>=1.12.0
+tushare>=1.2.89
+
+# 数据处理
+pandas>=1.5.0
+numpy>=1.23.0
+ta-lib>=0.4.0
+
+# 可视化
+matplotlib>=3.5.0
+seaborn>=0.12.0
+
+# 工具库
+pyyaml>=6.0
+schedule>=1.2.0
+python-dotenv>=1.0.0
+
+# 可选依赖
+# redis>=4.5.0  # 缓存支持
+# mysql-connector-python>=8.0  # 数据库支持

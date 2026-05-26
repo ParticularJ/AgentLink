@@ -1,0 +1,131 @@
+{
+  "date": "20260518",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-05-18T23:56:59.055972",
+  "recommendations": [
+    {
+      "code": "688012",
+      "name": "中微公司",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-05-18",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方运行|波段洗盘",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 84.02,
+      "best_score": 82.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 21.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.214
+    },
+    {
+      "code": "688676",
+      "name": "金盘科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-05-18",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方运行|波段洗盘",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 77.62,
+      "best_score": 82.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 17.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1776
+    },
+    {
+      "code": "300831",
+      "name": "派瑞股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-05-18",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方运行|波段洗盘",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 77.62,
+      "best_score": 82.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1476
+    },
+    {
+      "code": "600276",
+      "name": "恒瑞医药",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "RSI超卖",
+      "recommend_date": "2026-05-18",
+      "entry_price": 0.0,
+      "target_reason": "当前RSI处于最佳区间(30-50); 已出现明显反弹; 成交量大幅放大; 价格有所反弹",
+      "combined_score": 76.97,
+      "best_score": 81.8,
+      "strategies": [
+        "RSI超卖"
+      ],
+      "position_pct": 11.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.117
+    },
+    {
+      "code": "600105",
+      "name": "永鼎股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-05-18",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 76.5,
+      "best_score": 81.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0865
+    }
+  ],
+  "total_position": 74.4,
+  "stock_count": 5,
+  "strategy_count": 3,
+  "no_result_count": 3,
+  "error_count": 0
+}

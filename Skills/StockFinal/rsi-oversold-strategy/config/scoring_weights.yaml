@@ -1,0 +1,42 @@
+# config/scoring_weights.yaml
+
+# RSI超卖反弹策略评分权重配置
+version: "1.0.0"
+
+weights:
+  rsi_oversold: 0.35
+  price_deviation: 0.25
+  volume_shrink: 0.20
+  stability_signal: 0.20
+
+# RSI超卖程度评分标准
+rsi_oversold:
+  extreme: 100      # RSI < 20（极度超卖）
+  strong: 85        # RSI 20-25
+  normal: 70        # RSI 25-30
+  mild: 50          # RSI 30-35
+  none: 0           # RSI > 35
+
+# 价格偏离度评分标准
+price_deviation:
+  perfect: 100      # 偏离15-20%
+  good: 85          # 偏离12-15%
+  normal: 70        # 偏离8-12%
+  mild: 50          # 偏离5-8%
+  none: 0           # 偏离<5%
+
+# 成交量特征评分标准
+volume_shrink:
+  extreme: 100      # 缩量<50%
+  strong: 85        # 缩量50-60%
+  normal: 70        # 缩量60-70%
+  mild: 50          # 缩量70-80%
+  none: 0           # 未缩量
+
+# 企稳信号评分标准
+stability_signal:
+  perfect: 100      # 阳包阴+放量
+  strong: 85        # 锤头线+长下影
+  normal: 70        # 十字星
+  weak: 50          # 小阳线
+  none: 0           # 继续下跌

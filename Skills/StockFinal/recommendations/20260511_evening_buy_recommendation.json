@@ -1,0 +1,104 @@
+{
+  "date": "20260511",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-05-11T14:35:42.557935",
+  "recommendations": [
+    {
+      "code": "688047",
+      "name": "龙芯中科",
+      "penalty": 0.0,
+      "source": "均线多头排列",
+      "recommend_date": "2026-05-11",
+      "entry_price": 0.0,
+      "target_reason": "均线多头排列、缺口填充双信号共振；尾盘低位吸纳，次日冲高概率大",
+      "combined_score": 100,
+      "best_score": 79.9,
+      "strategies": [
+        "均线多头排列",
+        "缺口填充"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "600905",
+      "name": "三峡能源",
+      "penalty": 0.0,
+      "source": "地量见底",
+      "recommend_date": "2026-05-11",
+      "entry_price": 0.0,
+      "target_reason": "地量见底、RSI超卖双信号共振；尾盘低位吸纳，次日冲高概率大",
+      "combined_score": 100,
+      "best_score": 76.0,
+      "strategies": [
+        "地量见底",
+        "RSI超卖"
+      ],
+      "position_pct": 20.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2
+    },
+    {
+      "code": "002436",
+      "name": "兴森科技",
+      "penalty": 5.0,
+      "source": "缺口填充",
+      "recommend_date": "2026-05-11",
+      "entry_price": 0.0,
+      "target_reason": "缺口填充信号确认；趋势确认，尾盘买入博反弹",
+      "combined_score": 78.89,
+      "best_score": 84.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1489
+    },
+    {
+      "code": "300831",
+      "name": "派瑞股份",
+      "penalty": 0.0,
+      "source": "缺口填充",
+      "recommend_date": "2026-05-11",
+      "entry_price": 0.0,
+      "target_reason": "缺口填充信号确认；趋势确认，尾盘买入博反弹",
+      "combined_score": 78.25,
+      "best_score": 82.9,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1183
+    },
+    {
+      "code": "000060",
+      "name": "中金岭南",
+      "penalty": 0.0,
+      "source": "均线多头排列",
+      "recommend_date": "2026-05-11",
+      "entry_price": 0.0,
+      "target_reason": "均线多头排列信号确认；趋势确认，尾盘买入博反弹",
+      "combined_score": 74.57,
+      "best_score": 75.4,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 8.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0846
+    }
+  ],
+  "total_position": 78.2,
+  "stock_count": 5,
+  "strategy_count": 4,
+  "no_result_count": 2,
+  "error_count": 0
+}

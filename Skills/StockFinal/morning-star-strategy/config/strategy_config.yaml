@@ -1,0 +1,75 @@
+# config/strategy_config.yaml
+
+# 早晨之星形态策略参数配置
+strategy:
+  name: "早晨之星形态策略"
+  version: "1.0.0"
+  
+  # K线形态参数
+  pattern_parameters:
+    # 第一根K线（阴线）
+    first_candle:
+      min_decline: 3.0        # 最小跌幅(%)
+      body_ratio_min: 0.5     # 实体占比最小值
+      require_close_low: true # 收盘价接近最低价
+    
+    # 第二根K线（十字星/小实体）
+    second_candle:
+      max_body_ratio: 0.2     # 最大实体占比（十字星）
+      require_gap_down: true  # 要求跳空低开
+      shadow_ratio_min: 0.5   # 影线占比
+  
+    # 第三根K线（阳线）
+    third_candle:
+      min_advance: 3.0        # 最小涨幅(%)
+      require_close_high: true # 收盘价接近最高价
+      enter_first_body: true  # 收盘价进入第一根实体
+  
+  # 位置确认参数
+  position_confirmation:
+    lookback_days: 60         # 回看天数
+    price_position: "low"     # 价格位置：low/mid/high
+    max_ma60_deviation: 10    # 相对60日线最大偏离(%)
+    volume_shrink_before: true # 前期是否缩量
+  
+  # 成交量参数
+  volume_parameters:
+    third_candle_volume_ratio: 1.2  # 第三根阳线放量倍数
+    avg_volume_period: 20           # 均量周期
+    max_second_candle_volume: 0.7   # 第二根K线最大相对量能
+  
+  # 后续确认参数
+  follow_up:
+    check_next_day: true      # 检查次日表现
+    next_day_min_gap: 0       # 次日最小跳空(%)
+    next_day_min_volume: 0.8  # 次日最小相对量能
+
+# 评分权重
+scoring:
+  weights:
+    pattern_completeness: 0.35   # 形态完整性
+    position_confirmation: 0.25  # 位置确认
+    volume_confirmation: 0.20    # 成交量配合
+    follow_up_confirmation: 0.20 # 后续确认
+  
+  thresholds:
+    strong: 85
+    recommend: 75
+    watch: 70
+
+# 风险管理
+risk_management:
+  stop_loss:
+    type: "pattern_low"
+    condition: "close < pattern_lowest"
+    hard_stop: 0.05
+  
+  take_profit:
+    target1: 0.10    # 第一目标10%
+    target2: 0.15    # 第二目标15%
+    target3: 0.20    # 第三目标20%
+  
+  position_sizing:
+    strong_signal: 0.25
+    normal_signal: 0.15
+    weak_signal: 0.10

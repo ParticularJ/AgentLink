@@ -1,0 +1,38 @@
+# config/scoring_weights.yaml
+
+# 早晨之星形态策略评分权重配置
+version: "1.0.0"
+
+weights:
+  pattern_completeness: 0.35
+  position_confirmation: 0.25
+  volume_confirmation: 0.20
+  follow_up_confirmation: 0.20
+
+# 形态完整性评分标准
+pattern_completeness:
+  perfect: 100      # 三根K线完美符合标准
+  good: 85          # 基本符合，略有瑕疵
+  normal: 70        # 形态成立但不够标准
+  poor: 0           # 形态不完整
+
+# 位置确认评分标准
+position_confirmation:
+  excellent: 100    # 处于明显低位，远离均线
+  good: 85          # 相对低位
+  normal: 70        # 位置一般
+  poor: 40          # 位置偏高
+
+# 成交量配合评分标准
+volume_confirmation:
+  strong: 100       # 第三根放量>1.5倍
+  good: 85          # 放量1.2-1.5倍
+  normal: 70        # 放量1-1.2倍
+  weak: 50          # 缩量
+
+# 后续确认评分标准
+follow_up_confirmation:
+  strong: 100       # 次日高开高走
+  good: 85          # 次日上涨
+  normal: 70        # 次日平盘
+  weak: 50          # 次日下跌

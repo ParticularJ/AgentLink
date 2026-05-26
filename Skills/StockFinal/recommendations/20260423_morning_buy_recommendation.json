@@ -1,0 +1,94 @@
+{
+  "date": "20260423",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-04-23T23:14:01.650672",
+  "recommendations": [
+    {
+      "code": "300067",
+      "name": "安诺其",
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "涨停分析/打板信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 95.42,
+      "best_score": 81.9,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 22.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2254
+    },
+    {
+      "code": "603318",
+      "name": "水发燃气",
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "涨停分析/打板信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 89.84,
+      "best_score": 78.8,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 19.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1898
+    },
+    {
+      "code": "600736",
+      "name": "苏州高新",
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "涨停分析/打板信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 89.66,
+      "best_score": 78.7,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 16.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1597
+    },
+    {
+      "code": "002606",
+      "name": "大连电瓷",
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "涨停分析/打板信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 88.22,
+      "best_score": 77.9,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 12.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1282
+    },
+    {
+      "code": "002281",
+      "name": "光迅科技",
+      "source": "突破新高",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 86.51,
+      "best_score": 79.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 9.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0965
+    }
+  ],
+  "total_position": 80.0,
+  "stock_count": 5
+}
