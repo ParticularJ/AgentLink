@@ -19,39 +19,20 @@ for k in list(os.environ.keys()):
 
 # ====================== 【止盈策略核心：静态龙头定级】======================
 STOCK_GRADE = {
-    # ==================== L1 行业绝对龙头 ====================
-    # 先进封装（全球第三、国内第一）
-    "600584": "L1_行业龙头",  # 长电科技
-    
-    # PCB覆铜板（国内绝对龙头）
-    "600183": "L1_行业龙头",  # 生益科技
-
-    # 创新药（国内绝对龙头）
-    "600276": "L1_行业龙头",  # 恒瑞医药
-
-    # 油运（远东MR成品油轮龙头）
-    "601975": "L1_行业龙头",  # 招商南油
-
-    # 特高压功率半导体（晶闸管国内市占65%+）
-    "300831": "L1_行业龙头",  # 派瑞股份
-
-    # 电子陶瓷/MLCC（光纤陶瓷插芯全球第一）
-    "300408": "L1_行业龙头",  # 三环集团
-
-
-    # ==================== L2 细分龙头/强二线 ====================
-    # 军工/高压连接器（国内连接器龙头）
-    "002179": "L2_细分龙头",  # 中航光电
-
-    # 存储封测（DRAM国内第一梯队）
-    "000021": "L2_细分龙头",  # 深科技
-
-    # AIoT SoC芯片（国内第二，扫地机器人主控第一）
-    "603893": "L2_细分龙头",  # 瑞芯微
-
-
-    # ==================== L3 题材跟风/普通标的 ====================
-    # 人形机器人/伺服（二线，无绝对龙头地位）
+    # L1 行业绝对龙头
+    "600584": "L1_行业龙头",  # 长电科技(封测全行业龙头)
+    "600183": "L1_行业龙头",  # 生益科技(覆铜板全行业龙头)
+    "600276": "L1_行业龙头",  # 恒瑞医药(创新药全行业龙头)
+    "601975": "L1_行业龙头",  # 招商南油(油运央企龙头)
+    "300831": "L1_行业龙头",  # 派瑞股份(功率器件细分龙头)
+    "300408": "L1_行业龙头",  # 三环集团(MLCC瓷件+通用陶瓷全产业链龙头)
+    "002859": "L1_行业龙头",  # 洁美科技【新增】纸质载带全球龙头、MLCC耗材全球隐形冠军
+    # L2 细分龙头/强二线
+    "603267": "L2_细分龙头",  # 鸿远电子【新增】军工航天高可靠MLCC细分龙头
+    "002179": "L2_细分龙头",  # 中航光电(连接器细分龙头)
+    "000021": "L2_细分龙头",  # 深科技(存储封测细分龙头)
+    "603893": "L2_细分龙头",  # 瑞芯微(消费IC细分龙头)
+    # L3 题材跟风/普通标的
     "603728": "L3_题材跟风",  # 鸣志电器
 }
 
@@ -148,6 +129,12 @@ class StockTradingStrategy:
                         else:
                             entry_date = datetime.now().strftime('%Y-%m-%d')
                         
+                         # 兼容旧数据：缺失字段用默认值
+                        last_add_date = item.get('last_add_date')
+                        if last_add_date and isinstance(last_add_date, str):
+                            last_add_date = datetime.strptime(last_add_date, '%Y-%m-%d').strftime('%Y-%m-%d')
+                        else:
+                            last_add_date = datetime.now().strftime('%Y-%m-%d')
 
                         init_shares = item.get('init_shares', item['shares'])    
                         if init_shares and isinstance(init_shares, (int, float)):
@@ -169,7 +156,9 @@ class StockTradingStrategy:
                             score=item.get('score', 0),
                             #tech_indicators=item.get('tech_indicators', None),
                             stop_level_hit=item.get('stop_level_hit', [False, False, False]),
-                            stop_lose_hit=item.get('stop_lose_hit', [False, False, False, False])
+                            stop_lose_hit=item.get('stop_lose_hit', [False, False, False, False]),
+                            add_count= item.get('add_count', 0),
+                            last_add_date =  datetime.now().strftime('%Y-%m-%d')
                         )
                         self.holdings.append(holding)
                 print(f"加载持仓成功,共{len(self.holdings)}只股票")
@@ -241,7 +230,9 @@ class StockTradingStrategy:
                 'strategy_name': holding.strategy_name,
                 'score': holding.score,
                 'stop_level_hit': holding.stop_level_hit,
-                'stop_lose_hit': holding.stop_lose_hit
+                'stop_lose_hit': holding.stop_lose_hit,
+                'add_count': holding.add_count,
+                'last_add_date': holding.last_add_date
             })
         print('保存持仓数据: ', data)
         #return
@@ -451,6 +442,8 @@ class StockTradingStrategy:
                 existing.cost = total_cost / total_shares
                 existing.shares = total_shares
                 existing.init_shares = total_shares
+                existing.add_count += 1
+                existing.last_add_date = datetime.now().strftime('%Y-%m-%d')
                 print(f"加仓成功: {code} +{shares}股")
             else:
                 # 获取股票名称
@@ -468,11 +461,13 @@ class StockTradingStrategy:
                     shares=shares,
                     current_price=current_data.price if result else price,
                     highest_price=price,
-                    entry_date=datetime.now().strftime('%Y%m%d'),
+                    entry_date=datetime.now().strftime('%Y-%m-%d'),
                     strategy_name=strategy_name,
                     score=0,
                     stop_level_hit=[False, False, False],
-                    stop_lose_hit=[False, False, False, False]
+                    stop_lose_hit=[False, False, False, False],
+                    add_count=0,
+                    last_add_date=datetime.now().strftime('%Y-%m-%d')
 
                 )
                 print("new_holding: ", new_holding)
@@ -511,15 +506,15 @@ class StockTradingStrategy:
 
             ## ====== 止损目标 ===== ###
             print("技术指标:", existing.tech_indicators)
-            if "RSI" in existing.strategy_name:
+            # if "RSI" in existing.strategy_name:
                 # 当前价格跌破成本的6%达到第一档止损
-                print("亏损6%止损目标: ", existing.cost * 0.06, "亏损8%止损目标: ", existing.cost * 0.08)
-                if price <= existing.cost * 0.94 and not existing.stop_lose_hit[2]:
-                    existing.stop_lose_hit[2] = True  # 标记已触及第三档止损
-                    print(f"触及成本6%止损: {price:.2f} <= {existing.cost * 0.94:.2f}")
-                if price <= existing.cost * 0.92 and not existing.stop_lose_hit[3]:                  
-                    existing.stop_lose_hit[3] = True  # 标记已触及第四档止损
-                    print(f"触及成本8%止损: {price:.2f} <= {existing.cost * 0.92:.2f}")
+            print("亏损6%止损目标: ", existing.cost * 0.06, "亏损8%止损目标: ", existing.cost * 0.08)
+            if price <= existing.cost * 0.94 and not existing.stop_lose_hit[2]:
+                existing.stop_lose_hit[2] = True  # 标记已触及第三档止损
+                print(f"触及成本6%止损: {price:.2f} <= {existing.cost * 0.94:.2f}")
+            if price <= existing.cost * 0.92 and not existing.stop_lose_hit[3]:                  
+                existing.stop_lose_hit[3] = True  # 标记已触及第四档止损
+                print(f"触及成本8%止损: {price:.2f} <= {existing.cost * 0.92:.2f}")
 
             if price <= existing.tech_indicators.ma5  and not existing.stop_lose_hit[0]:
                 existing.stop_lose_hit[0] = True  # 标记已触及MA5止损
@@ -552,6 +547,7 @@ class StockTradingStrategy:
         # 立即执行一次分析
         now = datetime.now()
         if now.hour < 9 or (now.hour == 9 and now.minute < 15):
+            self.afternoon_session()
             print("等待9:15执行早盘分析...")
         elif now.hour < 14 or (now.hour == 14 and now.minute < 55):
             self.morning_session()
@@ -579,4 +575,4 @@ if __name__ == "__main__":
     else:
         strategy = StockTradingStrategy()
         strategy.run()
-        #strategy.execute_trade(code="603986", action="buy", shares=300, price=33, strategy_name="突破新高")
+       #strategy.execute_trade(code="002436", action="sell", shares=900, price=138.20, strategy_name="突破新高")

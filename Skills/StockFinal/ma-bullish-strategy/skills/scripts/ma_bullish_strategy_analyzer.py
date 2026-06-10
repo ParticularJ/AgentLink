@@ -227,6 +227,7 @@ class MABullishAnalyzer:
             'stock_code': stock_code,
             'stock_name': stock_name or stock_code,
             'score': 0,
+            'reasons':'',
             'is_bullish': False,
             'signals': {},
             'data': None,
@@ -248,10 +249,11 @@ class MABullishAnalyzer:
 
             is_bullish = self.is_ma_bullish(df)
             result['is_bullish'] = is_bullish
-            print("result['is_bullish']: ", result['is_bullish'])
+            #print("result['is_bullish']: ", result['is_bullish'])
             if is_bullish:
                 quality_grade, quality_score = self.get_bullish_quality(df)
                 result['bullish_quality'] = quality_grade  # 新增
+                result['reasons'] = quality_grade
                 result['score'] = round(self.calculate_total_score(df), 2)
                   # ✅ 在这里添加技术确认
                 tech_confirm = self.get_technical_confirmation(df)
@@ -320,7 +322,7 @@ class MABullishAnalyzer:
             
             # 分析个股
             result = self.analyze_stock(stock_code, stock_name)
-            print(result['signals'], result['score'])
+            #print(result['signals'], result['score'])
               # ✅ 修改过滤条件，加入技术确认
             if result and result['is_bullish']:
                 quality = result.get('bullish_quality', '')
@@ -328,12 +330,13 @@ class MABullishAnalyzer:
                 
                 # 质量过滤
                 quality_ok = quality in ['强势多头', '健康多头', '温和多头']
-                # 技术确认：至少满足2个条件
-                tech_ok = sum([
-                    tech.get('macd_bullish', False),
-                    tech.get('rsi_healthy', False),
-                    tech.get('volume_healthy', False)
-                ]) >= 2
+               # 技术确认 - MACD权重加倍
+                tech_score = (
+                    (1 if tech.get('macd_bullish', False) else 0) * 2 +
+                    (1 if tech.get('rsi_healthy', False) else 0) * 1 +
+                    (1 if tech.get('volume_healthy', False) else 0) * 1
+                )
+                tech_ok = tech_score >= 3  # 总分4分中至少3分
                 
                 if quality_ok and tech_ok and result['score'] >= 75:
                     candidates.append(result)
@@ -365,14 +368,33 @@ class MABullishAnalyzer:
             ma5 = row[f'ma{self.ma_short}']
             ma10 = row[f'ma{self.ma_mid}']
             ma20 = row[f'ma{self.ma_long}']
+            if pd.isna(ma5) or pd.isna(ma10) or pd.isna(ma20):
+                return False
             if not (ma5 > ma10 > ma20):
                 return False
         
-        # 长期均线必须向上
-        ma20_series = df[f'ma{self.ma_long}'].tail(5)
-        if ma20_series.iloc[-1] <= ma20_series.iloc[0]:
+        # 2. 价格必须站上MA5（防止均线多头但价格破位）
+        if df['close'].iloc[-1] < df[f'ma{self.ma_short}'].iloc[-1]:
             return False
 
+        # 长期均线必须向上
+        ma20_series = df[f'ma{self.ma_long}'].tail(5)
+        if len(ma20_series) < 5:
+            return False
+        if ma20_series.iloc[-1] <= ma20_series.iloc[-4]:
+            return False
+
+        # 4. 均线发散度检查（至少2%差距）
+        spread = (recent[f'ma{self.ma_short}'].iloc[-1] - recent[f'ma{self.ma_long}'].iloc[-1]) / recent[f'ma{self.ma_long}'].iloc[-1]
+        if spread < 0.02:
+            return False
+        
+        # 5. 确认前5天没有均线缠绕（排除假突破）
+        prev_5 = df.iloc[-8:-3]
+        if len(prev_5) > 0:
+            for _, row in prev_5.iterrows():
+                if row[f'ma{self.ma_short}'] < row[f'ma{self.ma_mid}']:
+                    return False
         return True
 
     def get_bullish_quality(self, df: pd.DataFrame) -> Tuple[str, float]:

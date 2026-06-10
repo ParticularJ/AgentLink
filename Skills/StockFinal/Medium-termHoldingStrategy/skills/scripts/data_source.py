@@ -182,14 +182,22 @@ def fetch_kline_sina(symbol: str, days: int = 120) -> Optional[pd.DataFrame]:
 
     df = pd.DataFrame(raw)
     df['day'] = pd.to_datetime(df['day'])
+    # 新浪API返回字段：day, open, close, high, low, volume
+    # 但部分接口字段名为 name="open" 等，需要做列名规范化
+    col_map = {c: c.lower() for c in df.columns if c in ['open', 'close', 'high', 'low', 'volume', 'ma5', 'ma10', 'ma20', 'ma60']}
+    df.rename(columns=col_map, inplace=True)
     for col in ['open', 'close', 'high', 'low']:
-        df[col] = df[col].astype(float)
-    df['volume'] = df['volume'].astype(int)
+        if col in df.columns:
+            df[col] = df[col].astype(float)
+    if 'volume' in df.columns:
+        df['volume'] = df['volume'].astype(float)
 
     # 计算均线
-    close = df['close'].values
-    for n in [5, 10, 20, 60]:
-        df[f'ma{n}'] = pd.Series(close).rolling(n).mean().values
+    if 'close' in df.columns:
+        close = df['close'].values
+        for n in [5, 10, 20, 60]:
+            if f'ma{n}' not in df.columns:
+                df[f'ma{n}'] = pd.Series(close).rolling(n).mean().values
 
     return df
 
@@ -202,8 +210,10 @@ def _fetch_kline_tencent_fallback(symbol: str, days: int = 120) -> Optional[pd.D
     """
     exchange = symbol[:2]
     code = symbol[2:]
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    start_str = (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d')
     url = (f'https://proxy.finance.qq.com/ifzqgtimg/appstock/app/newfqkline/get'
-           f'?_var=kline_dayqfq&param={exchange}{code},day,2024-01-01,2026-05-19,{days},qfq')
+           f'?_var=kline_dayqfq&param={exchange}{code},day,{start_str},{today_str},{days},qfq')
     headers = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://finance.qq.com'}
     try:
         r = requests.get(url, headers=headers, timeout=10)

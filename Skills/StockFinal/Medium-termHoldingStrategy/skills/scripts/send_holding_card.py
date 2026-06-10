@@ -27,39 +27,20 @@ _TRADE_CALENDAR = None
 
 # ====================== 【止盈策略核心：静态龙头定级】======================
 STOCK_GRADE = {
-    # ==================== L1 行业绝对龙头 ====================
-    # 先进封装（全球第三、国内第一）
-    "600584": "L1_行业龙头",  # 长电科技
-    
-    # PCB覆铜板（国内绝对龙头）
-    "600183": "L1_行业龙头",  # 生益科技
-
-    # 创新药（国内绝对龙头）
-    "600276": "L1_行业龙头",  # 恒瑞医药
-
-    # 油运（远东MR成品油轮龙头）
-    "601975": "L1_行业龙头",  # 招商南油
-
-    # 特高压功率半导体（晶闸管国内市占65%+）
-    "300831": "L1_行业龙头",  # 派瑞股份
-
-    # 电子陶瓷/MLCC（光纤陶瓷插芯全球第一）
-    "300408": "L1_行业龙头",  # 三环集团
-
-
-    # ==================== L2 细分龙头/强二线 ====================
-    # 军工/高压连接器（国内连接器龙头）
-    "002179": "L2_细分龙头",  # 中航光电
-
-    # 存储封测（DRAM国内第一梯队）
-    "000021": "L2_细分龙头",  # 深科技
-
-    # AIoT SoC芯片（国内第二，扫地机器人主控第一）
-    "603893": "L2_细分龙头",  # 瑞芯微
-
-
-    # ==================== L3 题材跟风/普通标的 ====================
-    # 人形机器人/伺服（二线，无绝对龙头地位）
+    # L1 行业绝对龙头
+    "600584": "L1_行业龙头",  # 长电科技(封测全行业龙头)
+    "600183": "L1_行业龙头",  # 生益科技(覆铜板全行业龙头)
+    "600276": "L1_行业龙头",  # 恒瑞医药(创新药全行业龙头)
+    "601975": "L1_行业龙头",  # 招商南油(油运央企龙头)
+    "300831": "L1_行业龙头",  # 派瑞股份(功率器件细分龙头)
+    "300408": "L1_行业龙头",  # 三环集团(MLCC瓷件+通用陶瓷全产业链龙头)
+    "002859": "L1_行业龙头",  # 洁美科技【新增】纸质载带全球龙头、MLCC耗材全球隐形冠军
+    # L2 细分龙头/强二线
+    "603267": "L2_细分龙头",  # 鸿远电子【新增】军工航天高可靠MLCC细分龙头
+    "002179": "L2_细分龙头",  # 中航光电(连接器细分龙头)
+    "000021": "L2_细分龙头",  # 深科技(存储封测细分龙头)
+    "603893": "L2_细分龙头",  # 瑞芯微(消费IC细分龙头)
+    # L3 题材跟风/普通标的
     "603728": "L3_题材跟风",  # 鸣志电器
 }
 GRADE_CONFIG = {
@@ -267,6 +248,7 @@ def run_analysis(session: str):
             current_price=item.get('current_price', item['cost']),
             highest_price=item.get('highest_price', item['cost']),
             entry_date=datetime.strptime(item['entry_date'], "%Y-%m-%d"),
+            last_add_date=datetime.strptime(item['last_add_date'], "%Y-%m-%d") if item.get('last_add_date') else datetime.now(),
             strategy_name=item.get('strategy_name', 'unknown'),
             score=item.get('score', 0),
             stop_level_hit=item.get('stop_level_hit'),
@@ -281,7 +263,7 @@ def run_analysis(session: str):
     risk_controller = RiskController()
      # 大盘仓位建议
     position_advice = market_analyzer.calculate_position_limit()
-    # print("pos: ",position_advice)
+    print("pos: ",position_advice)
 
 
   

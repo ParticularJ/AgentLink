@@ -68,6 +68,8 @@ class Holding:
     current_price: float
     highest_price: float
     entry_date: datetime
+      # 加仓日期
+    last_add_date: datetime 
     strategy_name: str
     score: float = 0
     tech_indicators: Optional[TechnicalIndicators] = None
@@ -75,6 +77,10 @@ class Holding:
     stop_level_hit: List[bool] = field(default_factory=lambda: [False, False, False])  
     # 止损各档位是否触发，MA5,MA10, -6%, -8%
     stop_lose_hit: List[bool] = field(default_factory=lambda: [False, False, False, False])  
+  
+    # 加仓次数
+    add_count: int = 0
+  
 
 
 @dataclass

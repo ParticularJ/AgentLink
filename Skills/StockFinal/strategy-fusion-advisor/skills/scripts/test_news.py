@@ -150,7 +150,7 @@ def _get_stock_latest_news(stock_code: str, days: int = 7) -> List[Dict]:
 
 
 def recommendations_penalty(stock_code: str, stock_name: str) -> tuple[int,List[str]]:
-    news = _get_stock_latest_news(stock_code, days=3)
+    news = _get_stock_latest_news(stock_code, days=2)
     print(len(news))
     if not news:
         return 0, []
@@ -181,6 +181,8 @@ def recommendations_penalty(stock_code: str, stock_name: str) -> tuple[int,List[
 
             if score >= 80:
                 penalty += 6
+                reason.append(result['reason'])  # 记录利好原因
+
             elif score >= 60:
                 penalty += 4
             else:

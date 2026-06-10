@@ -75,13 +75,16 @@ class MarketAnalyzer:
 
         vol_avg = float(df['volume'].rolling(20).mean().iloc[-1])
         current_vol = float(df['volume'].iloc[-1])
-
+     
         # 系统性风险
         if current_price < ma60 and current_vol > vol_avg * 1.5:
             return MarketState.SYSTEM_RISK, POSITION_CONFIG["系统性风险"]["trend_coef"]
 
+        # 下跌补充：连续两日跌破MA20
+        close_prev = closes[-2]
+        ma20_prev = float(pd.Series(closes).rolling(20).mean().iloc[-2])
         # 下跌趋势
-        if current_price < ma20 and macd_hist < 0 and macd < macd_signal:
+        if (current_price < ma20 and close_prev < ma20_prev) and (macd_hist < 0 and macd < macd_signal):
             return MarketState.DOWN_TREND, POSITION_CONFIG["下跌趋势"]["trend_coef"]
 
         # === 震荡判断 ===
@@ -95,7 +98,7 @@ class MarketAnalyzer:
             return MarketState.STRONG_UP, POSITION_CONFIG["强势主升"]["trend_coef"]
 
         # 震荡偏多
-        if current_price > ma10 and ma20_trend == "flat":
+        if current_price > ma20*0.98 and current_price > ma10 and ma20_trend == "flat":
             return MarketState.RANGE_UP, POSITION_CONFIG["震荡偏多"]["trend_coef"]
 
         return MarketState.RANGE_WEAK, POSITION_CONFIG["弱势震荡"]["trend_coef"]
