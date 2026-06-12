@@ -1,0 +1,38 @@
+[
+  {
+    "code": "600519",
+    "name": "贵州茅台",
+    "buy_price": 1680.00,
+    "shares": 100,
+    "buy_date": "2026-05-01",
+    "buy_reason": "ma_bullish",
+    "sector": "食品饮料",
+    "position_ratio": 0.15,
+    "clear_history": [],
+    "historical_max_profit": null
+  },
+  {
+    "code": "300750",
+    "name": "宁德时代",
+    "buy_price": 198.00,
+    "shares": 500,
+    "buy_date": "2026-05-15",
+    "buy_reason": "breakout_high",
+    "sector": "新能源",
+    "position_ratio": 0.12,
+    "clear_history": [],
+    "historical_max_profit": null
+  },
+  {
+    "code": "688981",
+    "name": "中芯国际",
+    "buy_price": 58.50,
+    "shares": 1000,
+    "buy_date": "2026-06-01",
+    "buy_reason": "limit_up",
+    "sector": "科创板",
+    "position_ratio": 0.08,
+    "clear_history": [],
+    "historical_max_profit": null
+  }
+]
