@@ -176,6 +176,7 @@ def calc_profit_target(code, cost, shares, trend_coef):
     p3 = round(cost * (1 + cfg["profit_targets"][2] ), 2)
 
      # 卖出股数
+    # 止盈股数：向下取整（int() 对正数即 floor）
     s1 = int(shares * cfg["sell_ratio"][0])
     s2 = int(shares * cfg["sell_ratio"][1])
     s3 = int(shares * cfg["sell_ratio"][2])
