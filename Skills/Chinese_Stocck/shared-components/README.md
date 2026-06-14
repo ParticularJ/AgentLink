@@ -1,47 +1,34 @@
-# 共享组件
+# Shared Components (共享组件)
 
-三大策略共享的数据存储、配置管理和公共脚本。
+跨策略共享的基础设施和公共工具，不包含策略特定的股票池、持仓或推荐数据。
 
 ## 目录结构
 
 ```
-共享组件/
-├── _shared/                         # 共享脚本与配置
-│   └── ...                          # 公共工具函数、数据库连接等
-├── my_holdings/                     # 持仓数据
-│   ├── holdings.json                # 当前持仓
-│   ├── cash_balance.json            # 现金余额
-│   └── backup/                      # 历史备份
-├── my_stock_pool/                   # 股票池数据
-│   └── ...                          # 各策略股票池
-└── recommendations/                 # 交易推荐记录
-    └── YYYYMMDD_session_buy_recommendation.json
+shared-components/
+├── README.md              # This file
+└── _shared/               # 共享脚本与工具
+    ├── batch_collector.py     # 批量数据收集
+    ├── data_collector.py      # 数据收集器
+    ├── run_and_save.py        # 运行与保存工具
+    └── save_wrapper.py        # 保存包装器
 ```
 
-## 数据文件说明
+## 共享内容
 
-### my_holdings/
-- **holdings.json**: 当前所有持仓记录
-- **cash_balance.json**: 当前现金余额
-- **backup/**: 每日收盘后的持仓备份
+### 数据收集工具
+- `data_collector.py`: 统一的市场数据获取接口
+- `batch_collector.py`: 批量股票数据收集
 
-### my_stock_pool/
-- 核心仓初筛池（50-60只）
-- 核心仓候选池（5-8只）
-- 热点仓候选池（≤3只）
-- 波段仓候选池（5-10只）
-
-### recommendations/
-- 早盘推荐（morning_buy_recommendation）
-- 尾盘推荐（evening_buy_recommendation）
-- 格式：`YYYYMMDD_session_buy_recommendation.json`
+### 存储工具
+- `save_wrapper.py`: 统一的文件保存包装
+- `run_and_save.py`: 运行结果自动保存
 
 ## 使用规范
 
-1. **所有策略读写共享数据必须通过统一接口**
-2. **持仓修改必须通过 trade_executor**
-3. **每日收盘自动备份持仓数据**
-4. **推荐记录保留至少90天**
+1. **所有策略通过共享组件访问市场数据**
+2. **策略特定的数据（股票池/持仓/推荐）保存在各自策略目录下**
+3. **共享组件不保存任何策略状态**
 
 ## 免责声明
 
