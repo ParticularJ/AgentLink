@@ -1,0 +1,488 @@
+# 热点仓四大策略评分权重配置
+# 严格遵循《热点仓完整操作流程V4.0专业版》设计文档
+
+# ============================================
+# 策略一：首次涨停板评分权重 (表3)
+# ============================================
+first_limit_up:
+  description: "捕捉个股从量变到质变的突破节点"
+  entry_threshold: 75      # 入围门槛≥75分
+  holding_days: "3-5"      # 持股周期
+  can_add_position: false  # 不可加仓
+  
+  dimensions:
+    limit_up_time:          # 涨停时间
+      weight: 30            # 权重30分
+      scoring:              # 严格按表3
+        - range: "<=9:35"   # 开盘后5分钟内
+          score: 30
+        - range: "<=10:00"  # 10:00前
+          score: 20
+        - range: "<=10:30"  # 10:30前
+          score: 10
+        - range: ">10:30"   # 10:30后
+          score: 0
+    
+    seal_quality:           # 封单质量
+      weight: 25            # 权重25分
+      scoring:              # 严格按表3
+        - ratio: ">=80%"    # 封单/近20日日均成交额
+          score: 25
+        - ratio: ">=50%"
+          score: 20
+        - ratio: ">=30%"
+          score: 15
+        - ratio: ">=10%"
+          score: 10
+        - ratio: "<10%"
+          score: 5
+    
+    sector_effect:          # 板块效应
+      weight: 25            # 权重25分
+      scoring:              # 严格按表3
+        - count: ">=5"      # 同板块涨停数
+          score: 25
+        - count: ">=3"
+          score: 15
+        - count: ">=1"
+          score: 5
+        - count: "0"
+          score: 0
+    
+    turnover:               # 换手率
+      weight: 20            # 权重20分
+      scoring:              # 严格按表3
+        - range: "5%-15%"
+          score: 20
+        - range: "15%-25%"
+          score: 15
+        - range: "3%-5%"
+          score: 10
+        - range: "25%-35%"
+          score: 8
+        - range: "其他"
+          score: 5
+  
+  veto_conditions:          # 一票否决项
+    - "一字板买不进"
+    - "大盘破20日线"
+    - "个股有利空"
+  
+  position_sizing:          # 仓位对照表4
+    - score_range: "90-100"
+      rating: "极强势"
+      position_pct: 0.30
+    - score_range: "80-89"
+      rating: "强势"
+      position_pct: 0.25
+    - score_range: "75-79"
+      rating: "中等"
+      position_pct: 0.20
+
+# ============================================
+# 策略二：涨停回调评分权重 (表5)
+# ============================================
+limit_up_retrace:
+  description: "基于行为金融学过度反应修正原理，利用获利回吐后的技术性反弹"
+  entry_threshold: 65      # 入围门槛≥65分
+  holding_days: "5-7"      # 持股周期
+  can_add_position: true   # 可加仓1次
+  add_position_ratio: "20%-30%"
+  
+  dimensions:
+    retrace_pct:            # 回调幅度
+      weight: 25            # 权重25分
+      scoring:              # 严格按表5
+        - range: "-8%~-12%"
+          score: 25
+        - range: "-5%~-8%"
+          score: 20
+        - range: "-12%~-15%"
+          score: 15
+        - range: "-3%~-5%"
+          score: 10
+        - range: "-15%~-20%"
+          score: 8
+        - range: "其他"
+          score: 5
+    
+    retrace_days:           # 回调天数
+      weight: 20            # 权重20分
+      scoring:              # 严格按表5
+        - days: "3-4"
+          score: 20
+        - days: "2或5"
+          score: 15
+        - days: "6"
+          score: 10
+        - days: "1"
+          score: 8
+        - days: "其他"
+          score: 5
+    
+    volume_shrink:          # 缩量程度
+      weight: 25            # 权重25分
+      scoring:              # 严格按表5
+        - shrink: ">=60%"   # 缩量60%以上（量能<涨停日40%）
+          score: 25
+        - shrink: ">=40%"
+          score: 20
+        - shrink: ">=30%"
+          score: 15
+        - shrink: ">=20%"
+          score: 10
+        - shrink: "<20%"
+          score: 5
+    
+    stop_signal:            # 企稳信号
+      weight: 30            # 权重30分
+      sub_dimensions:
+        kline_pattern:      # K线形态
+          weight: 12
+          scoring:
+            - pattern: "锤子线"
+              score: 12
+            - pattern: "十字星"
+              score: 10
+            - pattern: "小阳线"
+              score: 8
+            - pattern: "其他"
+              score: 3
+        above_ma5:          # 站5日线
+          weight: 10
+          scoring:
+            - condition: "是"
+              score: 10
+            - condition: "否"
+              score: 3
+        daily_change:       # 当日跌幅
+          weight: 8
+          scoring:
+            - range: "≤-3%"
+              score: 8
+            - range: "≤-5%"
+              score: 5
+            - range: ">-5%"
+              score: 2
+  
+  veto_conditions:          # 一票否决项
+    - "大盘破20日线"
+    - "板块退潮"
+    - "个股有利空"
+  
+  position_sizing:          # 仓位对照表6
+    - score_range: "90-100"
+      rating: "极强势"
+      position_pct: 0.25
+    - score_range: "80-89"
+      rating: "强势"
+      position_pct: 0.25
+    - score_range: "70-79"
+      rating: "中等"
+      position_pct: 0.20
+    - score_range: "65-69"
+      rating: "及格"
+      position_pct: 0.15
+  
+  add_position_rules:       # 加仓规则 (表23)
+    conditions:
+      - "浮盈≥5%"
+      - "持有≤3天"
+      - "分时弱转强"
+      - "板块回流"
+    stop_loss_after_add: "首仓成本价"  # 加仓后止损线上移
+    sell_add_if_no_limit: "次日开盘"    # 加仓后次日未涨停则卖出加仓部分
+
+# ============================================
+# 策略三：热门板块龙头评分权重 (表9)
+# ============================================
+sector_leader:
+  description: "板块内阶段涨幅领先+带动板块+资金认可"
+  entry_threshold: 70      # 入围门槛≥70分
+  holding_days: "5-8"      # 持股周期
+  can_add_position: true   # 可加仓1次
+  add_position_ratio: "20%-30%"
+  
+  # 板块热度评分 (表8)
+  sector_heat:
+    entry_threshold: 75     # 板块入围≥75分
+    consecutive_days: 2     # 连续2日≥70分
+    dimensions:
+      rise_pct:
+        weight: 30           # 板块涨幅30%
+      limit_up_count:
+        weight: 25           # 涨停家数25%
+      capital_inflow:
+        weight: 20           # 资金净流入20%
+      trend_strength:
+        weight: 15           # 趋势强度15%
+      consecutive_limit:
+        weight: 10           # 连板高度10%
+  
+  # 龙头股评分 (表9)
+  dimensions:
+    rank_in_sector:         # 涨幅领先度
+      weight: 25            # 权重25分
+      scoring:
+        - rank: "第1"
+          score: 25
+        - rank: "第2"
+          score: 20
+        - rank: "第3"
+          score: 15
+        - rank: "前5"
+          score: 10
+        - rank: "前10"
+          score: 5
+        - rank: "其他"
+          score: 2
+    
+    limit_strength:         # 涨停强度
+      weight: 15            # 权重15分
+      scoring:
+        - condition: "连续涨停"
+          score: 15
+        - condition: "近3日有涨停"
+          score: 10
+        - condition: "无涨停"
+          score: 5
+    
+    sector_heat:            # 板块热度
+      weight: 20            # 权重20分
+      scoring:
+        - score: ">=85"
+          score: 20
+        - score: ">=75"
+          score: 15
+        - score: ">=70"
+          score: 10
+        - score: "<70"
+          score: 5
+    
+    leadership:             # 带动性
+      weight: 15            # 权重15分
+      scoring:
+        - score: ">=80"
+          score: 15
+        - score: ">=60"
+          score: 10
+        - score: ">=40"
+          score: 6
+        - score: "<40"
+          score: 3
+    
+    turnover:               # 换手率
+      weight: 15            # 权重15分
+      scoring:
+        - range: "10%-25%"
+          score: 15
+        - range: "5%-10%"
+          score: 10
+        - range: "25%-35%"
+          score: 8
+        - range: "其他"
+          score: 5
+    
+    market_cap:             # 流通市值
+      weight: 10            # 权重10分
+      scoring:
+        - range: "50-150亿"
+          score: 10
+        - range: "150-300亿"
+          score: 8
+        - range: "30-50亿"
+          score: 7
+        - range: "300-500亿"
+          score: 5
+        - range: "其他"
+          score: 3
+  
+  # 龙头买点类型 (表10)
+  entry_types:
+    - type: "连板龙头首次分歧"
+      condition: "连板后首次开板，盘中跌幅≤-3%后回升，收盘站5日线"
+      action: "尾盘买入25%"
+    - type: "连板龙头弱转强"
+      condition: "次日低开后30分钟内翻红站均线"
+      action: "盘中加仓或新开"
+    - type: "趋势龙头回调均线"
+      condition: "沿5日线上行，首次回踩5日线不破"
+      action: "尾盘买入30%"
+    - type: "趋势龙头平台突破"
+      condition: "横盘2-5天后，放量上涨≥5%"
+      action: "盘中买入30%"
+    - type: "趋势龙头板块分歧日抗跌"
+      condition: "板块调整时该股跌幅<板块1/2"
+      action: "尾盘买入25%"
+  
+  position_sizing:
+    - score_range: "90-100"
+      rating: "极强势"
+      position_pct: 0.30
+    - score_range: "80-89"
+      rating: "强势"
+      position_pct: 0.25
+    - score_range: "75-79"
+      rating: "中等"
+      position_pct: 0.20
+    - score_range: "70-74"
+      rating: "中等"
+      position_pct: 0.15
+
+# ============================================
+# 策略四：次新股评分权重 (表13)
+# ============================================
+new_stock:
+  description: "上市当日新股（前5日不设涨跌幅），风险最高、仓位最严格"
+  entry_threshold: 80      # 入围门槛≥80分
+  holding_days: "≤3"       # 持股周期最长3天
+  can_add_position: false  # 不可加仓
+  max_position_pct: 0.05   # 最大仓位5%
+  max_count: 1             # 最多持有1只
+  
+  # 基础过滤条件 (表11)
+  filter_conditions:
+    - "上市时间：当日上市新股"
+    - "行业属性：当期绝对主线核心赛道"
+    - "发行估值：发行PE ≤ 行业PE×1.5"
+  
+  # 一票否决项 (表12)
+  veto_conditions:
+    - "首日换手率 > 80%（标准盘）/ > 90%（小盘）→ 抛压过重"
+    - "首日换手率 < 50%（标准盘）/ < 70%（小盘）→ 惜售"
+    - "尾盘仍涨幅 > 100% → 透支空间"
+    - "尾盘仍在创新低 → 无企稳"
+    - "龙虎榜卖方全是机构 → 机构在卖"
+    - "大盘破20日线 → 系统性风险"
+  
+  dimensions:
+    industry:               # 行业景气度
+      weight: 30            # 权重30分
+      scoring:
+        - level: "核心赛道"
+          score: 30
+        - level: "次一级赛道"
+          score: 20
+        - level: "其他"
+          score: 10
+    
+    turnover:               # 首日换手率
+      weight: 25            # 权重25分
+      standard_cap:         # 标准盘股
+        scoring:
+          - range: "60%-80%"
+            score: 25
+          - range: "50%-60%"
+            score: 15
+          - range: "其他"
+            score: 5
+      small_cap:            # 小盘股
+        scoring:
+          - range: "70%-90%"
+            score: 25
+          - range: "60%-70%"
+            score: 15
+          - range: "其他"
+            score: 5
+    
+    stable_closing:         # 尾盘企稳
+      weight: 25            # 权重25分
+      scoring:
+        - condition: "尾盘30分钟站稳分时均线且不创新低"
+          score: 25
+        - condition: "未企稳"
+          score: 5
+    
+    pe_ratio:               # 发行估值
+      weight: 20            # 权重20分
+      scoring:
+        - ratio: "≤1.2倍"
+          score: 20
+        - ratio: "≤1.5倍"
+          score: 10
+        - ratio: ">1.5倍"
+          score: 5
+  
+  # 唯一买点
+  entry_rule:
+    timing: "上市当日尾盘(14:50-15:00)"
+    restriction: "禁止盘中任何时点买入"
+  
+  position_sizing:
+    - score_range: "90-100"
+      rating: "极强势"
+      position_pct: 0.05
+    - score_range: "80-89"
+      rating: "强势"
+      position_pct: 0.03
+    - score_range: "≥80"
+      rating: "及格"
+      position_pct: 0.02
+
+# ============================================
+# 多策略加分 (3.1节)
+# ============================================
+multi_strategy_bonus:
+  description: "同一股票命中多个策略时的额外加分"
+  rules:
+    - hit_count: 2
+      bonus: 3                 # +3分
+    - hit_count: 3
+      bonus: 5                 # +5分
+    - hit_count: 4
+      bonus: 6                 # +6分
+  max_total_score: 100          # 总分上限100分
+
+# ============================================
+# 每日推荐上限 (3.2节)
+# ============================================
+daily_recommendation:
+  max_results: 3                # 每日最多推荐3只
+  new_stock_max: 1              # 次新股最多占1席
+  quality_first: true           # 质量优先于数量
+
+# ============================================
+# 风控参数速查 (表26)
+# ============================================
+risk_parameters:
+  # 止损
+  fixed_stop_loss: -7.0         # 固定止损-7%
+  atr_multiplier: 2.0           # ATR动态止损：买入价-2×ATR(14)
+  atr_period: 14
+  moving_stop_trigger: 5.0      # 移动止损启用条件：浮盈>5%
+  moving_stop_drawdown: 5.0     # 从最高点回撤-5%
+  chandelier_period: 22         # Chandelier Exit：22日最高价-3×ATR(14)
+  chandelier_multiplier: 3.0
+  time_stop_days: 5             # 时间止损5天（次新股3天）
+  
+  # 止盈
+  standard_take_profit:
+    - level: "5%-10%"
+      sell_ratio: 0.333
+      move_stop_to: -5.0
+    - level: "10%-20%"
+      sell_ratio: 0.333
+      move_stop_to: -3.0
+    - level: ">20%"
+      sell_ratio: 0.334
+      move_stop_to: 0.0
+  
+  leader_take_profit:
+    - level: "5%-10%"
+      sell_ratio: 0.25
+      move_stop_to: -6.0
+    - level: "10%-20%"
+      sell_ratio: 0.25
+      move_stop_to: -4.0
+    - level: "20%-30%"
+      sell_ratio: 0.25
+      move_stop_to: -3.0
+    - level: ">30%"
+      sell_ratio: 0.25
+      move_stop_to: 0.0
+  
+  new_stock_take_profit:
+    - level: "5%-10%"
+      sell_ratio: 0.5
+    - level: ">10%"
+      sell_ratio: 0.5

@@ -1,0 +1,119 @@
+{
+  "date": "20260526",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-05-26T14:27:04.867447",
+  "recommendations": [
+    {
+      "code": "300408",
+      "name": "三环集团",
+      "penalty": 6,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-05-26",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 85.01,
+      "best_score": 84.4,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.215
+    },
+    {
+      "code": "002156",
+      "name": "通富微电",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-05-26",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 81.36,
+      "best_score": 78.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 18.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1814
+    },
+    {
+      "code": "688165",
+      "name": "埃夫特",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-05-26",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 80.61,
+      "best_score": 84.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 15.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1506
+    },
+    {
+      "code": "603267",
+      "name": "鸿远电子",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-05-26",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 80.61,
+      "best_score": 84.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 12.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1206
+    },
+    {
+      "code": "300831",
+      "name": "派瑞股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-05-26",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 多头排列",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 75.85,
+      "best_score": 79.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0859
+    }
+  ],
+  "total_position": 75.4,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

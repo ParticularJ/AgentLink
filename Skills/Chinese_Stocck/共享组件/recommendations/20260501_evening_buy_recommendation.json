@@ -1,0 +1,45 @@
+{
+  "date": "20260501",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-05-01T13:52:21.818002",
+  "recommendations": [
+    {
+      "code": "603228",
+      "name": "景旺电子",
+      "penalty": 0,
+      "source": "缺口填充",
+      "recommend_date": "2026-05-01",
+      "entry_price": 0.0,
+      "target_reason": "缺口填充信号确认",
+      "combined_score": 69.64,
+      "best_score": 73.95,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 20.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1996
+    },
+    {
+      "code": "688008",
+      "name": "澜起科技",
+      "penalty": 0,
+      "source": "缺口填充",
+      "recommend_date": "2026-05-01",
+      "entry_price": 0.0,
+      "target_reason": "缺口填充信号确认",
+      "combined_score": 69.09,
+      "best_score": 73.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 16.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1691
+    }
+  ],
+  "total_position": 36.9,
+  "stock_count": 2
+}

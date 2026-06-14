@@ -1,0 +1,116 @@
+# earnings-surprise-strategy/config/scoring_weights.yaml
+
+# 财报超预期策略评分权重配置
+version: "1.0.0"
+description: "各维度评分权重及评分标准"
+
+weights:
+  surprise_magnitude: 0.30    # 超预期幅度
+  growth_quality: 0.25        # 增长质量
+  market_reaction: 0.20       # 市场反应
+  institutional_attitude: 0.15 # 机构态度
+  industry_prosperity: 0.10   # 行业景气度
+
+# 超预期幅度评分标准
+surprise_magnitude:
+  # 净利润超预期
+  net_profit_surprise:
+    excellent: 100   # 超预期>30%
+    good: 85         # 超预期20-30%
+    normal: 70       # 超预期10-20%
+    poor: 0          # 超预期<10%或不及预期
+  
+  # 营收超预期
+  revenue_surprise:
+    excellent: 100   # 超预期>20%
+    good: 85         # 超预期10-20%
+    normal: 70       # 超预期5-10%
+    poor: 0          # 超预期<5%或不及预期
+  
+  # 双重超预期加成
+  double_beat_bonus: 15  # 利润和营收双超预期加分
+
+# 增长质量评分标准
+growth_quality:
+  # 增长可持续性
+  sustainability:
+    strong: 100      # 连续3季度加速增长
+    good: 85         # 连续2季度加速增长
+    normal: 70       # 单季度增长
+    poor: 40         # 增长放缓
+  
+  # 现金流质量
+  cash_flow:
+    strong: 100      # 经营现金流>净利润
+    good: 85         # 经营现金流>净利润*0.8
+    normal: 70       # 经营现金流为正
+    poor: 40         # 经营现金流为负
+  
+  # 毛利率趋势
+  margin_trend:
+    improving: 100   # 毛利率环比提升>2%
+    stable: 85       # 毛利率环比提升0-2%
+    declining: 60    # 毛利率环比下降
+    poor: 40         # 毛利率大幅下降
+
+# 市场反应评分标准
+market_reaction:
+  # 公告后股价表现
+  price_performance:
+    strong: 100      # 涨幅>10%且持续
+    good: 85         # 涨幅5-10%
+    normal: 70       # 涨幅0-5%
+    weak: 40         # 下跌
+  
+  # 成交量反应
+  volume_reaction:
+    strong: 100      # 放量>3倍
+    good: 85         # 放量2-3倍
+    normal: 70       # 放量1.5-2倍
+    weak: 40         # 放量<1.5倍
+  
+  # 跳空缺口
+  gap_up:
+    strong: 100      # 跳空>5%
+    good: 85         # 跳空3-5%
+    normal: 70       # 跳空0-3%
+    none: 50         # 无跳空
+
+# 机构态度评分标准
+institutional_attitude:
+  # 评级调整
+  rating_change:
+    strong: 100      # 多家上调+目标价上调
+    good: 85         # 1-2家上调
+    normal: 70       # 维持评级
+    negative: 40     # 下调评级
+  
+  # 研报数量
+  report_coverage:
+    high: 100        # >5篇研报
+    medium: 85       # 3-5篇研报
+    low: 70          # 1-2篇研报
+    none: 40         # 无研报
+  
+  # 目标价空间
+  target_price_space:
+    high: 100        # 目标价溢价>30%
+    medium: 85       # 溢价15-30%
+    low: 70          # 溢价0-15%
+    none: 50         # 无目标价
+
+# 行业景气度评分标准
+industry_prosperity:
+  # 行业增速
+  industry_growth:
+    high: 100        # 行业增速>20%
+    medium: 85       # 行业增速10-20%
+    low: 70          # 行业增速0-10%
+    negative: 40     # 行业负增长
+  
+  # 行业地位
+  industry_position:
+    leader: 100      # 行业龙头
+    challenger: 85   # 行业挑战者
+    follower: 70     # 行业跟随者
+    niche: 60        # 细分市场

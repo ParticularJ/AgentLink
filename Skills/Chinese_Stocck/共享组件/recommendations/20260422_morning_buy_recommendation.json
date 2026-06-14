@@ -1,0 +1,94 @@
+{
+  "date": "20260422",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-04-22T23:51:12.679599",
+  "recommendations": [
+    {
+      "code": "603083",
+      "name": "剑桥科技",
+      "source": "突破新高",
+      "recommend_date": "2026-04-22",
+      "entry_price": 0.0,
+      "target_reason": "突破动量强劲，早盘追涨，综合得分100；突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 100,
+      "best_score": 91.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "600522",
+      "name": "中天科技",
+      "source": "突破新高",
+      "recommend_date": "2026-04-22",
+      "entry_price": 0.0,
+      "target_reason": "突破动量强劲，早盘追涨，综合得分100；突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 100,
+      "best_score": 90.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 20.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2
+    },
+    {
+      "code": "688048",
+      "name": "长光华芯",
+      "source": "突破新高",
+      "recommend_date": "2026-04-22",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 92.71,
+      "best_score": 83.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1627
+    },
+    {
+      "code": "002938",
+      "name": "鹏鼎控股",
+      "source": "突破新高",
+      "recommend_date": "2026-04-22",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 87.4,
+      "best_score": 80.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1274
+    },
+    {
+      "code": "300502",
+      "name": "新易盛",
+      "source": "突破新高",
+      "recommend_date": "2026-04-22",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；趋势确认，逢低买入博新高",
+      "combined_score": 77.66,
+      "best_score": 74.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 8.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0877
+    }
+  ],
+  "total_position": 80.8,
+  "stock_count": 5
+}

@@ -1,0 +1,30 @@
+{
+  "date": "20260516",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-05-16T23:24:45.085288",
+  "recommendations": [
+    {
+      "code": "688235",
+      "name": "百济神州",
+      "penalty": 0.0,
+      "source": "业绩超预期",
+      "recommend_date": "2026-05-16",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构看好; 行业景气度: 板块景气下行",
+      "combined_score": 82.32,
+      "best_score": 80.1,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 21.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2123
+    }
+  ],
+  "total_position": 21.2,
+  "stock_count": 1,
+  "strategy_count": 1,
+  "no_result_count": 0,
+  "error_count": 0
+}

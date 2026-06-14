@@ -1,0 +1,219 @@
+# 热点仓风险控制规则配置
+
+# ============================================
+# 止损规则
+# ============================================
+stop_loss:
+  # 固定止损
+  fixed:
+    enabled: true
+    pct: -7.0                    # 成本价-7%
+    apply_to_all: true           # 适用于所有策略
+  
+  # ATR动态止损
+  atr:
+    enabled: true
+    multiplier: 2.0              # 买入价-2×ATR(14)
+    period: 14                   # ATR计算周期
+    apply_to_all: true
+  
+  # 移动止损（浮盈后启用）
+  moving:
+    enabled: true
+    trigger_unrealized_pct: 5.0  # 浮盈>5%后启用
+    drawdown_pct: 5.0            # 从最高点回撤-5%
+    apply_to_all: true
+  
+  # Chandelier Exit
+  chandelier:
+    enabled: true
+    highest_period: 22           # N日最高价
+    atr_multiplier: 3.0          # 3×ATR(14)
+    atr_period: 14
+    apply_to: [sector_leader]    # 主要用于趋势股
+  
+  # 时间止损
+  time:
+    enabled: true
+    default_days: 5              # 默认5天
+    new_stock_days: 3            # 次新股3天
+    condition: unprofitable      # 未盈利时触发
+  
+  # 均线止损
+  ma:
+    enabled: true
+    ma_period: 5                 # 5日线
+    condition: close_below       # 收盘跌破
+    apply_to_all: true
+
+# ============================================
+# 止盈规则
+# ============================================
+take_profit:
+  # 普通热点股止盈（三档）
+  standard:
+    enabled: true
+    levels:
+      - pct: 5.0                 # 5%止盈线
+        sell_ratio: 0.333        # 卖出1/3
+        move_stop_to: -5.0       # 移动止损至-5%
+      - pct: 10.0                # 10%止盈线
+        sell_ratio: 0.333        # 再卖1/3
+        move_stop_to: -3.0       # 移动止损至-3%
+      - pct: 20.0                # 20%止盈线
+        sell_ratio: 0.334        # 卖剩余
+        move_stop_to: 0.0        # 保本
+  
+  # 龙头股止盈（四档）
+  sector_leader:
+    enabled: true
+    levels:
+      - pct: 5.0
+        sell_ratio: 0.25
+        move_stop_to: -6.0
+      - pct: 10.0
+        sell_ratio: 0.25
+        move_stop_to: -4.0
+      - pct: 20.0
+        sell_ratio: 0.25
+        move_stop_to: -3.0
+      - pct: 30.0
+        sell_ratio: 0.25
+        move_stop_to: 0.0
+  
+  # 次新股止盈（两档）
+  new_stock:
+    enabled: true
+    levels:
+      - pct: 5.0
+        sell_ratio: 0.5
+      - pct: 10.0
+        sell_ratio: 0.5
+
+# ============================================
+# 特殊止盈信号
+# ============================================
+special_signals:
+  # 盘中炸板
+ 炸板:
+    enabled: true
+    duration_threshold: 15       # 炸板>15分钟
+    action: sell_all             # 清仓
+    urgency: urgent
+  
+  # 尾盘涨停被砸
+ 尾盘涨停被砸:
+    enabled: true
+    action: sell_half            # 卖50%
+    next_day_action: sell_rest   # 次日卖剩余
+    urgency: urgent
+  
+  # 板块龙头被替换
+ 板块龙头被替换:
+    enabled: true
+    action: sell_half            # 减仓50%
+    alternative_action: switch   # 或切换至新龙头
+    urgency: normal
+  
+  # 高位巨量阴线
+ 高位巨量阴线:
+    enabled: true
+    min_drop_pct: 3.0            # 跌幅≥3%
+    volume_ratio_threshold: 1.5  # 量能>前日1.5倍
+    action: sell_all
+    urgency: urgent
+  
+  # 监管出手
+ 监管出手:
+    enabled: true
+    action: sell_all
+    urgency: urgent
+
+# ============================================
+# 盘中实时监控规则
+# ============================================
+intraday_monitor:
+  # 跌破分时均线
+  below_intraday_ma:
+    enabled: true
+    duration_minutes: 15         # 跌破>15分钟
+    action: sell_third           # 卖出1/3
+  
+  # 爆量不涨
+  volume_surge:
+    enabled: true
+    surge_ratio: 1.0             # 量能放大100%以上
+    max_rise_pct: 2.0            # 涨幅<2%
+    action: sell_half            # 卖出1/2
+  
+  # 板块跌停
+  sector_limit_down:
+    enabled: true
+    count_threshold: 3           # 板块内≥3只跌停
+    action: sell_all             # 清仓该板块
+    urgency: urgent
+  
+  # 炸板未回封
+ 炸板_unfilled:
+    enabled: true
+    duration_minutes: 10         # 炸板>10分钟
+    action: sell_all
+    urgency: urgent
+  
+  # 龙头地位丧失
+  leader_lost:
+    enabled: true
+    action: sell_half            # 减仓50%
+    alternative_action: switch
+
+# ============================================
+# 收盘后监控规则
+# ============================================
+daily_monitor:
+  # 收盘破5日线
+  close_below_ma5:
+    enabled: true
+    action: sell_all_next_open   # 次日开盘卖出
+    urgency: urgent
+  
+  # 高位放量滞涨
+  high_volume_stagnation:
+    enabled: true
+    action: sell_half_next_open  # 次日开盘卖1/2
+  
+  # 长上影线
+  long_upper_shadow:
+    enabled: true
+    shadow_to_body_ratio: 2.0    # 上影>实体2倍
+    action: sell_if_weak         # 反弹无力即卖
+  
+  # 换手率危险线
+  turnover_danger:
+    enabled: true
+    threshold: 35.0              # >35%
+    action: sell_on_rise         # 冲高卖出
+  
+  # 龙头评分下降
+  leader_score_drop:
+    enabled: true
+    threshold: 70.0              # <70分
+    consecutive_days: 2          # 连续2日
+    action: sell_half            # 减仓50%
+  
+  # 板块热度退出前5
+  sector_heat_exit:
+    enabled: true
+    threshold: 70.0              # <70分
+    action: sell_all             # 清仓该板块
+
+# ============================================
+# 加仓后风控调整
+# ============================================
+after_add_position:
+  # 止损线上移
+  move_stop_to_cost: true        # 加仓后止损线上移至首仓成本价
+  
+  # 加仓部分次日处理
+  add_position_next_day:
+    condition: no_limit_up       # 加仓后次日未涨停
+    action: sell_add_position    # 开盘卖出加仓部分

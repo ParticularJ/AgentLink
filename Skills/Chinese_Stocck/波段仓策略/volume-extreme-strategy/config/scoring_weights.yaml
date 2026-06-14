@@ -1,0 +1,41 @@
+# config/scoring_weights.yaml
+
+# 成交量地量见底策略评分权重配置
+version: "1.0.0"
+
+weights:
+  volume_extreme: 0.35
+  price_position: 0.25
+  stability_signal: 0.25
+  follow_up: 0.15
+
+# 地量程度评分标准
+volume_extreme:
+  extreme: 100      # 缩量<40%，且为阶段地量
+  strong: 85        # 缩量40-50%
+  normal: 70        # 缩量50-60%
+  mild: 50          # 缩量60-70%
+  none: 0           # 未缩量
+
+# 价格位置评分标准
+price_position:
+  perfect: 100      # 处于30日低位，偏离均线>10%
+  good: 85          # 处于30日低位，偏离均线5-10%
+  normal: 70        # 位置适中
+  poor: 40          # 位置偏高
+
+# 企稳信号评分标准
+stability_signal:
+  strong: 100       # 地量后连续3日不创新低
+  good: 85          # 地量后2日不创新低
+  normal: 70        # 地量后1日不创新低
+  weak: 50          # 仍在下跌
+  none: 0           # 继续大跌
+
+# 后续确认评分标准
+follow_up:
+  strong: 100       # 地量后放量上涨>3%
+  good: 85          # 地量后放量上涨1-3%
+  normal: 70        # 地量后小幅上涨
+  weak: 50          # 地量后横盘
+  none: 0           # 地量后继续下跌

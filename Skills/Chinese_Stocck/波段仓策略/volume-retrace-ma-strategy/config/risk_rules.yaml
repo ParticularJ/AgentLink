@@ -1,0 +1,36 @@
+# 风险管理规则
+risk_management:
+  # 止损设置
+  stop_loss:
+    method: "ma_break"         # 跌破均线止损
+    fixed_pct: 0.05            # 固定5%止损
+    ma_buffer_pct: 0.03        # 均线下方3%缓冲
+  
+  # 止盈设置
+  take_profit:
+    method: "resistance"       # 阻力位止盈
+    target1: 0.10              # 第一目标10%
+    target2: 0.15              # 第二目标15%
+    target3: 0.25              # 第三目标25%
+    trailing_stop: true        # 启用移动止盈
+    trailing_pct: 0.08         # 回撤8%止盈
+  
+  # 时间止损
+  time_stop:
+    enabled: true
+    max_holding_days: 10       # 最多持有10天
+    exit_if_no_move: true      # 无表现则离场
+
+# 风险控制规则
+risk_limits:
+  max_single_position: 0.20    # 单只股票最大仓位20%
+  max_sector_exposure: 0.40    # 单一行业最大暴露40%
+  max_daily_trades: 5          # 每日最大交易次数
+  max_concurrent_positions: 8  # 最大持仓数量
+
+# 仓位管理
+position_sizing:
+  base_position: 0.10          # 基础仓位10%
+  score_adjustment: true       # 根据评分调整仓位
+  high_score_bonus: 0.05       # 高分股票额外5%
+  low_score_penalty: 0.03      # 低分股票减少3%

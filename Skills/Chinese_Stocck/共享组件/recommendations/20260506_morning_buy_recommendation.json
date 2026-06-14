@@ -1,0 +1,27 @@
+{
+  "date": "20260506",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-05-06T23:29:55.570798",
+  "recommendations": [
+    {
+      "code": "603986",
+      "name": "兆易创新",
+      "penalty": 0.0,
+      "source": "业绩超预期",
+      "recommend_date": "2026-05-06",
+      "entry_price": 0.0,
+      "target_reason": "业绩超预期信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 82.0,
+      "best_score": 79.8,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 21.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.212
+    }
+  ],
+  "total_position": 21.2,
+  "stock_count": 1
+}

@@ -1,0 +1,34 @@
+# 涨停板连板分析风险规则配置
+
+risk_rules:
+  # 仓位控制
+  position_control:
+    max_single_position: 0.20     # 单只股票最大仓位 (20%)
+    max_sector_position: 0.30     # 单个板块最大仓位 (30%)
+    max_total_position: 0.80      # 总仓位上限 (80%)
+  
+  # 止损规则
+  stop_loss:
+    fixed_stop_loss: 0.05         # 固定止损 (-5%)
+    trailing_stop: 0.03           # 移动止损 (回撤3%)
+    time_stop: 3                  # 时间止损 (3天)
+  
+  # 止盈规则
+  take_profit:
+    fixed_take_profit: 0.15       # 固定止盈 (+15%)
+    partial_profit_1: 0.10        # 第一次部分止盈 (+10%)
+    partial_profit_2: 0.20        # 第二次部分止盈 (+20%)
+  
+  # 黑名单规则
+  blacklist:
+    st_stocks: true               # 排除ST股票
+    suspended_stocks: true        # 排除停牌股票
+    delisting_risk: true          # 排除退市风险股票
+    max_price: 100.0              # 最大股价限制
+    min_price: 3.0                # 最小股价限制
+  
+  # 市场风险控制
+  market_risk:
+    max_daily_loss: 0.05          # 单日最大亏损
+    max_drawdown: 0.15            # 最大回撤
+    market_crash_threshold: -0.05 # 市场崩盘阈值 (大盘跌5%)

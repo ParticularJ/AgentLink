@@ -1,0 +1,62 @@
+# config/strategy_config.yaml
+
+# 突破前期高点策略参数配置
+strategy:
+  name: "突破前期高点策略"
+  version: "1.0.0"
+  
+  # 突破参数
+  breakout_parameters:
+    lookback_days: 60          # 回看天数（寻找前期高点）
+    min_breakout_pct: 3.0      # 最小突破幅度(%)
+    require_close_high: true   # 要求收盘价接近最高价
+    allow_gap_up: true         # 允许跳空突破
+  
+  # 成交量参数
+  volume_parameters:
+    min_volume_ratio: 1.5      # 最小放量倍数
+    strong_volume_ratio: 2.0   # 强势放量倍数
+    avg_volume_period: 20      # 均量周期
+    require_volume_increase: true  # 要求成交量递增
+  
+  # 趋势配合参数
+  trend_parameters:
+    require_ma_bullish: false   # 是否要求均线多头
+    ma_periods: [5, 10, 20]    # 均线周期
+    min_price_above_ma: 0      # 股价相对均线最小偏离
+  
+  # 回踩确认参数
+  pullback_confirmation:
+    check_days: 3              # 回踩检查天数
+    max_pullback_pct: 3.0      # 最大回踩幅度(%)
+    require_volume_shrink: true # 回踩是否缩量
+
+# 评分权重
+scoring:
+  weights:
+    breakout_quality: 0.35     # 突破质量
+    volume_confirmation: 0.25  # 成交量确认
+    trend_cooperation: 0.25    # 趋势配合
+    pullback_confirmation: 0.15 # 回踩确认
+  
+  thresholds:
+    strong: 85
+    recommend: 75
+    watch: 70
+
+# 风险管理
+risk_management:
+  stop_loss:
+    type: "breakout_low"
+    condition: "close < breakout_candle_low"
+    hard_stop: 0.05
+  
+  take_profit:
+    target1: 0.10    # 第一目标10%
+    target2: 0.15    # 第二目标15%
+    target3: 0.20    # 第三目标20%
+  
+  position_sizing:
+    strong_signal: 0.30
+    normal_signal: 0.20
+    weak_signal: 0.10

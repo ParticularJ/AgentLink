@@ -1,0 +1,71 @@
+{
+  "date": "20260526",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-05-26T23:58:07.837992",
+  "recommendations": [
+    {
+      "code": "688072",
+      "name": "拓荆科技",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-05-26",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 79.89,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 21.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2099
+    },
+    {
+      "code": "002916",
+      "name": "深南电路",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-05-26",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 79.89,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 18.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1799
+    },
+    {
+      "code": "002463",
+      "name": "沪电股份",
+      "penalty": -2,
+      "penalty_reason": [
+        "公司主动预警行业竞争加剧风险，明确指出同行大规模扩产将摊薄技术门槛、挤压利润空间，属于主动释放的经营层面压力信号，但尚无具体减持或业绩下修行为"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-05-26",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 71.89,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 14.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1419
+    }
+  ],
+  "total_position": 53.2,
+  "stock_count": 3,
+  "strategy_count": 1,
+  "no_result_count": 0,
+  "error_count": 0
+}
