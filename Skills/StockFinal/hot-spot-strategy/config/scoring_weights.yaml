@@ -1,0 +1,280 @@
+# 热点仓四大策略评分权重配置
+
+# ============================================
+# 策略一：首次涨停板评分权重
+# ============================================
+first_limit_up:
+  # 总分100分
+  limit_up_time:          # 涨停时间
+    weight: 30            # 权重30分
+    thresholds:
+      excellent: 5        # 9:35前（开盘后5分钟内）
+      good: 30            # 10:00前
+      fair: 60            # 10:30前
+      poor: 61            # 10:30后
+    scores:
+      excellent: 30       # 30分
+      good: 20            # 20分
+      fair: 10            # 10分
+      poor: 0             # 0分
+  
+  seal_quality:           # 封单质量
+    weight: 25            # 权重25分
+    thresholds:
+      excellent: 80       # 封单/日均成交额>80%
+      good: 50            # >50%
+      fair: 30            # >30%
+      poor: 10            # >10%
+    scores:
+      excellent: 25       # 25分
+      good: 20            # 20分
+      fair: 15            # 15分
+      poor: 10            # 10分
+      none: 5             # <10% 5分
+  
+  sector_effect:          # 板块效应
+    weight: 25            # 权重25分
+    thresholds:
+      excellent: 5        # 板块内≥5只涨停
+      good: 3             # ≥3只
+      fair: 1             # ≥1只
+    scores:
+      excellent: 25       # 25分
+      good: 15            # 15分
+      fair: 5             # 5分
+      none: 0             # 0分
+  
+  turnover:               # 换手率
+    weight: 20            # 权重20分
+    thresholds:
+      optimal: [5, 15]    # 5%-15%最优
+      good: [15, 25]      # 15%-25%
+      fair: [3, 5]        # 3%-5%
+      high: [25, 35]      # 25%-35%
+    scores:
+      optimal: 20         # 20分
+      good: 15            # 15分
+      fair: 10            # 10分
+      high: 8             # 8分
+      extreme: 5          # 其他 5分
+
+# ============================================
+# 策略二：涨停回调评分权重
+# ============================================
+limit_up_retrace:
+  # 总分100分
+  retrace_pct:            # 回调幅度
+    weight: 25            # 权重25分
+    thresholds:
+      optimal: [8, 12]    # -8%~-12%最优
+      good: [5, 8]        # -5%~-8%
+      fair: [12, 15]      # -12%~-15%
+      shallow: [3, 5]     # -3%~-5%
+      deep: [15, 20]      # -15%~-20%
+    scores:
+      optimal: 25         # 25分
+      good: 20            # 20分
+      fair: 15            # 15分
+      shallow: 10         # 10分
+      deep: 8             # 8分
+      extreme: 5          # 其他 5分
+  
+  retrace_days:           # 回调天数
+    weight: 20            # 权重20分
+    thresholds:
+      optimal: [3, 4]     # 3-4天最优
+      good: [2, 5]        # 2天或5天
+      fair: 6             # 6天
+      short: 1            # 1天
+    scores:
+      optimal: 20         # 20分
+      good: 15            # 15分
+      fair: 10            # 10分
+      short: 8            # 8分
+      long: 5             # 其他 5分
+  
+  volume_shrink:          # 缩量程度
+    weight: 25            # 权重25分
+    thresholds:
+      excellent: 60       # 量能<涨停日40%（缩量60%以上）
+      good: 40            # <60%
+      fair: 30            # <70%
+      poor: 20            # <80%
+    scores:
+      excellent: 25       # 25分
+      good: 20            # 20分
+      fair: 15            # 15分
+      poor: 10            # 10分
+      none: 5             # 其他 5分
+  
+  stop_signal:            # 企稳信号
+    weight: 30            # 权重30分
+    sub_weights:
+      kline_pattern: 12   # K线形态 12分
+      above_ma5: 10       # 站5日线 10分
+      daily_change: 8     # 当日跌幅 8分
+    kline_scores:
+      hammer: 12          # 锤子线 12分
+      doji: 10            # 十字星 10分
+      small_yang: 8       # 小阳线 8分
+      other: 3            # 其他 3分
+    ma5_scores:
+      above: 10           # 站5日线 10分
+      below: 3            # 未站 3分
+    change_scores:
+      small_drop: 8       # 跌幅≤-3% 8分
+      moderate_drop: 5    # 跌幅≤-5% 5分
+      large_drop: 2       # 其他 2分
+
+# ============================================
+# 策略三：热门板块龙头评分权重
+# ============================================
+sector_leader:
+  # 总分100分
+  rank_in_sector:         # 涨幅领先度
+    weight: 25            # 权重25分
+    thresholds:
+      rank1: 1            # 板块第1
+      rank2: 2            # 板块第2
+      rank3: 3            # 板块第3
+      top5: 5             # 前5
+      top10: 10           # 前10
+    scores:
+      rank1: 25           # 25分
+      rank2: 20           # 20分
+      rank3: 15           # 15分
+      top5: 10            # 10分
+      top10: 5            # 5分
+      other: 2            # 其他 2分
+  
+  limit_strength:         # 涨停强度
+    weight: 15            # 权重15分
+    thresholds:
+      consecutive2: 2     # 2连板以上
+      has_limit: 1        # 近3日有涨停
+      none: 0             # 无涨停
+    scores:
+      consecutive2: 15    # 15分
+      has_limit: 10       # 10分
+      none: 5             # 5分
+  
+  sector_heat:            # 板块热度
+    weight: 20            # 权重20分
+    thresholds:
+      excellent: 85       # 板块≥85分
+      good: 75            # ≥75分
+      fair: 70            # ≥70分
+    scores:
+      excellent: 20       # 20分
+      good: 15            # 15分
+      fair: 10            # 10分
+      poor: 5             # <70分 5分
+  
+  leadership:             # 带动性
+    weight: 15            # 权重15分
+    thresholds:
+      strong: 80          # 带动性≥80分
+      moderate: 60        # ≥60分
+      weak: 40            # ≥40分
+    scores:
+      strong: 15          # 15分
+      moderate: 10        # 10分
+      weak: 6             # 6分
+      none: 3             # <40分 3分
+  
+  turnover:               # 换手率
+    weight: 15            # 权重15分
+    thresholds:
+      optimal: [10, 25]   # 10%-25%最优
+      good: [5, 10]       # 5%-10%
+      high: [25, 35]      # 25%-35%
+    scores:
+      optimal: 15         # 15分
+      good: 10            # 10分
+      high: 8             # 8分
+      extreme: 5          # 其他 5分
+  
+  market_cap:             # 流通市值
+    weight: 10            # 权重10分
+    thresholds:
+      optimal: [50, 150]  # 50-150亿最优
+      good: [150, 300]    # 150-300亿
+      small: [30, 50]     # 30-50亿
+      large: [300, 500]   # 300-500亿
+    scores:
+      optimal: 10         # 10分
+      good: 8             # 8分
+      small: 7            # 7分
+      large: 5            # 5分
+      extreme: 3          # 其他 3分
+
+# ============================================
+# 策略四：次新股评分权重
+# ============================================
+new_stock:
+  # 总分100分
+  industry:               # 行业景气度
+    weight: 30            # 权重30分
+    scores:
+      core: 30            # 核心赛道 30分
+      secondary: 20       # 次一级赛道 20分
+      other: 10           # 其他 10分
+  
+  turnover:               # 首日换手率
+    weight: 25            # 权重25分
+    standard:             # 标准盘股
+      optimal: [60, 80]   # 60%-80%
+      fair: [50, 60]      # 50%-60%
+    small_cap:            # 小盘股
+      optimal: [70, 90]   # 70%-90%
+      fair: [60, 70]      # 60%-70%
+    scores:
+      optimal: 25         # 25分
+      fair: 15            # 15分
+      poor: 5             # 其他 5分
+  
+  stable_closing:         # 尾盘企稳
+    weight: 25            # 权重25分
+    scores:
+      stable: 25          # 企稳 25分
+      unstable: 5         # 未企稳 5分
+  
+  pe_ratio:               # 发行估值
+    weight: 20            # 权重20分
+    thresholds:
+      excellent: 1.2      # PE≤行业PE×1.2
+      good: 1.5           # ≤1.5倍
+    scores:
+      excellent: 20       # 20分
+      good: 10            # 10分
+      poor: 5             # >1.5倍 5分
+
+# ============================================
+# 多策略加分
+# ============================================
+multi_strategy_bonus:
+  # 同一股票命中多个策略时的额外加分
+  hit2: 3                 # 命中2个策略 +3分
+  hit3: 5                 # 命中3个策略 +5分
+  hit4: 6                 # 命中4个策略 +6分
+  max_total_score: 100    # 总分上限100分
+
+# ============================================
+# 仓位建议
+# ============================================
+position_sizing:
+  # 标准策略仓位
+  standard:
+    excellent: 0.30       # 90-100分：30%
+    strong: 0.25          # 80-89分：25%
+    moderate: 0.20        # 75-79分：20%
+    fair: 0.15            # 70-74分：15%
+    pass: 0.10            # 65-69分：10%
+    fail: 0.0             # <65分：0%
+  
+  # 次新股特殊仓位（更低）
+  new_stock:
+    excellent: 0.05       # 90-100分：5%
+    strong: 0.03          # 80-89分：3%
+    pass: 0.02            # ≥80分：2%
+    fail: 0.0             # <80分：0%

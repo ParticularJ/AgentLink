@@ -1,0 +1,100 @@
+# 热点仓定时任务配置
+
+jobs:
+  # ============================================
+  # 盘前准备
+  # ============================================
+  - name: pre-market-preparation
+    description: 盘前准备：检查隔夜消息、重置熔断状态
+    schedule: "0 8 * * 1-5"        # 工作日 8:00
+    action: reset_fuse
+    
+  # ============================================
+  # 早盘扫描
+  # ============================================
+  - name: morning-scan
+    description: 早盘扫描：首次涨停板、板块龙头
+    schedule: "30 9 * * 1-5"        # 工作日 9:30
+    action: scan_strategies
+    parameters:
+      strategies: [first_limit_up, sector_leader]
+      
+  - name: morning-recommendations
+    description: 生成早盘推荐
+    schedule: "35 9 * * 1-5"        # 工作日 9:35
+    action: generate_recommendations
+    parameters:
+      max_results: 3
+
+  # ============================================
+  # 盘中监控
+  # ============================================
+  - name: intraday-monitor-1
+    description: 盘中监控（10:30）
+    schedule: "30 10 * * 1-5"       # 工作日 10:30
+    action: monitor_positions
+    parameters:
+      mode: intraday
+      
+  - name: intraday-monitor-2
+    description: 盘中监控（11:30）
+    schedule: "30 11 * * 1-5"       # 工作日 11:30
+    action: monitor_positions
+    parameters:
+      mode: intraday
+      
+  - name: intraday-monitor-3
+    description: 盘中监控（14:00）
+    schedule: "0 14 * * 1-5"        # 工作日 14:00
+    action: monitor_positions
+    parameters:
+      mode: intraday
+
+  # ============================================
+  # 尾盘操作
+  # ============================================
+  - name: afternoon-scan
+    description: 尾盘扫描：涨停回调、次新股
+    schedule: "45 14 * * 1-5"       # 工作日 14:45
+    action: scan_strategies
+    parameters:
+      strategies: [limit_up_retrace, new_stock]
+      
+  - name: afternoon-recommendations
+    description: 生成尾盘推荐
+    schedule: "50 14 * * 1-5"       # 工作日 14:50
+    action: generate_recommendations
+    parameters:
+      max_results: 3
+
+  # ============================================
+  # 收盘后
+  # ============================================
+  - name: post-market-monitor
+    description: 收盘后监控
+    schedule: "5 15 * * 1-5"        # 工作日 15:05
+    action: monitor_positions
+    parameters:
+      mode: daily
+      
+  - name: daily-review
+    description: 每日复盘
+    schedule: "30 15 * * 1-5"       # 工作日 15:30
+    action: daily_review
+    
+  - name: generate-daily-report
+    description: 生成每日交易报告
+    schedule: "0 16 * * 1-5"        # 工作日 16:00
+    action: generate_report
+    parameters:
+      report_type: daily
+
+  # ============================================
+  # 特殊监控
+  # ============================================
+  - name: special-signals-check
+    description: 特殊信号检查（炸板、监管等）
+    schedule: "*/15 9-15 * * 1-5"   # 工作日 9:00-15:00 每15分钟
+    action: monitor_positions
+    parameters:
+      mode: special
