@@ -1,4 +1,4 @@
-# Core Position Holdings (核心仓持仓)
+# 核心仓持仓
 
 核心仓策略的独立持仓数据。
 

@@ -15,18 +15,19 @@
 
 ```
 策略工具/
-├── strategy-fusion-advisor/         # 策略融合顾问
-│   ├── crons/                       # 定时任务
-│   └── skills/                      # 融合算法
-├── strategy-optimizer/              # 策略优化器
-│   ├── config/                      # 优化配置
-│   ├── data/                        # 历史数据
-│   └── skills/                      # 优化算法
-├── stock_earnings_analysis/         # 财报分析工具
-│   └── skills/scripts/              # 分析脚本
-└── stock_event/                     # 股票事件监控
-    ├── config/                      # 事件配置
-    └── skills/                      # 监控脚本
+├── README.md                          # 本文件
+├── strategy-fusion-advisor/           # 策略融合顾问
+│   ├── crons/                         # 定时任务
+│   └── skills/                        # 融合算法
+├── strategy-optimizer/                # 策略优化器
+│   ├── config/                        # 优化配置
+│   ├── data/                          # 历史数据
+│   └── skills/                        # 优化算法
+├── stock_earnings_analysis/           # 财报分析工具
+│   └── skills/scripts/                # 分析脚本
+└── stock_event/                       # 股票事件监控
+    ├── config/                        # 事件配置
+    └── skills/                        # 监控脚本
 ```
 
 ## 功能说明

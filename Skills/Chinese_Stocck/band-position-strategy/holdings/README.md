@@ -1,4 +1,4 @@
-# Band Position Holdings (波段仓持仓)
+# 波段仓持仓
 
 波段仓策略的独立持仓数据。
 

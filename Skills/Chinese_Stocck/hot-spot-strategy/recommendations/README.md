@@ -1,4 +1,4 @@
-# Hot Spot Recommendations (热点仓推荐记录)
+# 热点仓推荐记录
 
 热点仓策略的独立交易推荐记录。
 
@@ -20,7 +20,7 @@
     {
       "code": "000001",
       "name": "平安银行",
-      "strategy_type": "FIRST_LIMIT_UP",
+      "strategy_type": "首次涨停板",
       "score": 85,
       "position_pct": 0.20,
       "holding_days": 3,

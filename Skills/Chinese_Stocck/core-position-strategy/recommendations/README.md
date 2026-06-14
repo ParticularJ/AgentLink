@@ -1,4 +1,4 @@
-# Core Position Recommendations (核心仓推荐记录)
+# 核心仓推荐记录
 
 核心仓策略的独立交易推荐记录。
 
@@ -19,7 +19,7 @@
     {
       "code": "000001",
       "name": "平安银行",
-      "signal": "STRONG_BUY",
+      "signal": "强烈推荐",
       "score": 92,
       "position_pct": 0.15,
       "reason": "综合评分≥90，理想买点"

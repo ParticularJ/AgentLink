@@ -29,42 +29,74 @@
 
 ```
 波段仓策略/
-├── breakout-high-strategy/          # 突破新高策略
-│   ├── SKILL.md
+├── README.md                          # 本文件
+├── scripts/                           # 交易脚本
+│   ├── run_morning_trade_query.sh     # 早盘交易查询
+│   ├── run_afternoon_trade_query.sh   # 午盘交易查询
+│   ├── run_morning_monitor.sh         # 早盘监控
+│   ├── run_evening_monitor.sh         # 收盘监控
+│   ├── run_morning_holding.sh         # 早盘持仓检查
+│   ├── run_evening_holding.sh         # 收盘持仓检查
+│   ├── run_morning_fusion.sh          # 早盘策略融合
+│   ├── run_evening_fusion.sh          # 收盘策略融合
+│   ├── run_morning_push.sh            # 早盘推送
+│   ├── run_evening_push.sh            # 收盘推送
+│   └── run_add_position.sh            # 加仓执行
+├── breakout-high-strategy/            # 突破新高
+│   ├── README.md
+│   ├── requirements.txt
 │   ├── config/
 │   └── skills/scripts/
-├── earnings-surprise-strategy/      # 业绩超预期策略
+├── earnings-surprise-strategy/        # 业绩超预期
 │   ├── SKILL.md
+│   ├── README.md
+│   ├── requirements.txt
 │   ├── config/
 │   └── skills/scripts/
-├── gap-fill-strategy/               # 缺口回补策略
-│   ├── SKILL.md
+├── gap-fill-strategy/                 # 缺口回补
+│   ├── README.md
 │   ├── config/
 │   └── skills/scripts/
-├── ma-bullish-strategy/             # 均线多头策略
+├── ma-bullish-strategy/               # 均线多头
 │   ├── SKILL.md
+│   ├── README.md
+│   ├── requirements.txt
 │   ├── config/
 │   └── skills/scripts/
-├── macd-divergence-strategy/        # MACD背离策略
+├── macd-divergence-strategy/          # MACD背离
 │   ├── SKILL.md
+│   ├── README.md
+│   ├── requirements.txt
 │   ├── config/
 │   └── skills/scripts/
-├── morning-star-strategy/           # 晨星形态策略
+├── morning-star-strategy/             # 晨星形态
 │   ├── SKILL.md
+│   ├── README.md
+│   ├── requirements.txt
 │   ├── config/
 │   └── skills/scripts/
-├── rsi-oversold-strategy/           # RSI超卖策略
+├── rsi-oversold-strategy/             # RSI超卖
 │   ├── SKILL.md
+│   ├── README.md
+│   ├── requirements.txt
 │   ├── config/
 │   └── skills/scripts/
-├── volume-extreme-strategy/         # 量能极端策略
+├── volume-extreme-strategy/           # 量能极端
 │   ├── SKILL.md
+│   ├── README.md
+│   ├── requirements.txt
 │   ├── config/
 │   └── skills/scripts/
-└── volume-retrace-ma-strategy/      # 量能回踩均线策略
-    ├── SKILL.md
-    ├── config/
-    └── skills/scripts/
+├── volume-retrace-ma-strategy/        # 量能回踩均线
+│   ├── README.md
+│   ├── config/
+│   └── skills/scripts/
+├── stock-pool/                        # 股票池
+│   └── README.md
+├── holdings/                          # 持仓数据
+│   └── README.md
+└── recommendations/                   # 推荐记录
+    └── README.md
 ```
 
 ## 策略分类
@@ -105,7 +137,7 @@
 
 ## 快速开始
 
-各策略独立运行，详见各策略目录下的 SKILL.md 文件。
+各策略独立运行，详见各策略目录下的说明文档。
 
 通用调用方式：
 ```python

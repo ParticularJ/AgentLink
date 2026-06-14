@@ -1,12 +1,12 @@
-# Shared Components (共享组件)
+# 共享组件
 
 跨策略共享的基础设施和公共工具，不包含策略特定的股票池、持仓或推荐数据。
 
 ## 目录结构
 
 ```
-shared-components/
-├── README.md              # This file
+共享组件/
+├── README.md              # 本文件
 └── _shared/               # 共享脚本与工具
     ├── batch_collector.py     # 批量数据收集
     ├── data_collector.py      # 数据收集器

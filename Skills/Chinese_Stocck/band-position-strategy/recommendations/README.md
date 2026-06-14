@@ -1,4 +1,4 @@
-# Band Position Recommendations (波段仓推荐记录)
+# 波段仓推荐记录
 
 波段仓策略的独立交易推荐记录。
 
@@ -20,7 +20,7 @@
     {
       "code": "000001",
       "name": "平安银行",
-      "sub_strategy": "breakout-high",
+      "sub_strategy": "突破新高",
       "entry_price": 12.50,
       "target_price": 15.00,
       "stop_loss": 11.80,
