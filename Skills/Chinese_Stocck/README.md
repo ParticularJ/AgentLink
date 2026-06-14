@@ -1,96 +1,103 @@
-# 股票交易策略系统
+# Stock Trading Strategy System
 
-基于三大仓位策略的完整A股交易系统，涵盖核心仓、热点仓、波段仓的全流程管理。
+A complete A-share trading system based on three position strategies: Core Position, Hot Spot, and Band Position.
 
-## 系统架构
+## System Architecture
 
 ```
 Chinese_Stocck/
-├── 核心仓策略/          # 中长线持仓（季度级）
-│   ├── core-position-strategy/     # 核心仓V3.0（赛道生命周期+基本面）
-│   └── Medium-termHoldingStrategy/ # 中期持仓监控与交易执行
-├── 热点仓策略/          # 短线交易（日/周级）
-│   ├── hot-spot-strategy/          # 热点仓四大策略体系
-│   ├── limit-up-retrace-strategy/  # 涨停回调策略
-│   └── limit-up-analysis/          # 涨停分析工具
-├── 波段仓策略/          # 中短线波段（周/月级）
-│   ├── breakout-high-strategy/     # 突破新高策略
-│   ├── earnings-surprise-strategy/ # 业绩超预期策略
-│   ├── gap-fill-strategy/          # 缺口回补策略
-│   ├── ma-bullish-strategy/        # 均线多头策略
-│   ├── macd-divergence-strategy/   # MACD背离策略
-│   ├── morning-star-strategy/      # 晨星形态策略
-│   ├── rsi-oversold-strategy/      # RSI超卖策略
-│   ├── volume-extreme-strategy/    # 量能极端策略
-│   └── volume-retrace-ma-strategy/ # 量能回踩均线策略
-├── 策略工具/            # 跨策略通用工具
-│   ├── strategy-fusion-advisor/    # 策略融合顾问
-│   ├── strategy-optimizer/         # 策略优化器
-│   ├── stock_earnings_analysis/    # 财报分析工具
-│   └── stock_event/                # 股票事件监控
-└── 共享组件/            # 公共数据与配置
-    ├── _shared/                      # 共享脚本与配置
-    ├── my_holdings/                  # 持仓数据
-    ├── my_stock_pool/                # 股票池数据
-    └── recommendations/              # 交易推荐记录
+├── README.md                          # This file
+├── core-position-strategy/            # Long-term holding (Quarterly)
+│   ├── README.md                      # Strategy overview
+│   ├── core-position-strategy/        # Core engine V3.0
+│   └── Medium-termHoldingStrategy/    # Mid-term execution
+├── hot-spot-strategy/                 # Short-term trading (Daily/Weekly)
+│   ├── README.md                      # Strategy overview
+│   ├── hot-spot-strategy/             # 4-strategy system
+│   ├── limit-up-retrace-strategy/     # Limit-up retrace
+│   └── limit-up-analysis/             # Limit-up analysis
+├── band-position-strategy/            # Medium-short term (Weekly/Monthly)
+│   ├── README.md                      # Strategy overview
+│   ├── scripts/                       # Trading scripts
+│   ├── breakout-high-strategy/        # Breakout high
+│   ├── earnings-surprise-strategy/    # Earnings surprise
+│   ├── gap-fill-strategy/             # Gap fill
+│   ├── ma-bullish-strategy/           # MA bullish
+│   ├── macd-divergence-strategy/      # MACD divergence
+│   ├── morning-star-strategy/         # Morning star
+│   ├── rsi-oversold-strategy/         # RSI oversold
+│   ├── volume-extreme-strategy/       # Volume extreme
+│   └── volume-retrace-ma-strategy/    # Volume retrace MA
+├── strategy-tools/                    # Cross-strategy tools
+│   ├── strategy-fusion-advisor/       # Signal fusion
+│   ├── strategy-optimizer/            # Strategy optimization
+│   ├── stock_earnings_analysis/       # Earnings analysis
+│   └── stock_event/                   # Event monitoring
+└── shared-components/                 # Shared data & config
+    ├── _shared/                       # Shared scripts
+    ├── my_holdings/                   # Holdings data
+    ├── my_stock_pool/                 # Stock pools
+    └── recommendations/               # Recommendations
 ```
 
-## 三大策略对比
+## Three Strategies Comparison
 
-| 维度 | 核心仓策略 | 热点仓策略 | 波段仓策略 |
+| Dimension | Core Position | Hot Spot | Band Position |
 |:---|:---|:---|:---|
-| **投资周期** | 季度级（3-6月） | 日/周级（3-8天） | 周/月级（2-8周） |
-| **选股逻辑** | 赛道生命周期+基本面 | 涨停板+情绪+资金 | 技术形态+事件驱动 |
-| **持仓数量** | 5-8只 | ≤3只 | 5-10只 |
-| **资金占比** | 50% | 20-30% | 20-30% |
-| **止损策略** | ATR自适应/固定-10% | 固定-7%/移动-5% | 技术位止损-5~-8% |
-| **止盈策略** | 四档分层（15/25/40/60%） | 三档分批（5/10/20%） | 目标位/移动止盈 |
-| **核心能力** | 赛道判断+财报验证 | 情绪感知+资金追踪 | 技术识别+事件捕捉 |
+| **Investment Horizon** | Quarterly (3-6 months) | Daily/Weekly (3-8 days) | Weekly/Monthly (2-8 weeks) |
+| **Stock Selection** | Sector lifecycle + Fundamentals | Limit-up + Emotion + Capital | Technical pattern + Event driven |
+| **Position Count** | 5-8 stocks | ≤3 stocks | 5-10 stocks |
+| **Capital Allocation** | 50% | 20-30% | 20-30% |
+| **Stop Loss** | ATR Adaptive / Fixed -10% | Fixed -7% / Moving -5% | Technical level -5% to -8% |
+| **Take Profit** | 4-tier (15/25/40/60%) | 3-tier (5/10/20%) | Target price / Moving stop |
+| **Core Capability** | Sector judgment + Financial verification | Emotion sensing + Capital tracking | Technical recognition + Event capture |
 
-## 快速开始
+## Quick Start
 
-### 核心仓策略
+### Core Position Strategy
 ```python
-from 核心仓策略.core-position-strategy.skills.scripts.core_position_pipeline import CorePositionPipeline
+from core-position-strategy.core-position-strategy.skills.scripts.core_position_pipeline import CorePositionPipeline
 
 pipeline = CorePositionPipeline(total_capital=1000000.0, core_ratio=0.50)
 result = pipeline.run_full_pipeline(...)
 ```
 
-### 热点仓策略
+### Hot Spot Strategy
 ```python
-from 热点仓策略.hot-spot-strategy.skills.scripts.hot_spot_pipeline import HotSpotPipeline
+from hot-spot-strategy.hot-spot-strategy.skills.scripts.hot_spot_pipeline import HotSpotPipeline
 
 pipeline = HotSpotPipeline(total_capital=1000000.0)
 recommendations = pipeline.generate_recommendations(stocks_data)
 ```
 
-### 波段仓策略
-各波段策略独立运行，详见各策略目录下的 SKILL.md
+### Band Position Strategy
+Each band strategy runs independently, see individual README files.
 
-## 数据流
+## Data Flow
 
 ```
-市场数据 → 共享组件/_shared/ → 各策略模块
+Market Data → shared-components/_shared/ → Strategy Modules
                                     ↓
-                           交易信号 → 共享组件/my_holdings/
+                           Trading Signals → shared-components/my_holdings/
                                     ↓
-                           推荐记录 → 共享组件/recommendations/
+                           Recommendations → shared-components/recommendations/
 ```
 
-## 免责声明
+## Disclaimer
 
-仅供学习研究使用，不构成投资建议。股市有风险，投资需谨慎。
+For research and educational purposes only. Not investment advice. Stock market carries risks.
 
-## 更新日志
+## Changelog
 
 ### v2.0.0 (2025-06-14)
-- ✅ 重构目录结构，按三大策略分类组织
-- ✅ 新增核心仓策略 V3.0 完整实现
-- ✅ 统一共享组件管理
-- ✅ 更新所有策略文档
+- ✅ Restructured directories by three strategies
+- ✅ Added Core Position Strategy V3.0
+- ✅ Unified shared components management
+- ✅ Updated all strategy documentation
+- ✅ Renamed directories to English
+- ✅ Cleaned up cache files
 
 ### v1.0.0
-- ✅ 热点仓策略四大体系
-- ✅ 波段仓多策略实现
-- ✅ 基础持仓与推荐系统
+- ✅ Hot Spot Strategy 4-system implementation
+- ✅ Band Position multi-strategy implementation
+- ✅ Basic holdings and recommendation system
