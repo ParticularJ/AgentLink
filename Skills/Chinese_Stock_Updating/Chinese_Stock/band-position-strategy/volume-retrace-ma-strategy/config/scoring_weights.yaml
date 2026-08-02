@@ -1,0 +1,46 @@
+# 评分权重配置
+weights:
+  trend_strength: 0.25       # 趋势强度 25%
+  retrace_quality: 0.20      # 回踩质量 20%
+  volume_shrink: 0.20        # 缩量程度 20%
+  stop_signal: 0.20          # 止跌信号 20%
+  support_strength: 0.15     # 支撑强度 15%
+
+# 评分阈值
+thresholds:
+  strong_buy: 80    # 强烈买入
+  buy: 70           # 买入
+  watch: 60         # 观望
+  exclude: 0        # 排除
+
+# 各维度详细评分标准
+scoring_criteria:
+  trend_strength:
+    excellent: 100    # MA20>MA60且斜率>30度
+    good: 85          # MA20>MA60且斜率>15度
+    fair: 70          # MA20>MA60但斜率平缓
+    poor: 0           # MA20<MA60
+  
+  retrace_quality:
+    excellent: 100    # 精准回踩均线±1%
+    good: 85          # 回踩均线±3%
+    fair: 70          # 回踩均线±5%
+    poor: 0           # 偏离均线>5%
+  
+  volume_shrink:
+    excellent: 100    # 缩量至40%以下
+    good: 85          # 缩量至50%以下
+    fair: 70          # 缩量至60%以下
+    poor: 0           # 缩量不足60%
+  
+  stop_signal:
+    excellent: 100    # 锤子线+缩量
+    good: 85          # 十字星+缩量
+    fair: 70          # 小阳线+缩量
+    poor: 0           # 无明显止跌信号
+  
+  support_strength:
+    excellent: 100    # 均线斜率>30度+多次测试
+    good: 85          # 均线斜率>15度
+    fair: 70          # 均线平缓
+    poor: 0           # 均线向下

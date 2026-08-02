@@ -1,0 +1,75 @@
+{
+  "date": "20260618",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-18T14:27:47.514182",
+  "recommendations": [
+    {
+      "code": "300666",
+      "name": "江丰电子",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-18",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 80.03,
+      "best_score": 84.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.21
+    },
+    {
+      "code": "688809",
+      "name": "强一股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-18",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.63,
+      "best_score": 83.7,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1796
+    },
+    {
+      "code": "002463",
+      "name": "沪电股份",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-18",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 78.15,
+      "best_score": 74.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1482
+    }
+  ],
+  "total_position": 53.8,
+  "stock_count": 3,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

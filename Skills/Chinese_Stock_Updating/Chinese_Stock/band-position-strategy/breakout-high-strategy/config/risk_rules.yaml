@@ -1,0 +1,73 @@
+# config/risk_rules.yaml
+
+# 突破前期高点策略风险管理规则
+version: "1.0.0"
+
+# 止损规则
+stop_loss_rules:
+  breakout_low_stop:
+    enabled: true
+    condition: "close < breakout_candle_low"
+    description: "跌破突破K线最低点止损"
+  
+  hard_stop:
+    enabled: true
+    percentage: 0.05
+    description: "固定5%止损"
+  
+  ma_stop:
+    enabled: true
+    ma_period: 10
+    description: "跌破10日线止损"
+  
+  time_stop:
+    enabled: true
+    days: 10
+    min_profit: 0.02
+    description: "持仓10天盈利<2%离场"
+
+# 止盈规则
+take_profit_rules:
+  target_profit:
+    enabled: true
+    levels:
+      - percentage: 0.10
+        action: "减仓30%"
+      - percentage: 0.15
+        action: "减仓30%"
+      - percentage: 0.20
+        action: "清仓"
+  
+  trailing_stop:
+    enabled: true
+    percentage: 0.08
+    description: "最高点回撤8%止盈"
+  
+  resistance_stop:
+    enabled: true
+    description: "遇到下一个阻力位止盈"
+
+# 仓位管理
+position_sizing:
+  based_on_signal:
+    strong: 0.30    # 评分≥85
+    normal: 0.20    # 评分75-84
+    weak: 0.10      # 评分70-74
+  
+  based_on_breakout_strength:
+    strong: 0.30    # 放量>2倍
+    normal: 0.20    # 放量1.5-2倍
+    weak: 0.10      # 放量1.2-1.5倍
+  
+  max_single_position: 0.30
+  max_portfolio_risk: 0.06
+
+# 假突破识别规则
+false_breakout_rules:
+  conditions:
+    - "突破后3日内跌破突破K线最低点"
+    - "突破时成交量无明显放大"
+    - "突破后收长上影线"
+    - "突破时大盘环境较差"
+  
+  action: "立即止损离场"

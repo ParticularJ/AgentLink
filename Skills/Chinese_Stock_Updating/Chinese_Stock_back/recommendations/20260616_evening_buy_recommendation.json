@@ -1,0 +1,100 @@
+{
+  "date": "20260616",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-16T14:24:31.709326",
+  "recommendations": [
+    {
+      "code": "688809",
+      "name": "强一股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-16",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 82.33,
+      "best_score": 86.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2123
+    },
+    {
+      "code": "300666",
+      "name": "江丰电子",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-16",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.94,
+      "best_score": 86.3,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1819
+    },
+    {
+      "code": "002384",
+      "name": "东山精密",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-16",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 多头排列",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 76.02,
+      "best_score": 72.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.146
+    },
+    {
+      "code": "688183",
+      "name": "生益电子",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-16",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 有效突破",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 72.82,
+      "best_score": 72.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1128
+    }
+  ],
+  "total_position": 65.3,
+  "stock_count": 4,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

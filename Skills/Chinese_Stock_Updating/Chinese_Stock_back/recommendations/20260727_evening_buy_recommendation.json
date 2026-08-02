@@ -1,0 +1,87 @@
+{
+  "date": "20260727",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-07-27T14:23:41.741590",
+  "recommendations": [
+    {
+      "code": "600362",
+      "name": "江西铜业",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-27",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 有效突破",
+        "回踩确认: 缺口上方缩量企稳 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 75.18,
+      "best_score": 78.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 20.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2052
+    },
+    {
+      "code": "603893",
+      "name": "瑞芯微",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-27",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 普通缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 74.51,
+      "best_score": 77.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 17.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1745
+    },
+    {
+      "code": "000968",
+      "name": "蓝焰控股",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-27",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 普通缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 多头排列",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 72.73,
+      "best_score": 75.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1427
+    }
+  ],
+  "total_position": 52.3,
+  "stock_count": 3,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

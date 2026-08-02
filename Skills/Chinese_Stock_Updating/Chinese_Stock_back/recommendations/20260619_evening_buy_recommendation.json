@@ -1,0 +1,103 @@
+{
+  "date": "20260619",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-19T14:24:54.119035",
+  "recommendations": [
+    {
+      "code": "600549",
+      "name": "厦门钨业",
+      "penalty": -29,
+      "penalty_reason": [
+        "北向资金净卖出4.51亿元、龙虎榜资金净流出5.99亿元，为当日龙虎榜净卖出最多个股；机构与北向资金出现明显分歧，机构净买入4.24亿但北向资金大额出逃，显示主力资金对短期走势存较大分歧，股价上涨但主力资金出逃具备派发嫌疑，整体偏空。",
+        "沪股通专用席位净卖出4.51亿元，金额在13只上榜个股中最高，属于外资大额减持行为，反映机构投资者短期看空或调仓需求，对个股构成实质性资金面利空"
+      ],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-19",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 85.22,
+      "best_score": 82.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2152
+    },
+    {
+      "code": "300666",
+      "name": "江丰电子",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-19",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 80.03,
+      "best_score": 84.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.18
+    },
+    {
+      "code": "601958",
+      "name": "金钼股份",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-19",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方企稳",
+        "趋势配合: 强势上涨",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 76.55,
+      "best_score": 76.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1466
+    },
+    {
+      "code": "000636",
+      "name": "风华高科",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-19",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 72.02,
+      "best_score": 74.7,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.112
+    }
+  ],
+  "total_position": 65.4,
+  "stock_count": 4,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

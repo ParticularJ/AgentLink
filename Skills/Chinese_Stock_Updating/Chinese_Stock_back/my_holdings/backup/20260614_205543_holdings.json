@@ -1,0 +1,27 @@
+[
+  {
+    "code": "002384",
+    "name": "东山精密",
+    "cost": 218.25,
+    "shares": 600,
+    "init_shares": 600,
+    "current_price": 217.55,
+    "highest_price": 218.0,
+    "entry_date": "2026-06-14",
+    "strategy_name": "波段仓建仓",
+    "score": 62.45,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-14"
+  }
+]

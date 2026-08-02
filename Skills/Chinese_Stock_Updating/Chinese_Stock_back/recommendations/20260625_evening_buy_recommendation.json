@@ -1,0 +1,52 @@
+{
+  "date": "20260625",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-25T14:27:56.909732",
+  "recommendations": [
+    {
+      "code": "002585",
+      "name": "双星新材",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-25",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.63,
+      "best_score": 83.7,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2096
+    },
+    {
+      "code": "002916",
+      "name": "深南电路",
+      "penalty": -8,
+      "penalty_reason": [
+        "深南电路虽处热门国家大基金持股概念板块（当日板块涨幅4.87%），但公司股价仅上涨1.38%明显跑输板块。更关键的是，主力资金净流出1.22亿元，净流出比率-2.19%，在板块整体获主力净流入150.88亿元的背景下逆势出逃，表明机构资金对公司持谨慎态度，属于轻微利空。"
+      ],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-25",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 73.9,
+      "best_score": 84.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1739
+    }
+  ],
+  "total_position": 38.4,
+  "stock_count": 2,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

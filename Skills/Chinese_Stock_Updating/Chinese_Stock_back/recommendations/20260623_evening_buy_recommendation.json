@@ -1,0 +1,121 @@
+{
+  "date": "20260623",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-23T14:25:40.737547",
+  "recommendations": [
+    {
+      "code": "603399",
+      "name": "永杉锂业",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-23",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 85.06,
+      "best_score": 82.6,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2151
+    },
+    {
+      "code": "601958",
+      "name": "金钼股份",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-23",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方企稳",
+        "趋势配合: 强势上涨",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 80.73,
+      "best_score": 77.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 18.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1807
+    },
+    {
+      "code": "688809",
+      "name": "强一股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-23",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.33,
+      "best_score": 83.4,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1493
+    },
+    {
+      "code": "600522",
+      "name": "中天科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-23",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 76.67,
+      "best_score": 80.4,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 11.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1167
+    },
+    {
+      "code": "002585",
+      "name": "双星新材",
+      "penalty": -8,
+      "penalty_reason": [
+        "基础化工行业今日整体上涨4.17%背景下，双星新材逆势下跌1.68%，且主力资金大幅净流出1.68亿元，净流出规模居行业第三。换手率高达18.65%显示筹码松动明显，资金出逃意愿强烈，属中等实质性利空。"
+      ],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-23",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 71.94,
+      "best_score": 81.8,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0819
+    }
+  ],
+  "total_position": 74.4,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

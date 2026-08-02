@@ -1,0 +1,15 @@
+# config/data_sources.yaml
+data_sources:
+  primary:
+    name: "AKShare"
+    enabled: true
+    timeout: 10
+  
+  earnings:
+    name: "EastMoney"
+    api_url: "https://data.eastmoney.com/"
+    earnings_endpoint: "/report/"
+
+  research:
+    name: "SinaFinance"
+    api_url: "https://vip.stock.finance.sina.com.cn/"

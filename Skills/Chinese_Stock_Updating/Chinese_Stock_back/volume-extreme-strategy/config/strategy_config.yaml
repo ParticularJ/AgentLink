@@ -1,0 +1,67 @@
+# config/strategy_config.yaml
+
+# 成交量地量见底策略参数配置
+strategy:
+  name: "成交量地量见底策略"
+  version: "1.0.0"
+  
+  # 地量参数
+  volume_parameters:
+    volume_ma_period: 20       # 成交量均线周期
+    extreme_volume_ratio: 0.4  # 极度地量比例(<40%)
+    significant_ratio: 0.5     # 显著地量比例(40-50%)
+    mild_ratio: 0.6            # 温和地量比例(50-60%)
+    check_period: 60           # 地量回看周期（是否为阶段地量）
+  
+  # 价格位置参数
+  price_parameters:
+    ma_period: 20              # 均线周期
+    min_deviation: 5           # 最小偏离均线幅度(%)
+    lookback_days: 30          # 回看天数
+    require_low_position: true # 要求处于低位
+  
+  # 企稳信号参数
+  stability_parameters:
+    check_days: 3              # 企稳确认天数
+    no_new_low: true           # 不再创新低
+    require_small_yang: true   # 出现小阳线
+    allow_doji: true           # 允许十字星
+  
+  # 后续确认参数
+  confirmation_parameters:
+    check_days: 3              # 确认天数
+    min_volume_ratio: 1.2      # 最小放量倍数
+    min_price_change: 1        # 最小涨幅(%)
+    require_volume_increase: true  # 要求成交量递增
+
+# 评分权重
+scoring:
+  weights:
+    volume_extreme: 0.35       # 地量程度
+    price_position: 0.25       # 价格位置
+    stability_signal: 0.25     # 企稳信号
+    follow_up: 0.15            # 后续确认
+  
+  thresholds:
+    strong: 85
+    recommend: 75
+    watch: 70
+
+# 风险管理
+risk_management:
+  stop_loss:
+    type: "volume_low"
+    condition: "close < volume_extreme_day_low"
+    hard_stop: 0.05
+  
+  take_profit:
+    target1: 0.08    # 第一目标8%
+    target2: 0.12    # 第二目标12%
+    target3: 0.15    # 第三目标15%
+  
+  position_sizing:
+    strong_signal: 0.25
+    normal_signal: 0.15
+    weak_signal: 0.10
+  
+  max_holding_days: 15

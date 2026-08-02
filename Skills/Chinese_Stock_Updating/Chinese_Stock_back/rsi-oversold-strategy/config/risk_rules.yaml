@@ -1,0 +1,70 @@
+# config/risk_rules.yaml
+
+# RSI超卖反弹策略风险管理规则
+version: "1.0.0"
+
+# 止损规则
+stop_loss_rules:
+  recent_low_stop:
+    enabled: true
+    condition: "close < recent_5day_low"
+    description: "跌破5日低点止损"
+  
+  hard_stop:
+    enabled: true
+    percentage: 0.05
+    description: "固定5%止损"
+  
+  rsi_stop:
+    enabled: true
+    condition: "rsi < 20"  # 超卖后继续下跌
+    description: "RSI继续下跌"
+  
+  time_stop:
+    enabled: true
+    days: 7
+    description: "持仓7天无反弹离场"
+
+# 止盈规则
+take_profit_rules:
+  target_profit:
+    enabled: true
+    levels:
+      - percentage: 0.05
+        action: "减仓30%"
+      - percentage: 0.08
+        action: "减仓30%"
+      - percentage: 0.10
+        action: "清仓"
+  
+  rsi_profit:
+    enabled: true
+    condition: "rsi > 50"
+    description: "RSI回到50以上止盈"
+  
+  ma_profit:
+    enabled: true
+    condition: "close > ma20"
+    description: "反弹至20日线止盈"
+
+# 仓位管理
+position_sizing:
+  based_on_signal:
+    strong: 0.20    # 评分≥85
+    normal: 0.15    # 评分75-84
+    weak: 0.10      # 评分70-74
+  
+  based_on_rsi_level:
+    extreme: 0.20   # RSI<20
+    oversold: 0.15  # RSI 20-30
+  
+  max_single_position: 0.20
+
+# 反弹失败识别
+failure_signals:
+  conditions:
+    - "买入后3日内继续下跌>3%"
+    - "RSI继续下降至20以下"
+    - "成交量继续萎缩"
+  
+  action: "立即止损离场"

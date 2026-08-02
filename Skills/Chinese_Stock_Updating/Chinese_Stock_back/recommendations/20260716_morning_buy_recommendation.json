@@ -1,0 +1,107 @@
+{
+  "date": "20260716",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-07-16T08:08:04.948938",
+  "recommendations": [
+    {
+      "code": "002532",
+      "name": "天山铝业",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-16",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 95.3,
+      "best_score": 88.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2253
+    },
+    {
+      "code": "688333",
+      "name": "铂力特",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-16",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 92.45,
+      "best_score": 88.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1925
+    },
+    {
+      "code": "603259",
+      "name": "药明康德",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-16",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 阶段性突破成型，结构中等偏稳; 接近历史新高，需关注后续走势",
+      "combined_score": 90.85,
+      "best_score": 86.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.1,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1608
+    },
+    {
+      "code": "002156",
+      "name": "通富微电",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-16",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，放量形态扎实; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 阶段性突破成型，结构中等偏稳; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 83.96,
+      "best_score": 82.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.124
+    },
+    {
+      "code": "603556",
+      "name": "海兴电力",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-16",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，放量形态扎实; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 83.78,
+      "best_score": 83.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 9.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0938
+    }
+  ],
+  "total_position": 79.6,
+  "stock_count": 5,
+  "strategy_count": 1,
+  "no_result_count": 2,
+  "error_count": 0
+}

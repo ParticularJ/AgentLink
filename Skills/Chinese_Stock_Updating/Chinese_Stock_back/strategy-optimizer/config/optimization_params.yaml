@@ -1,0 +1,288 @@
+# 各策略可优化参数范围
+strategies:
+  earnings-surprise-strategy:
+    parameters:
+      min_net_profit_yoy:
+        type: "int"
+        range: [20, 30, 40, 50]
+        default: 30
+      min_revenue_yoy:
+        type: "int"
+        range: [10, 15, 20, 25]
+        default: 20
+      min_surprise_pct:
+        type: "int"
+        range: [5, 10, 15, 20]
+        default: 10
+      holding_days:
+        type: "int"
+        range: [5, 10, 15, 20]
+        default: 10
+
+  ma-bullish-strategy:
+    parameters:
+      ma_short:
+        type: "int"
+        range: [3, 5, 7]
+        default: 5
+      ma_mid:
+        type: "int"
+        range: [8, 10, 12]
+        default: 10
+      ma_long:
+        type: "int"
+        range: [15, 20, 25]
+        default: 20
+      volume_ratio_min:
+        type: "float"
+        range: [1.0, 1.2, 1.5]
+        default: 1.2
+
+  macd-divergence-strategy:
+    parameters:
+      macd_fast:
+        type: "int"
+        range: [9, 12, 15]
+        default: 12
+      macd_slow:
+        type: "int"
+        range: [22, 26, 30]
+        default: 26
+      macd_signal:
+        type: "int"
+        range: [7, 9, 12]
+        default: 9
+      oversold_threshold:
+        type: "int"
+        range: [25, 30, 35]
+        default: 30
+
+  morning-star-strategy:
+    parameters:
+      first_candle_min_decline:
+        type: "float"
+        range: [2.0, 3.0, 4.0]
+        default: 3.0
+      third_candle_min_advance:
+        type: "float"
+        range: [2.0, 3.0, 4.0]
+        default: 3.0
+      volume_confirm_ratio:
+        type: "float"
+        range: [1.0, 1.2, 1.5]
+        default: 1.2
+
+  breakout-high-strategy:
+    parameters:
+      lookback_days:
+        type: "int"
+        range: [40, 50, 60, 80]
+        default: 60
+      min_breakout_pct:
+        type: "float"
+        range: [2.0, 3.0, 4.0, 5.0]
+        default: 3.0
+      min_volume_ratio:
+        type: "float"
+        range: [1.2, 1.5, 1.8, 2.0]
+        default: 1.5
+
+  rsi-oversold-strategy:
+    parameters:
+      rsi_period:
+        type: "int"
+        range: [9, 14, 21]
+        default: 14
+      oversold_threshold:
+        type: "int"
+        range: [25, 30, 35]
+        default: 30
+      min_deviation:
+        type: "float"
+        range: [5.0, 8.0, 10.0]
+        default: 8.0
+
+  volume-extreme-strategy:
+    parameters:
+      volume_ma_period:
+        type: "int"
+        range: [10, 20, 30]
+        default: 20
+      extreme_ratio:
+        type: "float"
+        range: [0.35, 0.40, 0.45, 0.50]
+        default: 0.40
+      significant_ratio:
+        type: "float"
+        range: [0.45, 0.50, 0.55, 0.60]
+        default: 0.50
+
+  gap-fill-strategy:
+    parameters:
+      min_gap_pct:
+        type: "float"
+        range: [2.0, 3.0, 4.0, 5.0]
+        default: 3.0
+      min_volume_ratio:
+        type: "float"
+        range: [1.2, 1.5, 1.8, 2.0]
+        default: 1.5
+      max_pullback_pct:
+        type: "float"
+        range: [2.0, 3.0, 4.0, 5.0]
+        default: 3.0
+
+  limit-up-analysis:
+    parameters:
+      min_limit_up_days:
+        type: "int"
+        range: [1, 2, 3]
+        default: 1
+      max_open_count:
+        type: "int"
+        range: [0, 1, 2]
+        default: 0
+      min_seal_ratio:
+        type: "float"
+        range: [5.0, 8.0, 10.0]
+        default: 5.0
+      min_sector_count:
+        type: "int"
+        range: [1, 3, 5]
+        default: 3
+
+  volume-retrace-ma-strategy:
+    parameters:
+      ma_short:
+        type: "int"
+        range: [3, 5, 7, 10]
+        default: 5
+      ma_mid:
+        type: "int"
+        range: [8, 10, 12, 15]
+        default: 10
+      ma_long:
+        type: "int"
+        range: [15, 20, 25, 30]
+        default: 20
+      volume_ratio_min:
+        type: "float"
+        range: [0.4, 0.5, 0.6, 0.7]
+        default: 0.6
+      stop_loss_pct:
+        type: "float"
+        range: [0.03, 0.05, 0.07, 0.10]
+        default: 0.05
+      take_profit_pct:
+        type: "float"
+        range: [0.08, 0.10, 0.12, 0.15]
+        default: 0.10
+
+  limit-up-retrace-strategy:
+    parameters:
+      pullback_days_min:
+        type: "int"
+        range: [2, 3, 4]
+        default: 2
+      pullback_days_max:
+        type: "int"
+        range: [5, 7, 10]
+        default: 5
+      volume_shrink_ratio:
+        type: "float"
+        range: [0.3, 0.4, 0.5, 0.6]
+        default: 0.5
+      pullback_depth_min:
+        type: "float"
+        range: [2.0, 3.0, 4.0]
+        default: 3.0
+      pullback_depth_max:
+        type: "float"
+        range: [5.0, 6.0, 7.0, 8.0]
+        default: 8.0
+
+# 评分权重优化
+scoring_weights:
+  strategies:
+    ma-bullish-strategy:
+      weights:
+        trend:
+          range: [0.25, 0.30, 0.35, 0.40]
+          default: 0.35
+        pullback:
+          range: [0.25, 0.30, 0.35, 0.40]
+          default: 0.30
+        volume:
+          range: [0.15, 0.20, 0.25, 0.30]
+          default: 0.25
+        kline:
+          range: [0.05, 0.10, 0.15]
+          default: 0.10
+
+    limit-up-analysis:
+      weights:
+        sealing_strength:
+          range: [0.25, 0.30, 0.35]
+          default: 0.30
+        sector_effect:
+          range: [0.20, 0.25, 0.30]
+          default: 0.25
+        capital_flow:
+          range: [0.15, 0.20, 0.25]
+          default: 0.20
+        technical_pattern:
+          range: [0.10, 0.15, 0.20]
+          default: 0.15
+        market_sentiment:
+          range: [0.05, 0.10, 0.15]
+          default: 0.10
+
+    volume-retrace-ma-strategy:
+      weights:
+        trend_strength:
+          range: [0.20, 0.25, 0.30]
+          default: 0.25
+        retrace_quality:
+          range: [0.15, 0.20, 0.25]
+          default: 0.20
+        volume_shrink:
+          range: [0.15, 0.20, 0.25]
+          default: 0.20
+        stop_signal:
+          range: [0.15, 0.20, 0.25]
+          default: 0.20
+        support_strength:
+          range: [0.10, 0.15, 0.20]
+          default: 0.15
+
+    limit-up-retrace-strategy:
+      weights:
+        limit_up_strength:
+          range: [0.25, 0.30, 0.35]
+          default: 0.30
+        retrace_depth:
+          range: [0.15, 0.20, 0.25]
+          default: 0.20
+        volume_shrink:
+          range: [0.15, 0.20, 0.25]
+          default: 0.20
+        support_signal:
+          range: [0.15, 0.20, 0.25]
+          default: 0.20
+        market_sentiment:
+          range: [0.05, 0.10, 0.15]
+          default: 0.10
+
+# 阈值优化
+thresholds:
+  strategies:
+    volume-retrace-ma-strategy:
+      strong_threshold:
+        range: [80, 85, 90]
+        default: 85
+      recommend_threshold:
+        range: [70, 75, 80]
+        default: 75
+      watch_threshold:
+        range: [60, 65, 70]
+        default: 70

@@ -1,0 +1,120 @@
+{
+  "date": "20260701",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-07-01T14:22:19.676786",
+  "recommendations": [
+    {
+      "code": "603019",
+      "name": "中科曙光",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 100,
+      "best_score": 89.5,
+      "strategies": [
+        "均线多头排列",
+        "缺口填充"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "002821",
+      "name": "凯莱英",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 82.08,
+      "best_score": 86.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1821
+    },
+    {
+      "code": "300655",
+      "name": "晶瑞电材",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.81,
+      "best_score": 86.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 15.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1518
+    },
+    {
+      "code": "688041",
+      "name": "海光信息",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 74.6,
+      "best_score": 77.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1146
+    },
+    {
+      "code": "688048",
+      "name": "长光华芯",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 74.6,
+      "best_score": 77.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0846
+    }
+  ],
+  "total_position": 76.4,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

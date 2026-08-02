@@ -1,0 +1,31 @@
+# 策略参数配置
+strategy_config:
+  name: "MACD底背离交易策略"
+  version: "v1.0.0"
+  description: "基于MACD底背离信号捕捉股价下跌后的反转机会"
+
+# MACD参数
+macd_settings:
+  fast_period: 12              # 快线周期
+  slow_period: 26              # 慢线周期
+  signal_period: 9             # 信号线周期
+
+# 背离检测
+divergence_settings:
+  lookback_period: 20          # 查看20日内的价格低点
+  min_divergence_bars: 2       # 最少背离K线数
+  divergence_threshold: 0.5    # 背离幅度阈值(%)
+
+# 买入确认
+entry_confirmation:
+  require_golden_cross: true   # 需要MACD金叉确认
+  min_volume_increase: 1.2     # 成交量放大1.2倍
+  confirm_within_days: 3       # 3天内确认有效
+
+# 过滤条件
+filters:
+  min_decline_pct: 10          # 最少下跌10%
+  max_decline_pct: 40          # 最多下跌40%
+  min_market_cap: 30           # 最小市值30亿
+  exclude_st: true             # 排除ST股票
+  exclude_new_ipo: true        # 排除次新股（上市<60天）

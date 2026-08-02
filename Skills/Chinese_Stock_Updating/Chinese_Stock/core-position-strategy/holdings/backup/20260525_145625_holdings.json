@@ -1,0 +1,255 @@
+[
+  {
+    "code": "603728",
+    "name": "鸣志电器",
+    "cost": 63.199,
+    "shares": 300,
+    "init_shares": 300,
+    "current_price": 68.5,
+    "highest_price": 68.5,
+    "entry_date": "2026-05-11",
+    "strategy_name": "突破新高",
+    "score": 69.0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "600584",
+    "name": "长电科技",
+    "cost": 56.76,
+    "shares": 500,
+    "init_shares": 500,
+    "current_price": 76.75,
+    "highest_price": 76.75,
+    "entry_date": "2026-05-12",
+    "strategy_name": "突破新高",
+    "score": 77.15,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002179",
+    "name": "中航光电",
+    "cost": 41.52,
+    "shares": 400,
+    "init_shares": 400,
+    "current_price": 39.66,
+    "highest_price": 41.52,
+    "entry_date": "2026-05-12",
+    "strategy_name": "突破新高",
+    "score": 39.300000000000004,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002518",
+    "name": "科士达",
+    "cost": 58.88,
+    "shares": 300,
+    "init_shares": 300,
+    "current_price": 62.25,
+    "highest_price": 62.4,
+    "entry_date": "2026-05-15",
+    "strategy_name": "突破新高",
+    "score": 52.5,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "600522",
+    "name": "中天科技",
+    "cost": 44.55,
+    "shares": 600,
+    "init_shares": 600,
+    "current_price": 42.04,
+    "highest_price": 44.55,
+    "entry_date": "2026-05-19",
+    "strategy_name": "突破新高",
+    "score": 50.4,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "cost": 101.003,
+    "shares": 300,
+    "init_shares": 300,
+    "current_price": 112.97,
+    "highest_price": 112.97,
+    "entry_date": "2026-05-20",
+    "strategy_name": "均线多头",
+    "score": 77.39999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "600276",
+    "name": "恒瑞医药",
+    "cost": 51.12,
+    "shares": 600,
+    "init_shares": 600,
+    "current_price": 49.09,
+    "highest_price": 51.12,
+    "entry_date": "2026-05-21",
+    "strategy_name": "RSI超卖",
+    "score": 33.05,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "603893",
+    "name": "瑞芯微",
+    "cost": 187.6,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 192.2,
+    "highest_price": 195.24,
+    "entry_date": "2026-05-21",
+    "strategy_name": "缺口填充",
+    "score": 59.6,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "601975",
+    "name": "招商南油",
+    "cost": 5.88,
+    "shares": 5100,
+    "init_shares": 5100,
+    "current_price": 5.56,
+    "highest_price": 5.88,
+    "entry_date": "2026-05-22",
+    "strategy_name": "突破新高",
+    "score": 54.49999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "000021",
+    "name": "深科技",
+    "cost": 37.61,
+    "shares": 800,
+    "init_shares": 800,
+    "current_price": 39.51,
+    "highest_price": 39.51,
+    "entry_date": "2026-05-22",
+    "strategy_name": "缺口填充，均线多头",
+    "score": 76.24999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "300408",
+    "name": "三环集团",
+    "cost": 120.99,
+    "shares": 400,
+    "init_shares": 400,
+    "current_price": 115.08,
+    "highest_price": 120.99,
+    "entry_date": "2026-05-25",
+    "strategy_name": "突破新高",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+]

@@ -1,0 +1,69 @@
+{
+  "date": "20260615",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-15T14:22:43.114148",
+  "recommendations": [
+    {
+      "code": "300666",
+      "name": "江丰电子",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-15",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 85.32,
+      "best_score": 82.9,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2153
+    },
+    {
+      "code": "002585",
+      "name": "双星新材",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-15",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.72,
+      "best_score": 82.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1817
+    },
+    {
+      "code": "300285",
+      "name": "国瓷材料",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-15",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 78.52,
+      "best_score": 82.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1485
+    }
+  ],
+  "total_position": 54.6,
+  "stock_count": 3,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

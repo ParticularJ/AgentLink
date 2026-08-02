@@ -1,0 +1,31 @@
+{
+  "date": "20260616",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-06-16T23:06:37.494461",
+  "recommendations": [
+    {
+      "code": "300620",
+      "name": "光库科技",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-16",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量温和放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 81.22,
+      "best_score": 78.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 21.1,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2112
+    }
+  ],
+  "total_position": 21.1,
+  "stock_count": 1,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

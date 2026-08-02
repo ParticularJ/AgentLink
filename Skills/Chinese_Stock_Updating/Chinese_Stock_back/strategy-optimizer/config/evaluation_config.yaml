@@ -1,0 +1,32 @@
+# config/evaluation_config.yaml
+
+# 策略评估配置
+evaluation:
+  # 评估指标权重
+  metrics:
+    win_rate: 0.30              # 胜率权重
+    sharpe_ratio: 0.25          # 夏普比率权重
+    max_drawdown: 0.20          # 最大回撤权重（负向）
+    profit_loss_ratio: 0.15     # 盈亏比权重
+    total_return: 0.10          # 总收益权重
+  
+  # 评分等级
+  grades:
+    excellent:
+      min_score: 85
+      label: "优秀"
+    good:
+      min_score: 70
+      label: "良好"
+    average:
+      min_score: 55
+      label: "一般"
+    poor:
+      min_score: 0
+      label: "较差"
+  
+  # 基准指标
+  benchmarks:
+    market_index: "000300.SH"   # 沪深300作为基准
+    risk_free_rate: 0.03        # 无风险利率 3%
+    min_sample_size: 20         # 最小样本量

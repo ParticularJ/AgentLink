@@ -1,0 +1,157 @@
+# 早盘情绪监控 · 买入观察名单
+# 格式说明:
+#   trigger_mode: pct_vs_close(跌破昨收X%) | range_price(区间) | auction_strong(竞价强势追)
+#   phase: all | open | auction
+#   金额: 单次买入上限
+
+watchlist:
+
+  # ═══════════════════════════════════════════
+  # 保守策略：等恐慌回调买
+  # ═══════════════════════════════════════════
+
+  # ── 海兰信(300065) ── 军工题材，强势
+  # 现价28.79，昨收23.99，今日+20%（已是高位）
+  # 策略: 回调-3%买，深度恐慌-8%轻仓
+  - code: "300065"
+    name: "海兰信"
+    trigger_mode: "pct_vs_close"
+    trigger_value: -3.0
+    phase: "all"
+    max_position: 30000
+    reason: "回调-3%买，等恐慌不追高"
+
+  - code: "300065"
+    name: "海兰信"
+    trigger_mode: "pct_vs_close"
+    trigger_value: -8.0
+    phase: "all"
+    max_position: 20000
+    reason: "深度恐慌，航空航天主线轻仓试探"
+
+  # ── 九丰能源(605090) ── 能源题材
+  # 现价37.98，昨收34.53，今日+10%
+  # 策略: 回调-3%买，或回踩昨收34.5附近
+  - code: "605090"
+    name: "九丰能源"
+    trigger_mode: "pct_vs_close"
+    trigger_value: -3.0
+    phase: "all"
+    max_position: 30000
+    reason: "回调-3%买"
+
+  - code: "605090"
+    name: "九丰能源"
+    trigger_mode: "range_price"
+    trigger_value: "34.0,35.5"
+    phase: "all"
+    max_position: 30000
+    reason: "回踩34-35.5区间买"
+
+  # ── 上海沪工(603131) ── 军工题材
+  # 现价18.34，昨收16.69，今日+9.9%
+  # 策略: 回调-3%买，或到15.5-16.5区间
+  - code: "603131"
+    name: "上海沪工"
+    trigger_mode: "pct_vs_close"
+    trigger_value: -3.0
+    phase: "all"
+    max_position: 30000
+    reason: "回调-3%买"
+
+  - code: "603131"
+    name: "上海沪工"
+    trigger_mode: "range_price"
+    trigger_value: "15.5,16.5"
+    phase: "all"
+    max_position: 30000
+    reason: "回踩15.5-16.5区间买"
+
+  # ── 斯瑞新材(688102) ── 新材料题材
+  # 现价46.09，昨收41.39，今日+11.4%
+  # 策略: 回调-3%买，或到42-44区间
+  - code: "688102"
+    name: "斯瑞新材"
+    trigger_mode: "pct_vs_close"
+    trigger_value: -3.0
+    phase: "all"
+    max_position: 30000
+    reason: "回调-3%买"
+
+  - code: "688102"
+    name: "斯瑞新材"
+    trigger_mode: "range_price"
+    trigger_value: "42.0,44.0"
+    phase: "all"
+    max_position: 30000
+    reason: "回踩42-44区间买"
+
+  # ── 航空航天ETF华夏(159227) ── 军工航空航天ETF
+  # 现价1.141，昨收1.082，今日+5.5%
+  # 策略: 回调-3%买，极度恐慌-5%轻仓
+  - code: "159227"
+    name: "航空航天ETF华夏"
+    trigger_mode: "pct_vs_close"
+    trigger_value: -3.0
+    phase: "all"
+    max_position: 30000
+    reason: "航空航天主线，回调-3%买"
+
+  - code: "159227"
+    name: "航空航天ETF华夏"
+    trigger_mode: "pct_vs_close"
+    trigger_value: -5.0
+    phase: "all"
+    max_position: 20000
+    reason: "极度恐慌轻仓试探"
+
+  # ═══════════════════════════════════════════
+  # 激进策略：竞价强势不踏空
+  # 条件：竞价涨幅+2%以上 + 开盘价守住
+  # 逻辑：情绪起来了不追高，等回踩开盘价或竞价突破时买
+  # ═══════════════════════════════════════════
+
+  # ── 海兰信(300065) ── 激进追
+  - code: "300065"
+    name: "海兰信"
+    trigger_mode: "auction_strong"
+    trigger_value: 2.0
+    phase: "open"
+    max_position: 30000
+    reason: "竞价强势+2%不追，等回踩开盘价买"
+
+  # ── 九丰能源(605090) ── 激进追
+  - code: "605090"
+    name: "九丰能源"
+    trigger_mode: "auction_strong"
+    trigger_value: 2.0
+    phase: "open"
+    max_position: 30000
+    reason: "竞价强势+2%不追，等回踩开盘价买"
+
+  # ── 上海沪工(603131) ── 激进追
+  - code: "603131"
+    name: "上海沪工"
+    trigger_mode: "auction_strong"
+    trigger_value: 2.0
+    phase: "open"
+    max_position: 30000
+    reason: "竞价强势+2%不追，等回踩开盘价买"
+
+  # ── 斯瑞新材(688102) ── 激进追
+  - code: "688102"
+    name: "斯瑞新材"
+    trigger_mode: "auction_strong"
+    trigger_value: 2.0
+    phase: "open"
+    max_position: 30000
+    reason: "竞价强势+2%不追，等回踩开盘价买"
+
+  # ── 航空航天ETF华夏(159227) ── 激进追
+  - code: "159227"
+    name: "航空航天ETF华夏"
+    trigger_mode: "auction_strong"
+    trigger_value: 2.0
+    phase: "open"
+    max_position: 30000
+    reason: "竞价强势+2%不追，等回踩开盘价买"

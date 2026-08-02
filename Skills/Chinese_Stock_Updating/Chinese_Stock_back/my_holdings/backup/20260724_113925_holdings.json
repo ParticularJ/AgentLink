@@ -1,0 +1,54 @@
+[
+  {
+    "code": "601899",
+    "name": "紫金矿业",
+    "cost": 33.02,
+    "real_cost": 33.02,
+    "shares": 1000,
+    "init_shares": 1000,
+    "current_price": 31.38,
+    "highest_price": 33.02,
+    "entry_date": "2026-07-23",
+    "strategy_name": "均线多头排列",
+    "score": 47.39999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-23"
+  },
+  {
+    "code": "300191",
+    "name": "潜能恒信",
+    "cost": 33.07,
+    "real_cost": 33.07,
+    "shares": 900,
+    "init_shares": 900,
+    "current_price": 34.01,
+    "highest_price": 33.07,
+    "entry_date": "2026-07-24",
+    "strategy_name": "突破新高",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-24"
+  }
+]

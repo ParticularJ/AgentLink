@@ -1,0 +1,86 @@
+{
+  "date": "20260708",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-07-08T08:16:57.474679",
+  "recommendations": [
+    {
+      "code": "603717",
+      "name": "天域生物",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "涨停回踩",
+      "recommend_date": "2026-07-08",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 79.21,
+      "best_score": 79.3,
+      "strategies": [
+        "涨停回踩"
+      ],
+      "position_pct": 20.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "TopSectors": null,
+      "weight": 0.2092
+    },
+    {
+      "code": "002497",
+      "name": "雅化集团",
+      "penalty": 6,
+      "penalty_reason": [],
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-07-08",
+      "entry_price": 0.0,
+      "target_reason": [
+        "9:25集合竞价封板，极强盘口 ",
+        "全程零炸板，封板稳定性高",
+        "封单资金370881435，流通市值26118834710，封单比0.0142",
+        "大盘股封单比0.01≤0.0142<0.02，封单一般",
+        "最后封板时间(9, 25, 0)",
+        "本股为板块第一封板龙头",
+        "标的属性：百亿以上大盘股，首板，10点前早盘硬板",
+        "额比0.34<0.7，大盘早盘硬板极致缩量锁仓",
+        "首板量比<0.7，短期缩量承接弱",
+        "连扳次数1",
+        "当日高开4%以上跳空首板"
+      ],
+      "combined_score": 75.83,
+      "best_score": 71.7,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 17.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "TopSectors": [
+        {
+          "所属行业": "化学制品",
+          "涨停数": 4,
+          "最高连板": 1,
+          "涨停占比": 12.1,
+          "强度": "支线"
+        },
+        {
+          "所属行业": "半导体",
+          "涨停数": 4,
+          "最高连板": 1,
+          "涨停占比": 12.1,
+          "强度": "支线"
+        },
+        {
+          "所属行业": "汽车零部",
+          "涨停数": 3,
+          "最高连板": 1,
+          "涨停占比": 9.1,
+          "强度": "支线"
+        }
+      ],
+      "weight": 0.1758
+    }
+  ],
+  "total_position": 38.5,
+  "stock_count": 2,
+  "strategy_count": 2,
+  "no_result_count": 0,
+  "error_count": 0
+}

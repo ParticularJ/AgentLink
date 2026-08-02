@@ -1,0 +1,33 @@
+{
+  "date": "20260524",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-05-24T23:37:32.420712",
+  "recommendations": [
+    {
+      "code": "300408",
+      "name": "三环集团",
+      "penalty": -2,
+      "penalty_reason": [
+        "三环集团股价大涨16.54%但主力资金净流出1.89亿元，呈现典型价量背离，主力借拉高出逃迹象明显，虽无实质性减持公告但资金面呈现短期撤离态势，属于轻微利空。"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-05-24",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强(>8%); 成交量明显放大; 趋势强势上涨; 量价共振形态佳; 结构:单日强突无回调; 95%~98%·强趋势(不扣分)",
+      "combined_score": 85.35,
+      "best_score": 85.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 21.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2154
+    }
+  ],
+  "total_position": 21.5,
+  "stock_count": 1,
+  "strategy_count": 1,
+  "no_result_count": 2,
+  "error_count": 0
+}

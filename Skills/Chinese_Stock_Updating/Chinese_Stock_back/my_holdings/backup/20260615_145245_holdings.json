@@ -1,0 +1,77 @@
+[
+  {
+    "code": "002384",
+    "name": "东山精密",
+    "cost": 218.25,
+    "shares": 300,
+    "init_shares": 600,
+    "current_price": 238.96,
+    "highest_price": 238.96,
+    "entry_date": "2026-06-14",
+    "strategy_name": "波段仓建仓",
+    "score": 71.10000000000001,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-15"
+  },
+  {
+    "code": "600549",
+    "name": "厦门钨业",
+    "cost": 65.69,
+    "shares": 800,
+    "init_shares": 800,
+    "current_price": 68.01,
+    "highest_price": 68.01,
+    "entry_date": "2026-06-14",
+    "strategy_name": "均线多头策略建仓",
+    "score": 77.9,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-15"
+  },
+  {
+    "code": "300706",
+    "name": "阿石创",
+    "cost": 72.39,
+    "shares": 700,
+    "init_shares": 700,
+    "current_price": 72.97,
+    "highest_price": 72.39,
+    "entry_date": "2026-06-15",
+    "strategy_name": "突破新高",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-15"
+  }
+]

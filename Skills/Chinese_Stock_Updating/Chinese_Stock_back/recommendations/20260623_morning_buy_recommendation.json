@@ -1,0 +1,50 @@
+{
+  "date": "20260623",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-06-23T08:08:11.555938",
+  "recommendations": [
+    {
+      "code": "301548",
+      "name": "崇德科技",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-23",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 93.88,
+      "best_score": 90.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2239
+    },
+    {
+      "code": "688048",
+      "name": "长光华芯",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-23",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，收盘站稳; 成交量温和放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 73.31,
+      "best_score": 76.3,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 17.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1733
+    }
+  ],
+  "total_position": 39.7,
+  "stock_count": 2,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

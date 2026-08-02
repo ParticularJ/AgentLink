@@ -1,0 +1,210 @@
+[
+  {
+    "code": "002384",
+    "name": "东山精密",
+    "cost": 236.0,
+    "real_cost": 236.0,
+    "shares": 200,
+    "init_shares": 300,
+    "current_price": 221.68,
+    "highest_price": 276.14,
+    "entry_date": "2026-06-14",
+    "strategy_name": "突破新高",
+    "score": 35.35,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-18"
+  },
+  {
+    "code": "600549",
+    "name": "厦门钨业",
+    "cost": 65.69,
+    "real_cost": 73.57,
+    "shares": 200,
+    "init_shares": 800,
+    "current_price": 82.05,
+    "highest_price": 94.5,
+    "entry_date": "2026-06-14",
+    "strategy_name": "均线多头策略建仓",
+    "score": 44.699999999999996,
+    "stop_level_hit": [
+      true,
+      true,
+      true
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-14"
+  },
+  {
+    "code": "300666",
+    "name": "江丰电子",
+    "cost": 292.5,
+    "real_cost": 321.75,
+    "shares": 100,
+    "init_shares": 200,
+    "current_price": 344.2,
+    "highest_price": 394.33,
+    "entry_date": "2026-06-15",
+    "strategy_name": "强势多头",
+    "score": 45.849999999999994,
+    "stop_level_hit": [
+      true,
+      true,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-15"
+  },
+  {
+    "code": "688809",
+    "name": "强一股份",
+    "cost": 572.94,
+    "real_cost": 572.94,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 530.02,
+    "highest_price": 626.0,
+    "entry_date": "2026-06-16",
+    "strategy_name": "强势多头",
+    "score": 36.1,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "000725",
+    "name": "京东方Ａ",
+    "cost": 8.174470588235295,
+    "real_cost": 8.174470588235295,
+    "shares": 8500,
+    "init_shares": 8500,
+    "current_price": 9.1,
+    "highest_price": 9.1,
+    "entry_date": "2026-06-29",
+    "strategy_name": "新闻利好",
+    "score": 69.05,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-07-01"
+  },
+  {
+    "code": "603019",
+    "name": "中科曙光",
+    "cost": 109.01,
+    "real_cost": 109.01,
+    "shares": 500,
+    "init_shares": 500,
+    "current_price": 94.93,
+    "highest_price": 109.01,
+    "entry_date": "2026-07-01",
+    "strategy_name": "突破新高",
+    "score": 45.59999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-01"
+  },
+  {
+    "code": "600118",
+    "name": "中国卫星",
+    "cost": 85.22,
+    "real_cost": 85.22,
+    "shares": 500,
+    "init_shares": 500,
+    "current_price": 81.97,
+    "highest_price": 85.22,
+    "entry_date": "2026-07-02",
+    "strategy_name": "突破新高",
+    "score": 49.49999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-02"
+  },
+  {
+    "code": "300442",
+    "name": "润泽科技",
+    "cost": 91.0,
+    "real_cost": 91.0,
+    "shares": 600,
+    "init_shares": 600,
+    "current_price": 88.42,
+    "highest_price": 91.0,
+    "entry_date": "2026-07-02",
+    "strategy_name": "突破新高",
+    "score": 56.0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-02"
+  }
+]

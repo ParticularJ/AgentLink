@@ -1,0 +1,977 @@
+"""
+CXMT 首日作战矩阵监控器
+=========================
+基于《长鑫科技CXMT完整投资指导》第六部分：首日作战矩阵
+
+核心规则：
+- 集合竞价(9:15-9:25): 根据涨幅限额买入
+- 开盘瞬间(9:30): 试探买入 or 等待
+- 冲高回落(9:32-10:00): 回踩均线买入
+- 尾盘确认(14:50-15:00): 尾盘加仓
+
+四条活命铁律：
+1. 首日竞价涨幅>80%(>12.6元)——一股不买
+2. 首日总仓位不超过40万(总资金40%)
+3. 密切关注DRAM季度涨幅趋势，跌破10%减仓/下跌清仓
+4. 总账户-8%是硬止损线
+"""
+
+import os
+import sys
+import json
+import time
+import re
+import yaml
+import requests
+import pandas as pd
+from datetime import datetime, time as dtime
+from typing import Dict, List, Optional, Tuple
+from pathlib import Path
+from colorama import Fore, Style, init
+
+init(autoreset=True)
+
+# 导入飞书推送模块
+try:
+    from feishu_pusher import (
+        push_realtime_status, push_action_alert, push_iron_rule_alert,
+        push_market_context, push_daily_summary,
+    )
+    FEISHU_AVAILABLE = True
+except ImportError:
+    FEISHU_AVAILABLE = False
+    def _no_feishu(*args, **kwargs): return False
+    push_realtime_status = push_action_alert = push_iron_rule_alert = \
+        push_market_context = push_daily_summary = _no_feishu
+    print(f"{Fore.YELLOW}⚠️ 飞书推送模块不可用，将禁用推送功能{Style.RESET_ALL}")
+
+# ==================== 常量配置 ====================
+
+# 长鑫科技发行价区间(元)
+CXMT_ISSUE_PRICE_MIN = 7.0
+CXMT_ISSUE_PRICE_MAX = 10.0
+CXMT_PRICE_THRESHOLD_80 = 12.6   # 涨幅80%的价格线(按发行价10元计)
+CXMT_PRICE_THRESHOLD_50 = 10.5   # 涨幅50%的价格线
+
+# 科创板新股首日规则
+# 集合竞价：9:15-9:25 (9:20-9:25不可撤单)
+# 连续竞价：9:30起 ±2%价格笼子
+# 尾盘撮合：14:50-15:00
+
+# 四个阶段时间窗口
+PHASE_AUCTION_START   = dtime(9, 15)
+PHASE_AUCTION_END     = dtime(9, 25)
+PHASE_OPEN            = dtime(9, 30)
+PHASE_PULLBACK_START  = dtime(9, 32)
+PHASE_PULLBACK_END    = dtime(10, 0)
+PHASE_TAIL_START      = dtime(14, 50)
+PHASE_TAIL_END        = dtime(15, 0)
+
+# 首日仓位上限
+MAX_FIRSTDAY_POSITION = 400000   # 40万
+WATCH_POSITION_LIMIT  = 200000   # 20万(弱势情景)
+
+# 仓位规则(分阶段)
+POSITION_RULES = {
+    "竞价_≤50%":     {"action": "买入", "amount": 150000},
+    "竞价_50%-80%":  {"action": "买入(谨慎)", "amount": 50000},
+    "竞价_>80%":     {"action": "放弃竞价", "amount": 0},
+    "开盘_≤50%":     {"action": "不追加", "amount": 0},
+    "开盘_50%-80%":  {"action": "试探买入", "amount": 50000},
+    "开盘_>80%":     {"action": "等第5天回踩", "amount": 0},
+    "回落_条件买入": {"action": "买入", "amount": 100000},
+    "尾盘A":         {"action": "尾盘加仓", "amount": 100000},
+    "尾盘B":         {"action": "尾盘不加仓", "amount": 0},
+}
+
+# 铁律颜色
+RULE_COLORS = {
+    "高危": Fore.RED,
+    "警告": Fore.YELLOW,
+    "正常": Fore.GREEN,
+    "信息": Fore.CYAN,
+}
+
+
+# ==================== 数据源适配器 ====================
+
+class CXMTDataAdapter:
+    """CXMT数据获取适配器"""
+
+    def __init__(self):
+        self.cache_dir = Path("~/.openclaw/stock/data/cache").expanduser()
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+
+    def get_realtime_quote(self, code: str) -> Optional[Dict]:
+        """
+        获取实时行情
+        使用腾讯行情接口(qt.gtimg.cn)，已知可穿透代理
+        解析格式: v_pv_none_match="1" 表示未上市/代码错误
+        """
+        try:
+            # 保留原始前缀，如果已带sh/sz/bj则直接使用
+            lower_code = code.lower()
+            if lower_code.startswith(('sh', 'sz', 'bj')):
+                market_prefix = lower_code[:2]
+                raw_code = lower_code[2:]
+            else:
+                market_prefix = self._to_tx_market_prefix(code)
+                raw_code = code
+            url = f"https://qt.gtimg.cn/q={market_prefix}{raw_code}"
+            resp = requests.get(url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                "Referer": "https://finance.qq.com/",
+            }, timeout=5)
+
+            text = resp.text.strip()
+
+            # 未上市或代码错误
+            if "none_match" in text or not text:
+                return None
+
+            # 解析 v_shxxxxxx="..." 格式
+            match = re.search(r'"([^"]+)"', text)
+            if not match:
+                return None
+
+            fields = match.group(1).split("~")
+            if len(fields) < 45:
+                return None
+
+            name        = fields[1]   # 名称
+            price       = float(fields[3])   # 当前价格
+            prev_close  = float(fields[4])   # 昨收
+            open_price  = float(fields[5])   # 开盘价
+            vol         = float(fields[6])   # 成交量(手)
+            # amount    = fields[7]  # 外盘-内盘(用处不大)
+            bid1_price  = float(fields[9])   # 买一价
+            bid1_vol    = float(fields[10])  # 买一量
+            ask1_price  = float(fields[19])  # 卖一价
+            ask1_vol    = float(fields[20])  # 卖一量
+            high        = float(fields[33])   # 最高价
+            low         = float(fields[34])   # 最低价
+            turnover    = float(fields[38]) if fields[38] else 0.0  # 换手率%
+
+            # 涨跌幅(相对昨收)
+            updown_pct = ((price - prev_close) / prev_close * 100) if prev_close > 0 else 0.0
+
+            return {
+                "code":        code,
+                "name":        name,
+                "price":       price,
+                "open":        open_price,
+                "high":        high,
+                "low":         low,
+                "close_prev":  prev_close,
+                "volume":      vol * 100,       # 腾讯是手，转为股
+                "turnover":    turnover,
+                "up_down_pct": updown_pct,
+                "bid_price1":  bid1_price,
+                "bid_volume1": bid1_vol * 100,  # 转为股
+                "ask_price1":  ask1_price,
+                "ask_volume1": ask1_vol * 100,
+            }
+        except Exception as e:
+            print(f"{Fore.RED}❌ 获取实时行情失败: {e}{Style.RESET_ALL}")
+            return None
+
+    def get_auction_bid_info(self, code: str) -> Optional[Dict]:
+        """
+        获取集合竞价阶段盘口信息(使用腾讯行情接口)
+        """
+        quote = self.get_realtime_quote(code)
+        if quote is None:
+            return None
+
+        price      = quote["price"]
+        prev_close = quote["close_prev"]
+        auction_pct = ((price - prev_close) / prev_close * 100) if prev_close > 0 else 0
+
+        return {
+            "price":        price,
+            "open":         quote["open"],
+            "high":         quote["high"],
+            "prev_close":   prev_close,
+            "auction_pct":  auction_pct,
+            "updown_pct":   quote["up_down_pct"],
+            "bid1_price":   quote["bid_price1"],
+            "bid1_vol":     quote["bid_volume1"],
+            "is_auction":   self._is_in_auction(),
+        }
+
+    def get_trading_phase(self) -> str:
+        """判断当前处于哪个交易阶段"""
+        now = datetime.now()
+        t = now.time()
+
+        if PHASE_AUCTION_START <= t <= PHASE_AUCTION_END:
+            return "集合竞价"
+        elif PHASE_OPEN <= t < PHASE_PULLBACK_START:
+            return "开盘连续竞价"
+        elif PHASE_PULLBACK_START <= t <= PHASE_TAIL_START:
+            return "冲高回落监控"
+        elif PHASE_TAIL_START < t <= dtime(15, 5):  # 允许尾盘后5分钟
+            return "尾盘确认"
+        elif t > dtime(15, 5):
+            return "收盘"
+        else:
+            return "盘中"
+
+    @staticmethod
+    def _is_in_auction() -> bool:
+        t = datetime.now().time()
+        return PHASE_AUCTION_START <= t <= PHASE_AUCTION_END
+
+    @staticmethod
+    def _to_tx_market_prefix(code: str) -> str:
+        """A股股票代码转腾讯行情市场前缀
+        支持直接传入 sh000001 / sz399001 等带前缀格式
+        """
+        # 已带前缀直接返回
+        if code.startswith(("sh", "sz", "bj")):
+            return code[:2]
+        if code.startswith("68"):
+            return "sh"    # 上交所(科创板)
+        elif code.startswith("00") or code.startswith("30"):
+            return "sz"    # 深交所
+        elif code.startswith("60"):
+            return "sh"    # 上交所
+        elif code.startswith("8") or code.startswith("4"):
+            return "bj"    # 北交所
+        return "sh"       # 默认上交所
+
+
+# ==================== 持仓管理 ====================
+
+class CXMTPositionManager:
+    """CXMT首日仓位管理器"""
+
+    def __init__(self, holdings_path: str = None):
+        if holdings_path is None:
+            holdings_path = Path("/home/jarvis/.openclaw/workspace/skills/Chinese_Stock/hot-spot-strategy/my_holdings/holdings.json").expanduser()
+        self.holdings_path = Path(holdings_path)
+        self.positions = self._load_positions()
+
+    def _load_positions(self) -> Dict:
+        """加载持仓数据"""
+        if self.holdings_path.exists():
+            try:
+                with open(self.holdings_path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"{Fore.YELLOW}⚠️ 加载持仓失败: {e}{Style.RESET_ALL}")
+        return {}
+
+    def get_cxmt_position(self) -> Dict:
+        """获取CXMT相关持仓"""
+        positions = self.positions if isinstance(self.positions, dict) else {}
+        cxmt_pos = {
+            "shares": 0,
+            "avg_cost": 0.0,
+            "total_cost": 0.0,
+            "is_subscribed": False,
+            "subscription_amount": 0,   # 中签金额
+        }
+
+        # 遍历所有标的
+        for code, pos in positions.items():
+            name = pos.get("name", "")
+            if "长鑫" in name or "CXMT" in name.upper() or code == "CXMT":
+                cxmt_pos["shares"]       = pos.get("shares", 0)
+                cxmt_pos["avg_cost"]     = pos.get("avg_cost", 0.0)
+                cxmt_pos["total_cost"]   = pos.get("total_cost", 0.0)
+                cxmt_pos["is_subscribed"] = True
+                return cxmt_pos
+
+        return cxmt_pos
+
+    def calc_firstday_used(self) -> int:
+        """计算首日已用仓位金额(元)"""
+        cxmt = self.get_cxmt_position()
+        return cxmt["total_cost"]
+
+    def calc_remaining_budget(self, total_fund: int = 1000000) -> int:
+        """计算首日剩余可用仓位"""
+        used = self.calc_firstday_used()
+        remaining = MAX_FIRSTDAY_POSITION - used
+        return max(0, min(remaining, total_fund))
+
+    def save_trade_log(self, action: str, price: float, shares: int, amount: int, phase: str):
+        """记录交易日志"""
+        log_dir = Path("~/.openclaw/stock/data/cxmt_logs").expanduser()
+        log_dir.mkdir(parents=True, exist_ok=True)
+
+        log_file = log_dir / f"{datetime.now().strftime('%Y%m%d')}_cxmt_trades.json"
+        log_entry = {
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "phase": phase,
+            "action": action,
+            "price": price,
+            "shares": shares,
+            "amount": amount,
+        }
+
+        logs = []
+        if log_file.exists():
+            try:
+                with open(log_file, "r", encoding="utf-8") as f:
+                    logs = json.load(f)
+            except:
+                pass
+
+        logs.append(log_entry)
+        with open(log_file, "w", encoding="utf-8") as f:
+            json.dump(logs, f, ensure_ascii=False, indent=2)
+
+
+# ==================== 首日作战矩阵核心监控器 ====================
+
+class CXMTFirstDayMonitor:
+    """
+    CXMT首日作战矩阵监控器
+
+    四阶段规则：
+    阶段1: 集合竞价(9:15-9:25) — 限额买入
+    阶段2: 开盘瞬间(9:30)     — 试探买入
+    阶段3: 冲高回落(9:32-10:00) — 回踩买入
+    阶段4: 尾盘确认(14:50-15:00) — 加仓确认
+
+    四条铁律：
+    1. 涨幅>80%(>12.6元)一股不买
+    2. 首日仓位≤40万
+    3. DRAM涨幅<10%减仓/下跌清仓
+    4. 账户-8%硬止损
+    """
+
+    def __init__(
+        self,
+        stock_code: str = "588000",   # CXMT上市后需更新(科创板)
+        issue_price: float = 10.0,      # 发行价(预估中间值)
+        total_fund: int = 1000000,      # 总资金(100万)
+        threshold_80_pct: float = 12.6,  # 80%涨幅对应价格
+    ):
+        self.stock_code = stock_code
+        self.issue_price = issue_price
+        self.total_fund = total_fund
+        self.threshold_80 = threshold_80_pct
+        self.threshold_50 = 10.5
+        self.threshold_low = 10.5
+
+        self.data_adapter = CXMTDataAdapter()
+        self.position_mgr = CXMTPositionManager()
+
+        # 状态追踪
+        self.phase_actions = {
+            "竞价": None,   # 已执行的操作
+            "开盘": None,
+            "回落": None,
+            "尾盘": None,
+        }
+        self.peak_price_today = 0.0   # 今日最高价
+        self.pullback_count = 0       # 回踩次数
+        self.avg_cost = issue_price   # 买入均价
+        self.total_shares = 0         # 总股数
+        self.total_invested = 0       # 总投入
+        self.last_quote = None        # 最新行情
+
+        # 飞书推送状态
+        self.feishu_enabled = False   # 飞书推送开关
+        self.last_feishu_push = 0     # 上次推送时间戳
+        self.feishu_push_interval = 300  # 飞书推送间隔(秒)，默认5分钟
+        self.last_action = None       # 上次操作(用于检测变化)
+        self.iron_rule_alerted = set()  # 已推送过铁律告警的规则号
+
+        # 铁律预警
+        self.dram_alert_level = "正常"  # 正常/警告/减仓/清仓
+        self.account_loss_pct = 0.0
+
+    # ==================== 行情获取 ====================
+
+    def refresh_quote(self) -> Optional[Dict]:
+        """刷新最新行情"""
+        quote = self.data_adapter.get_realtime_quote(self.stock_code)
+        if quote:
+            self.last_quote = quote
+            if quote["price"] > self.peak_price_today:
+                self.peak_price_today = quote["price"]
+        return quote
+
+    def get_current_gain_pct(self) -> float:
+        """计算当前涨幅(相对发行价)"""
+        if self.last_quote is None:
+            return 0.0
+        price = self.last_quote["price"]
+        return (price - self.issue_price) / self.issue_price * 100
+
+    def get_gain_pct_vs_close(self) -> float:
+        """计算当前涨幅(相对昨收)"""
+        if self.last_quote is None:
+            return 0.0
+        price = self.last_quote["price"]
+        prev = self.last_quote["close_prev"] or self.issue_price
+        return (price - prev) / prev * 100
+
+    # ==================== 阶段判断与规则引擎 ====================
+
+    def calc_action(self, phase: str = None) -> Dict:
+        """
+        根据当前阶段和行情计算操作建议
+        返回: {action, amount, reason, alert_level, rule_broken}
+        """
+        if phase is None:
+            phase = self.data_adapter.get_trading_phase()
+
+        quote = self.last_quote
+        if quote is None:
+            return {"action": "等待行情", "amount": 0, "reason": "行情获取失败", "alert_level": "警告", "rule_broken": []}
+
+        gain_pct = self.get_current_gain_pct()
+        gain_vs_close = self.get_gain_pct_vs_close()
+        remaining = self.position_mgr.calc_remaining_budget(self.total_fund)
+        price = quote["price"]
+
+        result = {
+            "phase": phase,
+            "price": price,
+            "gain_pct": gain_pct,
+            "gain_vs_close": gain_vs_close,
+            "remaining_budget": remaining,
+            "action": "观望",
+            "amount": 0,
+            "reason": "",
+            "alert_level": "正常",
+            "rule_broken": [],
+            "iron_rules_check": self._check_iron_rules(gain_pct, price),
+        }
+
+        if phase == "集合竞价":
+            result.update(self._calc_auction_action(gain_pct, remaining))
+        elif phase == "开盘连续竞价":
+            result.update(self._calc_open_action(gain_pct, remaining))
+        elif phase == "冲高回落监控":
+            result.update(self._calc_pullback_action(quote, gain_pct, remaining))
+        elif phase == "尾盘确认":
+            result.update(self._calc_tail_action(quote, gain_pct))
+        elif phase == "收盘":
+            result.update(self._calc_close_action(quote))
+        else:
+            result["reason"] = f"当前阶段:{phase}，等待指令"
+
+        # 应用铁律过滤
+        result = self._apply_iron_rules(result, gain_pct, price)
+
+        return result
+
+    def _calc_auction_action(self, gain_pct: float, remaining: int) -> Dict:
+        """集合竞价阶段操作计算"""
+        action = "观望"
+        amount = 0
+        reason = ""
+
+        if gain_pct <= 50:
+            action = "买入(限价)"
+            amount = min(150000, remaining)
+            reason = f"竞价涨幅{gain_pct:.1f}%≤50%，在可接受范围"
+        elif 50 < gain_pct <= 80:
+            action = "买入(谨慎)"
+            amount = min(50000, remaining)
+            reason = f"竞价涨幅{gain_pct:.1f}%处于50%-80%区间，谨慎参与"
+        else:
+            action = "放弃竞价"
+            amount = 0
+            reason = f"{Fore.RED}⚠️ 竞价涨幅{gain_pct:.1f}%>80%，违反铁律1——一股不买"
+
+        return {"action": action, "amount": amount, "reason": reason}
+
+    def _calc_open_action(self, gain_pct: float, remaining: int) -> Dict:
+        """开盘瞬间操作计算"""
+        action = "观望"
+        amount = 0
+        reason = ""
+
+        # 检查是否已在竞价阶段操作
+        if self.phase_actions["竞价"] == "已执行":
+            reason = "竞价阶段已执行操作，开盘不追加"
+            if gain_pct > 80:
+                action = "等第5天回踩"
+                reason += f"；当前涨幅{gain_pct:.1f}%>80%，强烈建议等待"
+        elif gain_pct <= 50:
+            action = "不追加"
+            amount = 0
+            reason = f"开盘涨幅{gain_pct:.1f}%≤50%，已在竞价买入，不再追加"
+        elif 50 < gain_pct <= 80:
+            action = "试探买入"
+            amount = min(50000, remaining)
+            reason = f"开盘涨幅{gain_pct:.1f}%处于50%-80%区间，试探性建仓"
+        else:
+            action = "等第5天回踩"
+            amount = 0
+            reason = f"{Fore.RED}⚠️ 开盘涨幅{gain_pct:.1f}%>80%，违反铁律1——等待回踩"
+
+        return {"action": action, "amount": amount, "reason": reason}
+
+    def _calc_pullback_action(self, quote: Dict, gain_pct: float, remaining: int) -> Dict:
+        """冲高回落阶段操作计算"""
+        action = "观望"
+        amount = 0
+        reason = ""
+
+        # 检查开盘是否超过80%
+        if gain_pct > 80:
+            return {
+                "action": "跳过回落买",
+                "amount": 0,
+                "reason": f"开盘涨幅{gain_pct:.1f}%>80%，已违反铁律，跳过本阶段"
+            }
+
+        # 检查是否已有回落
+        peak = self.peak_price_today
+        current = quote["price"]
+
+        # 判断是否回踩分时均线(简化:价格较日内高点回落>1%)
+        pullback_pct = (peak - current) / peak * 100 if peak > 0 else 0
+        is_pullback = pullback_pct >= 1.0
+
+        if is_pullback and self.pullback_count == 0:
+            self.pullback_count += 1
+            action = "买入"
+            amount = min(100000, remaining)
+            reason = (f"价格从高点{peak:.2f}回落{pullback_pct:.1f}%，回踩有效，"
+                     f"买入{amount/10000:.0f}万")
+        else:
+            reason = f"未触发回踩(回落{pullback_pct:.1f}%)或已执行过回落买入"
+
+        return {"action": action, "amount": amount, "reason": reason}
+
+    def _calc_tail_action(self, quote: Dict, gain_pct: float) -> Dict:
+        """尾盘确认阶段操作计算"""
+        action = "尾盘不加仓"
+        amount = 0
+        reason = ""
+
+        turnover = quote.get("turnover", 0)
+        price = quote["price"]
+        prev_close = quote.get("close_prev", self.issue_price)
+
+        # 情景A: 全天收涨+换手>50%+开盘≤80%
+        is_up = price >= prev_close
+        high_turnover = turnover > 50
+        opened_low = self.phase_actions.get("开盘") != "已执行_80%"
+
+        if is_up and high_turnover and gain_pct <= 80:
+            # 检查是否已操作过
+            if self.phase_actions["回落"] is None:
+                action = "尾盘加仓"
+                remaining = self.position_mgr.calc_remaining_budget(self.total_fund)
+                amount = min(100000, remaining)
+                reason = (f"全天收涨+换手{turnover:.1f}%>50%+开盘≤80%，"
+                         f"尾盘加仓{amount/10000:.0f}万")
+            else:
+                reason = "今日已执行过买入，尾盘不追加"
+        else:
+            # 情景B: 冲高回落剧烈或开盘>80%
+            if gain_pct > 80:
+                reason = f"开盘涨幅{gain_pct:.1f}%>80%，尾盘不加仓，等待回踩"
+            else:
+                reason = f"全天收涨+换手{turnover:.1f}%未达50%或已操作过"
+
+        return {"action": action, "amount": amount, "reason": reason}
+
+    def _calc_close_action(self, quote: Dict) -> Dict:
+        """收盘后评估"""
+        price = quote["price"]
+        gain_pct = self.get_current_gain_pct()
+        used = self.position_mgr.calc_firstday_used()
+
+        return {
+            "action": "收盘结算",
+            "amount": 0,
+            "reason": (f"收盘价{price}，全天涨幅{gain_pct:.1f}%，"
+                     f"首日已用仓位{used/10000:.0f}万/40万，"
+                     f"持仓情况：{self.position_mgr.get_cxmt_position()['shares']}股")
+        }
+
+    # ==================== 铁律检查 ====================
+
+    def _check_iron_rules(self, gain_pct: float, price: float) -> Dict:
+        """检查四条铁律状态"""
+        checks = []
+
+        # 铁律1: >80%一股不买
+        rule1 = "通过" if gain_pct <= 80 else "⚠️违反"
+        checks.append({"rule": 1, "desc": f"涨幅>{80}%不买", "status": rule1, "value": f"{gain_pct:.1f}%"})
+
+        # 铁律2: 首日仓位≤40万
+        used = self.position_mgr.calc_firstday_used()
+        rule2 = "通过" if used <= MAX_FIRSTDAY_POSITION else "⚠️超限"
+        checks.append({"rule": 2, "desc": "首日仓位≤40万", "status": rule2, "value": f"{used/10000:.0f}万"})
+
+        # 铁律3: DRAM涨幅趋势监控(需要外部数据注入)
+        rule3 = "正常" if self.dram_alert_level in ["正常", "警告"] else "⚠️触发"
+        checks.append({"rule": 3, "desc": "DRAM涨幅监控", "status": rule3, "value": self.dram_alert_level})
+
+        # 铁律4: 账户-8%硬止损
+        rule4 = "通过" if self.account_loss_pct >= -8 else "⚠️触及"
+        checks.append({"rule": 4, "desc": "账户-8%止损", "status": rule4, "value": f"{self.account_loss_pct:.1f}%"})
+
+        return {"rules": checks, "all_pass": all(c["status"] == "通过" or c["status"] == "正常" for c in checks)}
+
+    def _apply_iron_rules(self, result: Dict, gain_pct: float, price: float) -> Dict:
+        """应用铁律过滤操作建议"""
+        broken = []
+
+        # 铁律1: >80%禁止买入
+        if gain_pct > 80:
+            if result["action"] in ["买入", "买入(限价)", "试探买入"]:
+                result["action"] = "⚠️禁止买入"
+                result["amount"] = 0
+                broken.append("铁律1: 涨幅>80%禁止买入")
+
+        # 铁律2: 仓位超限
+        used = self.position_mgr.calc_firstday_used()
+        if used + result["amount"] > MAX_FIRSTDAY_POSITION:
+            result["amount"] = max(0, MAX_FIRSTDAY_POSITION - used)
+            if result["amount"] == 0:
+                broken.append("铁律2: 首日仓位已达40万上限")
+
+        result["rule_broken"] = broken
+        result["alert_level"] = "高危" if broken else "正常"
+        if self.dram_alert_level in ["减仓", "清仓"]:
+            result["alert_level"] = "警告"
+            result["reason"] += f"；⚠️ DRAM预警:{self.dram_alert_level}"
+
+        return result
+
+    def update_dram_alert(self, q3_pct: float, q4_outlook: str = "待观察"):
+        """
+        更新DRAM价格预警
+        q3_pct: Q3 DRAM涨幅(如13-18)
+        q4_outlook: Q4展望(normal/警告/减仓/清仓)
+        """
+        # 取区间下限作为判断基准
+        if isinstance(q3_pct, tuple):
+            q3_pct = q3_pct[0]  # 取下限
+
+        if q3_pct < 10:
+            self.dram_alert_level = "减仓"
+        elif q3_pct < 13:
+            self.dram_alert_level = "警告"
+        else:
+            self.dram_alert_level = "正常"
+
+        if q4_outlook == "下跌":
+            self.dram_alert_level = "清仓"
+        elif q4_outlook == "继续收窄":
+            if self.dram_alert_level != "清仓":
+                self.dram_alert_level = "减仓"
+
+    # ==================== 监控循环 ====================
+
+    def run_realtime_monitor(self, interval: int = 10, duration_min: int = 480, feishu: bool = False):
+        """
+        运行实时监控循环
+        interval: 刷新间隔(秒)
+        duration_min: 监控总时长(分钟，默认8小时)
+        feishu: 是否启用飞书实时推送
+        """
+        self.feishu_enabled = feishu and FEISHU_AVAILABLE
+
+        print(f"\n{Fore.CYAN}{'='*60}")
+        print(f"📡 CXMT首日作战矩阵监控启动")
+        print(f"   股票代码: {self.stock_code}")
+        print(f"   发行价: {self.issue_price}元")
+        print(f"   80%涨幅线: {self.threshold_80}元")
+        print(f"   首日仓位上限: {MAX_FIRSTDAY_POSITION/10000:.0f}万")
+        print(f"   飞书推送: {'✅ 开启' if self.feishu_enabled else '❌ 关闭'}")
+        print(f"{'='*60}{Style.RESET_ALL}\n")
+
+        start_time = time.time()
+        end_time = start_time + duration_min * 60
+
+        # 开盘前推送市场背景
+        if self.feishu_enabled:
+            self._push_market_context()
+        count = 0
+        while time.time() < end_time:
+            now = datetime.now()
+            phase = self.data_adapter.get_trading_phase()
+
+            # 只在交易时间监控
+            t = now.time()
+            # if not (dtime(9, 10) <= t <= dtime(15, 10)):
+            #     time.sleep(interval)
+            #     continue
+
+            # 刷新行情
+            quote = self.refresh_quote()
+            print(quote)
+            if quote is None:
+                print(f"{Fore.YELLOW}[{now.strftime('%H:%M:%S')}] 行情获取失败，等待重试...{Style.RESET_ALL}")
+                time.sleep(interval)
+                continue
+
+            price = quote["price"]
+            gain_pct = self.get_current_gain_pct()
+
+            # 计算操作
+            action_result = self.calc_action(phase)
+
+            # 打印状态行
+            self._print_status_line(now, phase, price, gain_pct, action_result)
+
+            # 铁律检查
+            iron = action_result.get("iron_rules_check", {})
+            if not iron.get("all_pass", True):
+                for r in iron.get("rules", []):
+                    if r["status"] not in ["通过", "正常"]:
+                        print(f"{Fore.RED}   ⚠️ 铁律{r['rule']}触发: {r['desc']}={r['value']}{Style.RESET_ALL}")
+
+            # ========== 飞书推送逻辑 ==========
+            if self.feishu_enabled:
+                self._handle_feishu_push(phase, price, gain_pct, action_result, iron)
+
+            # 尾盘收盘打印日报
+            if phase == "收盘" and count == 0:
+                print(self._gen_daily_report(quote, action_result))
+                if self.feishu_enabled:
+                    count = 1
+                    self._push_daily_summary(quote, action_result, iron)
+
+            time.sleep(interval)
+
+    def _handle_feishu_push(self, phase: str, price: float, gain_pct: float,
+                             action_result: Dict, iron: Dict):
+        """处理飞书推送：定时推送 + 操作变化推送 + 铁律告警推送"""
+        now_ts = time.time()
+        action = action_result.get("action", "")
+        iron_rules = iron.get("rules", [])
+
+        # 1. 铁律触发告警推送（每个规则只推一次）
+        for r in iron_rules:
+            if r["status"] not in ["通过", "正常"] and r["rule"] not in self.iron_rule_alerted:
+                self.iron_rule_alerted.add(r["rule"])
+                push_iron_rule_alert(
+                    rule_num=r["rule"],
+                    rule_desc=r["desc"],
+                    current_value=str(r["value"]),
+                    threshold="超限" if "不买" in r["desc"] else "触发",
+                    phase=phase,
+                    price=price,
+                    gain_pct=gain_pct,
+                )
+                print(f"{Fore.RED}🛑 飞书铁律告警已推送: 铁律{r['rule']}{Style.RESET_ALL}")
+
+        # 2. 操作变化告警推送
+        if self.last_action != action:
+            self.last_action = action
+            push_action_alert(
+                phase=phase,
+                price=price,
+                gain_pct=gain_pct,
+                action=action,
+                amount=action_result.get("amount", 0),
+                reason=action_result.get("reason", ""),
+                iron=iron,
+                threshold_80=self.threshold_80,
+            )
+            print(f"{Fore.GREEN}📱 飞书操作信号已推送: {action}{Style.RESET_ALL}")
+
+        # 3. 定时推送（每feishu_push_interval秒一次，避免刷屏）
+        if now_ts - self.last_feishu_push >= self.feishu_push_interval:
+            self.last_feishu_push = now_ts
+            used = self.position_mgr.calc_firstday_used()
+            remaining = self.position_mgr.calc_remaining_budget(self.total_fund)
+            push_realtime_status(
+                phase=phase,
+                price=price,
+                gain_pct=gain_pct,
+                issue_price=self.issue_price,
+                threshold_80=self.threshold_80,
+                action_result=action_result,
+                iron=iron,
+                used_budget=used,
+                remaining_budget=remaining,
+                peak_price=self.peak_price_today,
+            )
+
+    def _push_market_context(self):
+        """推送开盘前市场背景"""
+        market_indices = []
+        for idx_code, idx_name in [("sh000001", "上证指数"), ("sz399001", "深证成指")]:
+            q = self.data_adapter.get_realtime_quote(idx_code)
+            if q:
+                market_indices.append({"name": idx_name, "price": q["price"], "pct": q["up_down_pct"]})
+        push_market_context(
+            issue_price=self.issue_price,
+            threshold_80=self.threshold_80,
+            phase="开盘前",
+            dram_alert=self.dram_alert_level,
+            market_indices=market_indices,
+        )
+        print(f"{Fore.GREEN}📱 飞书市场背景已推送{Style.RESET_ALL}")
+
+    def _push_daily_summary(self, quote: Dict, action_result: Dict, iron: Dict):
+        """推送收盘总结"""
+        price = quote["price"]
+        gain_pct = self.get_current_gain_pct()
+        used = self.position_mgr.calc_firstday_used()
+        cxmt_pos = self.position_mgr.get_cxmt_position()
+        push_daily_summary(
+            close_price=price,
+            gain_pct=gain_pct,
+            peak_price=self.peak_price_today,
+            used_budget=used,
+            final_positions=cxmt_pos,
+            iron_summary=iron.get("rules", []),
+        )
+        print(f"{Fore.GREEN}📱 飞书收盘总结已推送{Style.RESET_ALL}")
+
+    def _print_status_line(self, now: datetime, phase: str, price: float,
+                          gain_pct: float, result: Dict):
+        """打印一行状态"""
+        # 颜色: 涨幅决定颜色
+        if gain_pct > 80:
+            color = Fore.RED
+        elif gain_pct > 50:
+            color = Fore.YELLOW
+        elif gain_pct > 0:
+            color = Fore.GREEN
+        else:
+            color = Fore.WHITE
+
+        phase_emoji = {
+            "集合竞价": "🔔", "开盘连续竞价": "🚀", "冲高回落监控": "📉",
+            "尾盘确认": "🌙", "收盘": "📊", "盘中": "⏳"
+        }.get(phase, "⏳")
+
+        print(f"{Fore.CYAN}[{now.strftime('%H:%M:%S')}]{Style.RESET_ALL} "
+              f"{phase_emoji} {phase} | "
+              f"价:{color}{price:.2f}{Style.RESET_ALL} | "
+              f"涨幅:{color}{gain_pct:+.1f}%{Style.RESET_ALL} | "
+              f"操作:{result['action']} {result['amount']//10000:.0f}万 | "
+              f"{result.get('reason', '')}")
+
+    def _gen_daily_report(self, quote: Dict, result: Dict) -> str:
+        """生成收盘报告"""
+        price = quote["price"]
+        gain_pct = self.get_current_gain_pct()
+        used = self.position_mgr.calc_firstday_used()
+        cxmt_pos = self.position_mgr.get_cxmt_position()
+
+        report = f"""
+{Fore.CYAN}{'='*60}
+📊 CXMT首日收盘报告
+{'='*60}
+  收盘价: {price:.2f}元
+  涨幅:   {gain_pct:+.1f}% (vs 发行价{self.issue_price}元)
+  最高价: {self.peak_price_today:.2f}元
+  首日已用仓位: {used/10000:.0f}万 / 40万 ({used/MAX_FIRSTDAY_POSITION*100:.0f}%)
+  持仓股数: {cxmt_pos['shares']}股
+  持仓均价: {cxmt_pos['avg_cost']:.2f}元
+  DRAM预警: {self.dram_alert_level}
+{Fore.CYAN}{'='*60}{Style.RESET_ALL}
+"""
+        return report
+
+    # ==================== 预警消息生成 ====================
+
+    def generate_alert_card(self) -> Dict:
+        """生成飞书卡片格式的预警消息"""
+        quote = self.last_quote
+        if quote is None:
+            return {"msg": "行情获取中..."}
+
+        price = quote["price"]
+        gain_pct = self.get_current_gain_pct()
+        phase = self.data_adapter.get_trading_phase()
+        action = self.calc_action(phase)
+        iron = action.get("iron_rules_check", {})
+
+        # 颜色判断
+        if gain_pct > 80:
+            color = "red"
+            verdict = "⚠️ 高危：涨幅超80%，铁律禁止买入"
+        elif gain_pct > 50:
+            color = "orange"
+            verdict = "⚡ 谨慎：50%-80%区间，限额参与"
+        elif gain_pct > 0:
+            color = "green"
+            verdict = "✅ 正常：涨幅合理，可执行操作"
+        else:
+            color = "grey"
+            verdict = "❄️ 破发或平开，关注尾盘"
+
+        card = {
+            "msgtype": "markdown",
+            "markdown": {
+                "content": f"""## 📊 CXMT首日作战矩阵
+**阶段**: {phase} | **时间**: {datetime.now().strftime('%H:%M:%S')}
+---
+**当前价格**: {price:.2f}元
+**涨幅(vs发行价)**: {gain_pct:+.1f}%
+**80%涨幅线**: {self.threshold_80}元
+---
+**本阶段操作**: **{action['action']}** {action['amount']//10000:.0f}万
+**原因**: {action.get('reason', 'N/A')}
+---
+**四条铁律检查**:
+{"".join([f"- 铁律{r['rule']}: {r['desc']} → {r['status']}({r['value']})" for r in iron.get('rules', [])])}
+---
+**判定**: {verdict}
+"""
+            }
+        }
+        return card
+
+
+# ==================== CLI 入口 ====================
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="CXMT首日作战矩阵监控器")
+    parser.add_argument("--code",      default="588000", help="CXMT股票代码(上市后更新)")
+    parser.add_argument("--price",    type=float, default=10.0, help="发行价格(元)")
+    parser.add_argument("--threshold", type=float, default=12.6, help="80%涨幅对应价格")
+    parser.add_argument("--fund",      type=int,   default=1000000, help="总资金(元)")
+    parser.add_argument("--interval",  type=int,   default=10, help="刷新间隔(秒)")
+    parser.add_argument("--once",      action="store_true", help="单次查询(非循环)")
+    parser.add_argument("--dram-q3",  type=float, help="Q3 DRAM涨幅(%)，更新预警状态")
+    parser.add_argument("--feishu",   action="store_true", help="启用飞书实时推送")
+    parser.add_argument("--push-interval", type=int, default=300, help="飞书推送间隔(秒，默认300)")
+    args = parser.parse_args()
+
+    monitor = CXMTFirstDayMonitor(
+        stock_code=args.code,
+        issue_price=args.price,
+        threshold_80_pct=args.threshold,
+        total_fund=args.fund,
+    )
+
+    if args.dram_q3:
+        monitor.update_dram_alert(args.dram_q3)
+        print(f"{Fore.CYAN}DRAM Q3预警已更新: {monitor.dram_alert_level}{Style.RESET_ALL}")
+
+    if args.feishu:
+        monitor.feishu_push_interval = args.push_interval
+
+    if args.once:
+        # 单次查询模式
+        monitor.refresh_quote()
+        phase = CXMTDataAdapter().get_trading_phase()
+        result = monitor.calc_action(phase)
+        print(f"\n{Fore.GREEN}当前阶段: {phase}{Style.RESET_ALL}")
+        print(f"当前价格: {monitor.last_quote['price'] if monitor.last_quote else 'N/A'}")
+        print(f"涨幅: {monitor.get_current_gain_pct():+.1f}%")
+        print(f"操作: {result['action']} {result['amount']//10000:.0f}万")
+        print(f"原因: {result.get('reason', '')}")
+        iron = result.get("iron_rules_check", {})
+        print("\n铁律检查:")
+        for r in iron.get("rules", []):
+            print(f"  铁律{r['rule']}: {r['desc']} → {r['status']}({r['value']})")
+    else:
+        # 实时监控模式
+        monitor.run_realtime_monitor(interval=args.interval, feishu=args.feishu)
+
+
+if __name__ == "__main__":
+    main()

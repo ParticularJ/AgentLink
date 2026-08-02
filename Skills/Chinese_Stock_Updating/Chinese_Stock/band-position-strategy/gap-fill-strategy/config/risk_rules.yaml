@@ -1,0 +1,71 @@
+# config/risk_rules.yaml
+
+# 缺口回补策略风险管理规则
+version: "1.0.0"
+
+# 止损规则
+stop_loss_rules:
+  gap_low_stop:
+    enabled: true
+    condition: "close < gap_bottom"
+    description: "跌破缺口下沿止损"
+  
+  hard_stop:
+    enabled: true
+    percentage: 0.05
+    description: "固定5%止损"
+  
+  ma_stop:
+    enabled: true
+    ma_period: 10
+    description: "跌破10日线止损"
+  
+  time_stop:
+    enabled: true
+    days: 10
+    min_profit: 0.02
+    description: "持仓10天盈利<2%离场"
+
+# 止盈规则
+take_profit_rules:
+  target_profit:
+    enabled: true
+    levels:
+      - percentage: 0.08
+        action: "减仓30%"
+      - percentage: 0.12
+        action: "减仓30%"
+      - percentage: 0.15
+        action: "清仓"
+  
+  trailing_stop:
+    enabled: true
+    percentage: 0.08
+    description: "最高点回撤8%止盈"
+  
+  gap_resistance:
+    enabled: true
+    description: "遇到前期高点阻力止盈"
+
+# 仓位管理
+position_sizing:
+  based_on_signal:
+    strong: 0.25    # 评分≥85
+    normal: 0.15    # 评分75-84
+    weak: 0.10      # 评分70-74
+  
+  based_on_gap_strength:
+    strong: 0.25    # 跳空>5%
+    normal: 0.15    # 跳空3-5%
+  
+  max_single_position: 0.25
+  max_portfolio_risk: 0.06
+
+# 缺口回补失败信号
+failure_signals:
+  conditions:
+    - "缺口完全回补"
+    - "回踩后跌破缺口上沿"
+    - "回踩后继续放量下跌"
+  
+  action: "立即止损离场"

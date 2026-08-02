@@ -1,0 +1,109 @@
+{
+  "date": "20260630",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-06-30T08:07:27.568987",
+  "recommendations": [
+    {
+      "code": "688008",
+      "name": "澜起科技",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 97.08,
+      "best_score": 90.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2271
+    },
+    {
+      "code": "688012",
+      "name": "中微公司",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 无明显回踩，直接强势上攻，进攻意愿足",
+      "combined_score": 96.54,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1965
+    },
+    {
+      "code": "688120",
+      "name": "华海清科",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 96.54,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1665
+    },
+    {
+      "code": "002371",
+      "name": "北方华创",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 90.14,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 13.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1301
+    },
+    {
+      "code": "000021",
+      "name": "深科技",
+      "penalty": -8,
+      "penalty_reason": [
+        "机构龙虎榜净卖出前三（已排除大盘系统性因素），主力资金主动出逃信号降级处理；但未达大额减持、业绩暴雷等极端利空量化标准，归为轻微利空"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 83.74,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 9.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0937
+    }
+  ],
+  "total_position": 81.5,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

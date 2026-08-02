@@ -1,0 +1,44 @@
+# 策略参数配置
+strategy_config:
+  name: "涨停板首次回调交易策略"
+  version: "v1.0.0"
+  description: "捕捉涨停板后首次回调至支撑位的买入机会"
+
+# 涨停条件
+limit_up_conditions:
+  lookback_days: 5             # 查看5个交易日内的涨停
+  min_limit_up_count: 1        # 至少1个涨停
+  max_limit_up_count: 3        # 最多3个涨停（避免过度炒作）
+  min_limit_up_pct: 9.5        # 最小涨幅9.5%（考虑ST股）
+
+# 回调条件
+retrace_conditions:
+  max_retrace_pct: 15          # 最大回调幅度15%
+  min_retrace_days: 1          # 最少回调1天
+  max_retrace_days: 5          # 最多回调5天
+
+# 支撑位配置
+support_levels:
+  priority:                    # 支撑位优先级
+    - limit_up_price          # 涨停价（最高优先级）
+    - ma5                     # 5日线
+    - previous_high           # 前高
+  tolerance_pct: 2             # 支撑位容忍度±2%
+
+# 成交量条件
+volume_conditions:
+  lookback_days: 3             # 对比前3日均量
+  shrink_ratio: 0.5            # 缩量至50%以下
+
+# 买入确认
+entry_confirmation:
+  require_confirm: true        # 需要确认信号
+  confirm_within_days: 2       # 2天内确认有效
+  min_up_pct: 2                # 确认上涨至少2%
+
+# 过滤条件
+filters:
+  min_market_cap: 30           # 最小市值30亿
+  exclude_st: true             # 排除ST股票
+  exclude_new_ipo: true        # 排除次新股（上市<60天）
+  exclude_suspended: true      # 排除停牌股

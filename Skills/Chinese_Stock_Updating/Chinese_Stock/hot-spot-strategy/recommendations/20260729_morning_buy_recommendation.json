@@ -1,0 +1,86 @@
+{
+  "date": "20260729",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-07-29T08:28:25.218743",
+  "recommendations": [
+    {
+      "code": "300510",
+      "name": "金冠股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "涨停回踩",
+      "recommend_date": "2026-07-29",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 74.68,
+      "best_score": 77.8,
+      "strategies": [
+        "涨停回踩"
+      ],
+      "position_pct": 20.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "TopSectors": null,
+      "weight": 0.2047
+    },
+    {
+      "code": "002195",
+      "name": "岩山科技",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-07-29",
+      "entry_price": 0.0,
+      "target_reason": [
+        "10:00前早盘封板，盘口尚可 ",
+        "全程零炸板，封板稳定性高",
+        "封单资金363616223，流通市值38356142375，封单比0.0095",
+        "最后封板时间(9, 40, 39)",
+        "本股为板块龙二",
+        "标的属性：百亿以上大盘股，首板，10点前早盘硬板",
+        "额比0.7~1.2，大盘早盘硬板平量稳定",
+        "大盘首板换手2~8%，换手健康 ",
+        "首板量比1.2~2.5，温和放量突破",
+        "连扳次数1",
+        "当日高开4%以上跳空首板"
+      ],
+      "combined_score": 74.41,
+      "best_score": 71.9,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 17.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "TopSectors": [
+        {
+          "所属行业": "软件开发",
+          "涨停数": 6,
+          "最高连板": 1,
+          "涨停占比": 9.8,
+          "强度": "普通主线"
+        },
+        {
+          "所属行业": "IT服务Ⅱ",
+          "涨停数": 5,
+          "最高连板": 1,
+          "涨停占比": 8.2,
+          "强度": "普通主线"
+        },
+        {
+          "所属行业": "汽车零部",
+          "涨停数": 4,
+          "最高连板": 2,
+          "涨停占比": 6.6,
+          "强度": "支线"
+        }
+      ],
+      "weight": 0.1744
+    }
+  ],
+  "total_position": 37.9,
+  "stock_count": 2,
+  "strategy_count": 2,
+  "no_result_count": 0,
+  "error_count": 0
+}

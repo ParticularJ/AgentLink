@@ -1,0 +1,78 @@
+{
+  "date": "20260624",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-24T14:29:02.104140",
+  "recommendations": [
+    {
+      "code": "300475",
+      "name": "香农芯创",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-24",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.87,
+      "best_score": 76.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2099
+    },
+    {
+      "code": "603256",
+      "name": "宏和科技",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-24",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 76.67,
+      "best_score": 76.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1767
+    },
+    {
+      "code": "601958",
+      "name": "金钼股份",
+      "penalty": -8,
+      "penalty_reason": [
+        "股价大跌8.76%且振幅达15.28%，主力资金今日净流出6.11亿元，近5日累计流出15.40亿元呈持续离场态势，营业部席位合计净卖出4951.94万元显示游资撤离，融券余额暴增188.94%表明做空力量增强。虽机构买入1.49亿元、一季度净利润增长32.99%，但短期空头动能显著强于多头，基本面利好难以对冲资金面压力。",
+        "金钼股份今日主力资金净流出6.1亿元，属于大额资金出逃；跌幅8.76%超过有色金属行业整体跌幅7.24%，表现弱于行业平均；该股在行业资金流出榜排名第11位，显示机构投资者明显减仓态度，构成实质性资金面利空。"
+      ],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-24",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方缩量企稳 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 72.52,
+      "best_score": 82.4,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1425
+    }
+  ],
+  "total_position": 53.0,
+  "stock_count": 3,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

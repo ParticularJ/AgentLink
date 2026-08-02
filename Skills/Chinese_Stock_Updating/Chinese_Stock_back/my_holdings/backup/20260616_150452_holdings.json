@@ -1,0 +1,227 @@
+[
+  {
+    "code": "002384",
+    "name": "东山精密",
+    "cost": 218.25,
+    "shares": 300,
+    "init_shares": 600,
+    "current_price": 249.06,
+    "highest_price": 249.06,
+    "entry_date": "2026-06-14",
+    "strategy_name": "波段仓建仓",
+    "score": 69.5,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "600549",
+    "name": "厦门钨业",
+    "cost": 65.69,
+    "shares": 800,
+    "init_shares": 800,
+    "current_price": 78.41,
+    "highest_price": 78.41,
+    "entry_date": "2026-06-14",
+    "strategy_name": "均线多头策略建仓",
+    "score": 78.75,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "300706",
+    "name": "阿石创",
+    "cost": 72.39,
+    "shares": 700,
+    "init_shares": 700,
+    "current_price": 80.7,
+    "highest_price": 80.7,
+    "entry_date": "2026-06-15",
+    "strategy_name": "突破新高",
+    "score": 72.5,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "300666",
+    "name": "江丰电子",
+    "cost": 292.5,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 299.61,
+    "highest_price": 299.99,
+    "entry_date": "2026-06-15",
+    "strategy_name": "强势多头",
+    "score": 71.7,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "688809",
+    "name": "强一股份",
+    "cost": 572.94,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 573.0,
+    "highest_price": 573.01,
+    "entry_date": "2026-06-16",
+    "strategy_name": "强势多头",
+    "score": 62.75,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "000506",
+    "name": "招金黄金",
+    "cost": 15.12,
+    "shares": 3400,
+    "init_shares": 3400,
+    "current_price": 15.2,
+    "highest_price": 15.2,
+    "entry_date": "2026-06-16",
+    "strategy_name": "",
+    "score": 58.6,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "601958",
+    "name": "金钼股份",
+    "cost": 28.54,
+    "shares": 1800,
+    "init_shares": 1800,
+    "current_price": 28.88,
+    "highest_price": 28.88,
+    "entry_date": "2026-06-16",
+    "strategy_name": "",
+    "score": 71.7,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "601975",
+    "name": "招商南油",
+    "cost": 4.65,
+    "shares": 10800,
+    "init_shares": 10800,
+    "current_price": 4.38,
+    "highest_price": 4.65,
+    "entry_date": "2026-06-16",
+    "strategy_name": "",
+    "score": 39.375,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "600026",
+    "name": "中远海能",
+    "cost": 19.24,
+    "shares": 2700,
+    "init_shares": 2700,
+    "current_price": 17.9,
+    "highest_price": 19.24,
+    "entry_date": "2026-06-16",
+    "strategy_name": "",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  }
+]

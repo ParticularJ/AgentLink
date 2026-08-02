@@ -1,0 +1,87 @@
+{
+  "date": "20260729",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-07-29T14:22:39.358145",
+  "recommendations": [
+    {
+      "code": "600362",
+      "name": "江西铜业",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-29",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 有效突破",
+        "回踩确认: 缺口上方缩量企稳 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 76.78,
+      "best_score": 80.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 20.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2068
+    },
+    {
+      "code": "002490",
+      "name": "山东墨龙",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-29",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 均线缠绕",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 74.33,
+      "best_score": 77.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 17.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1743
+    },
+    {
+      "code": "600489",
+      "name": "中金黄金",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-29",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 普通缺口",
+        "回踩确认: 缺口上方缩量企稳 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 74.11,
+      "best_score": 77.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1441
+    }
+  ],
+  "total_position": 52.5,
+  "stock_count": 3,
+  "strategy_count": 1,
+  "no_result_count": 2,
+  "error_count": 0
+}

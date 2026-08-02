@@ -1,0 +1,96 @@
+# earnings-surprise-strategy/config/strategy_config.yaml
+
+# 财报超预期策略参数配置
+strategy:
+  name: "财报超预期策略"
+  version: "1.0.0"
+  
+  # 业绩增长标准
+  growth_standards:
+    min_net_profit_yoy: 30      # 净利润同比增长最小值(%)
+    min_revenue_yoy: 20         # 营收同比增长最小值(%)
+    min_net_profit_qoq: 20      # 净利润环比增长最小值(%)
+    min_revenue_qoq: 15         # 营收环比增长最小值(%)
+  
+  # 超预期标准
+  surprise_standards:
+    min_surprise_pct: 10        # 最小超预期幅度(%)
+    significant_surprise: 20    # 显著超预期幅度(%)
+    eps_beat_required: true     # 必须超预期
+    revenue_beat_optional: true # 营收超预期可选
+  
+  # 质量指标
+  quality_standards:
+    min_gross_margin: 20        # 最小毛利率(%)
+    gross_margin_improvement: 2 # 毛利率环比提升(百分点)
+    min_operating_cash_flow: 0  # 经营现金流要求(亿)
+    max_debt_to_equity: 100     # 最大资产负债率(%)
+  
+  # 市场反应标准
+  market_reaction:
+    min_gap_up: 3               # 最小跳空涨幅(%)
+    min_volume_ratio: 2         # 最小放量倍数
+    observation_days: 5         # 观察天数
+    required_price_above: true  # 要求收盘价高于公告日收盘价
+  
+  # 机构态度
+  institutional:
+    min_rating_upgrades: 1      # 最小评级上调家数
+    target_price_premium: 10    # 目标价溢价(%)
+    require_recent_report: true  # 要求近期研报
+  
+  # 行业要求
+  industry:
+    min_industry_growth: 10     # 行业最低增速(%)
+    exclude_cyclical: true      # 排除强周期行业
+    preferred_industries:       # 优选行业
+      - "医药生物"
+      - "食品饮料"
+      - "电子"
+      - "计算机"
+      - "新能源"
+
+# 评分权重
+scoring:
+  weights:
+    surprise_magnitude: 0.30    # 超预期幅度
+    growth_quality: 0.25        # 增长质量
+    market_reaction: 0.20       # 市场反应
+    institutional_attitude: 0.15 # 机构态度
+    industry_prosperity: 0.10   # 行业景气度
+  
+  thresholds:
+    strong: 85                  # 强烈推荐阈值
+    recommend: 75               # 推荐阈值
+    watch: 70                   # 关注阈值
+
+# 操作规则
+trading_rules:
+  # 买入规则
+  buy_rules:
+    timing: "公告后1-5个交易日"
+    entry_methods:
+      - "公告次日开盘买入"
+      - "回调至5日线买入"
+      - "突破公告日高点买入"
+  
+  # 卖出规则
+  sell_rules:
+    stop_loss: "跌破公告日最低价或-8%"
+    take_profit: "达到目标价或持仓4周"
+    early_exit: "出现利空公告或业绩变脸"
+  
+  # 仓位管理
+  position_sizing:
+    strong_signal: 0.25         # 强信号仓位25%
+    normal_signal: 0.15         # 普通信号仓位15%
+    weak_signal: 0.10           # 弱信号仓位10%
+
+# 回测配置
+backtest:
+  default_start: "2023-01-01"
+  default_end: "2024-12-31"
+  initial_capital: 1000000
+  commission_rate: 0.0003
+  slippage: 0.0001
+  benchmark: "000300"  # 沪深300

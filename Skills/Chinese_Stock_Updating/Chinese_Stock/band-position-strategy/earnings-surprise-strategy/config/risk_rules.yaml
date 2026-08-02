@@ -1,0 +1,115 @@
+# earnings-surprise-strategy/config/risk_rules.yaml
+
+# 财报超预期策略风险管理规则
+version: "1.0.0"
+
+# 止损规则
+stop_loss_rules:
+  # 技术止损
+  technical_stop:
+    enabled: true
+    condition: "close < earnings_announcement_low"
+    description: "跌破公告日最低价止损"
+  
+  # 硬止损
+  hard_stop:
+    enabled: true
+    percentage: 0.08
+    description: "固定8%止损"
+  
+  # 业绩变脸止损
+  earnings_revision_stop:
+    enabled: true
+    condition: "业绩预告变脸或下调"
+    description: "业绩下修立即止损"
+  
+  # 时间止损
+  time_stop:
+    enabled: true
+    days: 20
+    min_profit: 0.03
+    description: "持仓20天盈利<3%则离场"
+
+# 止盈规则
+take_profit_rules:
+  # 目标价止盈
+  target_profit:
+    enabled: true
+    levels:
+      - percentage: 0.15
+        action: "减仓50%"
+      - percentage: 0.25
+        action: "减仓30%"
+      - percentage: 0.35
+        action: "清仓剩余仓位"
+  
+  # 移动止盈
+  trailing_stop:
+    enabled: true
+    percentage: 0.10
+    description: "最高点回撤10%止盈"
+  
+  # 时间止盈
+  time_profit:
+    enabled: true
+    max_holding_days: 30
+    description: "持仓超过30天无条件离场"
+
+# 仓位管理规则
+position_sizing_rules:
+  # 基于信号强度
+  based_on_signal:
+    enabled: true
+    strong_signal: 0.25    # 评分≥85
+    normal_signal: 0.15    # 评分75-84
+    weak_signal: 0.10      # 评分70-74
+  
+  # 基于市值
+  based_on_market_cap:
+    enabled: true
+    large_cap: 0.20        # 大市值>500亿
+    mid_cap: 0.15          # 中市值100-500亿
+    small_cap: 0.10        # 小市值<100亿
+  
+  # 最大仓位限制
+  max_position: 0.25
+  max_portfolio_risk: 0.06
+
+# 风险预警规则
+risk_warnings:
+  # 业绩预警
+  earnings_warning:
+    - "单季度业绩增速环比下降>50%"
+    - "毛利率环比下降>5个百分点"
+    - "经营现金流为负且恶化"
+  
+  # 市场预警
+  market_warning:
+    - "公告后股价高开低走"
+    - "公告后5日涨幅<公告日涨幅"
+    - "成交量持续萎缩"
+  
+  # 行业预警
+  industry_warning:
+    - "行业龙头业绩不及预期"
+    - "行业政策利空"
+    - "行业景气度下行"
+
+# 特殊风险
+special_risks:
+  # 财务造假风险
+  accounting_risk:
+    high_indicators:
+      - "审计意见非标准"
+      - "应收账款增速>营收增速"
+      - "存货周转率下降"
+      - "关联交易异常"
+  
+  # 解禁风险
+  unlocking_risk:
+    threshold_days: 30
+    warning: "未来30天有大额解禁"
+  
+  # 减持风险
+  reduction_risk:
+    warning: "公告后有股东减持计划"

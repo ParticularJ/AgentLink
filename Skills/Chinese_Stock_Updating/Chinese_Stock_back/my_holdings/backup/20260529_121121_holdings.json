@@ -1,0 +1,163 @@
+[
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "cost": 101.003,
+    "shares": 200,
+    "init_shares": 300,
+    "current_price": 135.64,
+    "highest_price": 137.87,
+    "entry_date": "2026-05-20",
+    "strategy_name": "均线多头",
+    "score": 70.7,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "000021",
+    "name": "深科技",
+    "cost": 38.886923076923075,
+    "shares": 1300,
+    "init_shares": 1300,
+    "current_price": 42.65,
+    "highest_price": 46.28,
+    "entry_date": "2026-05-22",
+    "strategy_name": "缺口填充，均线多头",
+    "score": 52.199999999999996,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "300408",
+    "name": "三环集团",
+    "cost": 120.99,
+    "shares": 400,
+    "init_shares": 400,
+    "current_price": 132.11,
+    "highest_price": 132.41,
+    "entry_date": "2026-05-25",
+    "strategy_name": "突破新高",
+    "score": 76.85,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "300831",
+    "name": "派瑞股份",
+    "cost": 24.05,
+    "shares": 2100,
+    "init_shares": 2100,
+    "current_price": 25.69,
+    "highest_price": 26.42,
+    "entry_date": "2026-05-25",
+    "strategy_name": "均线多头 缺口填充",
+    "score": 53.199999999999996,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002859",
+    "name": "洁美科技",
+    "cost": 64.578,
+    "shares": 800,
+    "init_shares": 800,
+    "current_price": 69.82,
+    "highest_price": 69.82,
+    "entry_date": "2026-05-26",
+    "strategy_name": "",
+    "score": 80.0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "688072",
+    "name": "拓荆科技",
+    "cost": 733.307,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 672.61,
+    "highest_price": 733.307,
+    "entry_date": "2026-05-27",
+    "strategy_name": "突破新高",
+    "score": 67.25,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002916",
+    "name": "深南电路",
+    "cost": 399.0,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 398.28,
+    "highest_price": 399,
+    "entry_date": "2026-05-28",
+    "strategy_name": "均线多头",
+    "score": 69.25,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+]
