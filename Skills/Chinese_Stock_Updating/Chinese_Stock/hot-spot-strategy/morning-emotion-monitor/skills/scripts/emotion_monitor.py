@@ -9,7 +9,7 @@
 核心决策：竞价缺口方向 + 开盘头5分钟确认 = 真实信号
 """
 
-import os, sys, json, time, re, yaml, requests
+import os, sys, json, time, re, yaml, requests, importlib.util
 from datetime import datetime, time as dtime
 from typing import Dict, List, Optional, Tuple, Any
 from pathlib import Path
@@ -21,8 +21,22 @@ init(autoreset=True)
 
 BASE_DIR      = Path("/home/jarvis/.openclaw/workspace/skills/Chinese_Stock/hot-spot-strategy")
 SCRIPTS_DIR   = Path(__file__).parent
-HOLDINGS_PATH = BASE_DIR / "my_holdings" / "holdings.json"
-BUY_WATCH_PATH_DEFAULT = BASE_DIR / "my_holdings" / "buy_watch.yaml"
+HOLDINGS_PATH = Path("/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json")
+BUY_WATCH_PATH_DEFAULT = None
+RECOMMENDATION_DIRS = [
+    BASE_DIR / "recommendations",
+    Path("/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/recommendations"),
+]
+
+MT_CONFIG_PATH = BASE_DIR / "Medium-termHoldingStrategy" / "skills" / "scripts" / "config.py"
+MT_CONFIG = None
+try:
+    spec = importlib.util.spec_from_file_location("mt_config", str(MT_CONFIG_PATH))
+    if spec and spec.loader:
+        MT_CONFIG = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(MT_CONFIG)
+except Exception as e:
+    print(f"{Fore.YELLOW}⚠️ 无法加载止盈配置 {MT_CONFIG_PATH}，将使用默认止盈值: {e}{Style.RESET_ALL}")
 
 # ==================== 飞书推送 ====================
 try:
@@ -498,20 +512,98 @@ class HoldingsMgr:
 class WatchListMgr:
     def __init__(self, path=None):
         self.path = Path(path) if path else BUY_WATCH_PATH_DEFAULT
+        if self.path and self.path.name == "buy_watch.yaml":
+            print(f"{Fore.YELLOW}⚠️ 已忽略 buy_watch.yaml 监控，改为从推荐目录加载买入名单{Style.RESET_ALL}")
+            self.path = None
         self.list: List[Dict] = []
         self._load()
+
+    def _find_latest_recommendation(self, directory: Path) -> Optional[Path]:
+        if not directory.exists() or not directory.is_dir():
+            return None
+        candidates = list(directory.glob('*morning_buy_recommendation.json'))
+        if not candidates:
+            candidates = list(directory.glob('*.json'))
+        if not candidates:
+            return None
+        return max(candidates, key=lambda p: p.stat().st_mtime)
+
+    def _load_recommendation_file(self, file_path: Path) -> List[Dict]:
+        try:
+            with open(file_path) as f:
+                data = json.load(f)
+        except Exception:
+            return []
+        recs = data.get("recommendations", []) if isinstance(data, dict) else []
+        result = []
+        for r in recs:
+            code = str(r.get("code", "")).strip()
+            if not code:
+                continue
+            name = str(r.get("name", code)).strip()
+            result.append({
+                "code": code,
+                "name": name,
+                "trigger_mode": "auction_strong",
+                "trigger_value": 1.5,
+                "max_position": 50000,
+                "phase": "all",
+                "source": str(file_path.name),
+            })
+        return result
+
     def _load(self):
-        if not self.path.exists():
-            print(f"{Fore.YELLOW}⚠️ 买入名单不存在: {self.path}{Style.RESET_ALL}")
-            return
-        with open(self.path) as f:
-            data = yaml.safe_load(f)
-            self.list = data.get("watchlist", []) if data else []
+        self.list = []
+        if self.path:
+            if self.path.exists() and self.path.is_file():
+                if self.path.suffix in {".yaml", ".yml"}:
+                    with open(self.path) as f:
+                        data = yaml.safe_load(f)
+                    if data and isinstance(data, dict):
+                        watchlist = data.get("watchlist", {})
+                        if isinstance(watchlist, dict):
+                            for category, bucket in watchlist.items():
+                                if not isinstance(bucket, dict):
+                                    continue
+                                for section in ("core", "focus"):
+                                    items = bucket.get(section, [])
+                                    if isinstance(items, list):
+                                        for item in items:
+                                            if isinstance(item, (list, tuple)) and len(item) >= 2:
+                                                name, code = item[0], item[1]
+                                                self.list.append({
+                                                    "name": str(name),
+                                                    "code": str(code),
+                                                    "category": str(category),
+                                                    "section": section,
+                                                    "trigger_mode": "auction_strong",
+                                                    "trigger_value": 1.5,
+                                                    "max_position": 50000,
+                                                    "phase": "all",
+                                                })
+                elif self.path.suffix == ".json":
+                    self.list.extend(self._load_recommendation_file(self.path))
+            elif self.path and self.path.exists() and self.path.is_dir():
+                latest = self._find_latest_recommendation(self.path)
+                if latest:
+                    self.list.extend(self._load_recommendation_file(latest))
+        else:
+            seen = set()
+            for directory in RECOMMENDATION_DIRS:
+                latest = self._find_latest_recommendation(directory)
+                if latest:
+                    for item in self._load_recommendation_file(latest):
+                        if item["code"] not in seen:
+                            self.list.append(item)
+                            seen.add(item["code"])
         print(f"{Fore.GREEN}✅ 买入名单已加载: {len(self.list)}支{Style.RESET_ALL}")
+
     def get_all(self):
         return self.list
+
     def get_codes(self):
-        return [w.get("code","") for w in self.list if w.get("code")]
+        return [w.get("code", "") for w in self.list if w.get("code")]
+
     def reload(self):
         self._load()
 
@@ -753,12 +845,12 @@ class SellSignalEvaluator:
 
     目标: 让利润奔跑，但不让利润回吐
     - 不设止损线（情绪股止损=割在最低）
-    - 按涨幅分档卖出：+3%卖1/3，+5%卖1/3，+8%清仓
+    - 按各股级别配置的止盈点分档卖出
     - 冲高回落立即卖（不等涨幅）
     - 竞价低开后反弹乏力立即卖
     """
 
-    PROFIT_TIERS = [
+    DEFAULT_PROFIT_TIERS = [
         (3.0,  0.33),   # +3%  卖1/3
         (5.0,  0.33),   # +5%  再卖1/3
         (8.0,  0.34),   # +8%  清仓
@@ -767,6 +859,24 @@ class SellSignalEvaluator:
     def __init__(self, stop_loss_pct=-999, take_profit_pct=999):
         # 禁用传统止损止盈，用新逻辑
         pass
+
+    def _get_profit_tiers(self, code: str) -> List[Tuple[float, float]]:
+        if not MT_CONFIG:
+            return self.DEFAULT_PROFIT_TIERS
+
+        stock_grade = getattr(MT_CONFIG, "STOCK_GRADE", {}).get(code, "L3_题材跟风")
+        grade_cfg = getattr(MT_CONFIG, "GRADE_CONFIG", {}).get(stock_grade)
+        if not grade_cfg:
+            grade_cfg = getattr(MT_CONFIG, "GRADE_CONFIG", {}).get("L3_题材跟风")
+        if not grade_cfg:
+            return self.DEFAULT_PROFIT_TIERS
+
+        profit_targets = grade_cfg.get("profit_targets", [])
+        sell_ratio = grade_cfg.get("sell_ratio", [])
+        if not profit_targets or not sell_ratio or len(profit_targets) != len(sell_ratio):
+            return self.DEFAULT_PROFIT_TIERS
+
+        return [(round(pt * 100, 2), sr) for pt, sr in zip(profit_targets, sell_ratio)]
 
     def eval(self, holding: Dict, quote: Dict,
              auction_info: Dict, gap_info: Dict) -> Optional[Dict]:
@@ -854,34 +964,22 @@ class SellSignalEvaluator:
             }
 
         # ---- 优先级3: 固定涨幅分档卖出 ----
-        for threshold, fraction in self.PROFIT_TIERS:
-            sold_key = f"sold_pct_{threshold}"
-            already_sold = holding.get(sold_key, 0.0)
-            remaining_frac = 1.0 - already_sold
-
-            if gain_vs_cost >= threshold and remaining_frac > 0.01:
-                to_sell_frac = fraction * remaining_frac
-                to_sell_amt = int(shares * to_sell_frac)
+        for threshold, fraction in self._get_profit_tiers(code):
+            if gain_vs_cost >= threshold:
+                to_sell_amt = int(shares * fraction)
                 if to_sell_amt < 100:
                     continue
 
-                reason_map = {
-                    3.0: f"+{gain_vs_cost:.1f}%达到目标，卖出1/3仓位",
-                    5.0: f"+{gain_vs_cost:.1f}%再卖1/3",
-                    8.0: f"+{gain_vs_cost:.1f}%清仓",
-                }
-                action_map = {
-                    3.0: "分批卖出(+3%)",
-                    5.0: "分批卖出(+5%)",
-                    8.0: "清仓(+8%)",
-                }
+                action = ("清仓" if fraction >= 0.5 else f"分批卖出(+{threshold:.0f}%)")
+                reason = (f"+{gain_vs_cost:.1f}%达到目标{threshold:.0f}%，卖出{fraction*100:.0f}%仓位"
+                          if fraction < 1.0 else f"+{gain_vs_cost:.1f}%达到目标{threshold:.0f}%清仓")
 
                 return {
                     "type": "SELL", "code": code, "name": name,
-                    "action": action_map[threshold],
+                    "action": action,
                     "price": price, "shares": to_sell_amt,
                     "amount": to_sell_amt * price,
-                    "reason": reason_map[threshold],
+                    "reason": reason,
                     "gain_vs_cost": gain_vs_cost,
                     "signal_type": "profit_take",
                     "urgency": "MEDIUM",
@@ -918,11 +1016,13 @@ class MorningEmotionMonitor:
         self.cooldown_sec = 120
         self.buy_cooldown: Dict[str, float] = {}
         self.sell_cooldown: Dict[str, float] = {}
+        self.sell_push_record: Dict[Tuple[str, str], float] = {}
         self.signals_sent = {"buy": 0, "sell": 0}
 
         # 飞书
         self.feishu_enabled = False
         self.last_feishu_push = 0
+        self._auction_brief_sent = False
 
         # 锁定期标记（竞价结束后锁定一次诊断）
         self.auction_summary_done: set = set()
@@ -963,6 +1063,7 @@ class MorningEmotionMonitor:
         phase = self._get_phase()
         buy_signals = []
         sell_signals = []
+        holding_recommendations = []
 
         all_codes = set(quotes.keys())
 
@@ -1003,8 +1104,14 @@ class MorningEmotionMonitor:
                     self.buy_cooldown[code] = now + self.cooldown_sec
                     self.signals_sent["buy"] += 1
 
-            # ---- 评估卖出标的(持仓) ----
+            # ---- 评估持仓建议 ----
             holding = self.holdings_mgr.get(code)
+            if holding:
+                rec = self._eval_holding_recommendation(holding, quote, auction_info, gap_info)
+                if rec:
+                    holding_recommendations.append(rec)
+
+            # ---- 评估卖出标的(持仓) ----
             if holding and (code not in self.sell_cooldown or now - self.sell_cooldown.get(code, 0) > self.cooldown_sec):
                 sig = self.sell_eval.eval(holding, quote, auction_info, gap_info)
                 if sig:
@@ -1012,7 +1119,7 @@ class MorningEmotionMonitor:
                     self.sell_cooldown[code] = now
                     self.signals_sent["sell"] += 1
 
-        return {"buy": buy_signals, "sell": sell_signals}
+        return {"buy": buy_signals, "sell": sell_signals, "holding_recommendations": holding_recommendations}
 
     def _eval_buy(self, watch: Dict, quote: Dict,
                   auction_info: Dict, gap_info: Dict, phase: str) -> Optional[Dict]:
@@ -1161,6 +1268,95 @@ class MorningEmotionMonitor:
             return True, price
         return False, price
 
+    def _eval_holding_recommendation(self, holding: Dict, quote: Dict,
+                                     auction_info: Dict, gap_info: Dict) -> Optional[Dict]:
+        """基于持仓成本、竞价情况和缺口确认，给出持仓建议。"""
+        code = holding.get("code", "")
+        name = holding.get("name", code)
+        cost = holding.get("cost", 0)
+        shares = holding.get("shares", 0)
+        if cost <= 0 or shares <= 0:
+            return None
+
+        price = quote.get("price", 0)
+        if price <= 0:
+            return None
+
+        gain_vs_cost = (price - cost) / cost * 100 if cost > 0 else 0
+        auction_dir = auction_info.get("auction_direction", "待定")
+        auction_pct = auction_info.get("auction_pct") or 0
+        gap_conf = gap_info.get("confirmed_direction", "待确认")
+
+        recommendation = {
+            "code": code,
+            "name": name,
+            "price": price,
+            "cost": cost,
+            "gain_vs_cost": gain_vs_cost,
+            "auction_direction": auction_dir,
+            "auction_pct": auction_pct,
+            "gap_confirmed": gap_conf,
+        }
+
+        if auction_dir == AUCTION_WEAK and auction_pct < -2 and gain_vs_cost <= 1.0:
+            recommendation.update({
+                "action": "考虑卖出/减仓",
+                "reason": f"竞价弱势({auction_pct:.1f}%)且收益不高({gain_vs_cost:+.1f}%)，建议减仓观望",
+                "urgency": "HIGH",
+            })
+            return recommendation
+
+        if gain_vs_cost > 8 and price < quote.get("high", price) * 0.98:
+            recommendation.update({
+                "action": "考虑部分获利了结",
+                "reason": f"已盈利{gain_vs_cost:+.1f}%，且出现回落，可考虑分批卖出",
+                "urgency": "MEDIUM",
+            })
+            return recommendation
+
+        if auction_dir == AUCTION_BULLISH and auction_pct >= 2:
+            if gap_conf == OPEN_GAP_UP_VALID:
+                recommendation.update({
+                    "action": "考虑加仓",
+                    "reason": f"竞价强势({auction_pct:.1f}%)且缺口有效，可在回踩后适当加仓",
+                    "urgency": "MEDIUM",
+                })
+            else:
+                recommendation.update({
+                    "action": "继续持有",
+                    "reason": f"竞价强势({auction_pct:.1f}%)，但缺口尚未确认，继续观察",
+                    "urgency": "LOW",
+                })
+            return recommendation
+
+        if auction_dir == AUCTION_WEAK and auction_pct < -2:
+            recommendation.update({
+                "action": "观望不加仓",
+                "reason": f"竞价弱势({auction_pct:.1f}%)，暂时不加仓，等待确认",
+                "urgency": "LOW",
+            })
+            return recommendation
+
+        recommendation.update({
+            "action": "继续持有",
+            "reason": f"当前竞价{auction_dir}({auction_pct:+.1f}%)，维持观察即可",
+            "urgency": "LOW",
+        })
+        return recommendation
+
+    def _print_holding_recommendations(self, recs: List[Dict]):
+        if not recs:
+            return
+        print(f"\n{Fore.MAGENTA}📌 持仓建议{Style.RESET_ALL}")
+        for rec in recs:
+            print(
+                f"{Fore.MAGENTA}{rec['name']}({rec['code']}) "
+                f"现价{rec['price']:.2f} 成本{rec['cost']:.2f} "
+                f"收益{rec['gain_vs_cost']:+.1f}% "
+                f"| 建议:{rec['action']} "
+                f"| {rec['reason']}{Style.RESET_ALL}"
+            )
+
     # ---------- 监控循环 ----------
 
     def run(self, interval=15, duration_min=300, feishu=False, once=False):
@@ -1188,11 +1384,19 @@ class MorningEmotionMonitor:
         self._print_overview(quotes)
         sigs = self.eval(quotes)
         self._print_signals(sigs)
+        self._print_holding_recommendations(sigs.get("holding_recommendations", []))
+
+        if once and self.feishu_enabled:
+            actionable = self._filter_actionable_signals(sigs)
+            if actionable["buy"] or actionable["sell"]:
+                push_signals(actionable, self._get_phase())
 
         phase = self._get_phase()
         if once:
-            if self.feishu_enabled and (sigs["buy"] or sigs["sell"]):
-                push_signals(sigs, phase)
+            if self.feishu_enabled and datetime.now().time() >= T_AUCTION_END:
+                if not self._auction_brief_sent:
+                    self._auction_brief_sent = True
+                    self._send_auction_brief(quotes)
             return
 
         start = time.time()
@@ -1215,19 +1419,57 @@ class MorningEmotionMonitor:
 
             sigs = self.eval(quotes)
             self._print_status(now, phase, quotes, sigs)
-            if sigs["buy"] or sigs["sell"]:
+            if sigs.get("buy") or sigs.get("sell"):
                 self._print_signals(sigs)
-                # 飞书推送
                 if self.feishu_enabled:
-                    push_signals(sigs, phase)
+                    actionable = self._filter_actionable_signals(sigs)
+                    if actionable["buy"] or actionable["sell"]:
+                        push_signals(actionable, phase)
+            if sigs.get("holding_recommendations"):
+                self._print_holding_recommendations(sigs["holding_recommendations"])
 
             # ---- 9:25 竞价结束 → 发简报（所有标的第一次确认后只发一次）----
             if t >= T_AUCTION_END and self.feishu_enabled:
-                if not hasattr(self, '_auction_brief_sent') or not self._auction_brief_sent:
+                if not self._auction_brief_sent:
                     self._auction_brief_sent = True
                     self._send_auction_brief(quotes)
 
             time.sleep(interval)
+
+    def _can_push_sell_signal(self, sig: Dict, now: float) -> bool:
+        if sig.get("type") != "SELL":
+            return True
+        sig_type = sig.get("signal_type", "")
+        code = sig.get("code", "")
+        if not code:
+            return True
+
+        if sig_type == "spike_fade":
+            cooldown = 3600
+        elif sig_type == "profit_take":
+            cooldown = 900
+        elif sig_type == "weak_rebound_sell":
+            cooldown = 1800
+        else:
+            cooldown = 300
+
+        key = (code, sig_type)
+        last = self.sell_push_record.get(key, 0)
+        if now - last < cooldown:
+            return False
+        self.sell_push_record[key] = now
+        return True
+
+    def _filter_actionable_signals(self, sigs: Dict) -> Dict[str, List[Dict]]:
+        now = time.time()
+        actionable = {"buy": [], "sell": []}
+        actionable["buy"] = [s for s in sigs.get("buy", []) if s.get("shares", 0) > 0]
+        for s in sigs.get("sell", []):
+            if s.get("shares", 0) <= 0:
+                continue
+            if self._can_push_sell_signal(s, now):
+                actionable["sell"].append(s)
+        return actionable
 
     def _send_auction_brief(self, quotes: Dict):
         """竞价结束时发送全量标的状态简报"""
@@ -1255,6 +1497,7 @@ class MorningEmotionMonitor:
             )
 
         holding_lines = []
+        holding_recs = []
         for h in self.holdings_mgr.get_all():
             hc  = h.get("code", "")
             q   = quotes.get(hc, {})
@@ -1266,6 +1509,14 @@ class MorningEmotionMonitor:
             holding_lines.append(
                 f"   {h.get('name', hc)}({hc}) {gain:+.1f}%"
             )
+            auction_t, gap_t = self._get_tracker(hc)
+            auction_info = auction_t.get_auction_info(q.get("close_prev", 0))
+            gap_info = gap_t.get_gap_info()
+            rec = self._eval_holding_recommendation(h, q, auction_info, gap_info)
+            if rec:
+                holding_recs.append(
+                    f"   {rec['name']}({rec['code']}) {rec['action']} | {rec['reason']}"
+                )
 
         card = {
             "config": {"wide_screen_mode": True},
@@ -1275,6 +1526,7 @@ class MorningEmotionMonitor:
                     f"**📊 竞价简报 · 9:25**\n\n"
                     + "\n".join(lines)
                     + (f"\n\n**📦 持仓状态**\n" + "\n".join(holding_lines) if holding_lines else "")
+                    + (f"\n\n**📌 持仓建议**\n" + "\n".join(holding_recs) if holding_recs else "")
                     + f"\n\n---\n*生成时间: {datetime.now().strftime('%H:%M:%S')}*"
                 )
             }]
