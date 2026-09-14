@@ -1,0 +1,95 @@
+{
+  "date": "20260605",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-05T14:27:58.710841",
+  "recommendations": [
+    {
+      "code": "300408",
+      "name": "三环集团",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-05",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 100,
+      "best_score": 78.3,
+      "strategies": [
+        "均线多头排列",
+        "缺口填充"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "300394",
+      "name": "天孚通信",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-05",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 87.05,
+      "best_score": 84.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 18.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1871
+    },
+    {
+      "code": "688630",
+      "name": "芯碁微装",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-05",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.18,
+      "best_score": 78.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 15.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1512
+    },
+    {
+      "code": "300285",
+      "name": "国瓷材料",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-05",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.18,
+      "best_score": 78.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 12.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1212
+    }
+  ],
+  "total_position": 68.9,
+  "stock_count": 4,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

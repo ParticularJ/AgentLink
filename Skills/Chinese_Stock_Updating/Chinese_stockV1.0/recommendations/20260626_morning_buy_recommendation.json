@@ -1,0 +1,107 @@
+{
+  "date": "20260626",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-06-26T08:14:19.727679",
+  "recommendations": [
+    {
+      "code": "300819",
+      "name": "聚杰微纤",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 97.08,
+      "best_score": 90.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2271
+    },
+    {
+      "code": "301308",
+      "name": "江波龙",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 96.54,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1965
+    },
+    {
+      "code": "603019",
+      "name": "中科曙光",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 93.88,
+      "best_score": 90.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1639
+    },
+    {
+      "code": "300475",
+      "name": "香农芯创",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 93.34,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 13.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1333
+    },
+    {
+      "code": "300136",
+      "name": "信维通信",
+      "penalty": 2,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 92.28,
+      "best_score": 90.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 10.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1023
+    }
+  ],
+  "total_position": 82.3,
+  "stock_count": 5,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

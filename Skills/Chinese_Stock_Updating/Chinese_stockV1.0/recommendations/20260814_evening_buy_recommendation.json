@@ -1,0 +1,125 @@
+{
+  "date": "20260814",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-08-14T14:21:57.613414",
+  "recommendations": [
+    {
+      "code": "603619",
+      "name": "中曼石油",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-14",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 多头排列",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 75.31,
+      "best_score": 78.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 20.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2053
+    },
+    {
+      "code": "300408",
+      "name": "三环集团",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-14",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 72.69,
+      "best_score": 75.9,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1727
+    },
+    {
+      "code": "603087",
+      "name": "甘李药业",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-14",
+      "entry_price": 0.0,
+      "target_reason": "健康多头",
+      "combined_score": 72.02,
+      "best_score": 75.1,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.142
+    },
+    {
+      "code": "002821",
+      "name": "凯莱英",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-14",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 71.75,
+      "best_score": 74.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1118
+    },
+    {
+      "code": "688002",
+      "name": "睿创微纳",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-14",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 71.75,
+      "best_score": 74.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0818
+    }
+  ],
+  "total_position": 71.4,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

@@ -1,0 +1,57 @@
+{
+  "date": "20260901",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-09-01T14:21:00.402312",
+  "market_phase": "STRONG_DOWN",
+  "market_phase_label": "下行",
+  "position_cap": 0.3,
+  "sector_filter": {
+    "sector_phases": {
+      "底仓": "RANGE",
+      "半导体": "STRONG_UP",
+      "AI应用": "STRONG_DOWN",
+      "创新药": "STRONG_DOWN",
+      "光通信": "STRONG_DOWN",
+      "军工": "STRONG_DOWN",
+      "商业航天": "STRONG_DOWN",
+      "人形机器人": "STRONG_DOWN",
+      "智能驾驶": "STRONG_DOWN",
+      "消费电子": "STRONG_DOWN",
+      "燃气轮机": "STRONG_DOWN",
+      "化工": "STRONG_DOWN",
+      "电网设备": "STRONG_DOWN",
+      "新能源": "STRONG_DOWN",
+      "贵金属": "STRONG_UP",
+      "工业金属": "STRONG_DOWN",
+      "工程机械": "STRONG_DOWN",
+      "油气": "STRONG_UP",
+      "航运": "RANGE",
+      "券商": "STRONG_DOWN",
+      "白酒": "UNKNOWN",
+      "家电": "RANGE",
+      "可控核聚变": "STRONG_DOWN",
+      "种子农业": "STRONG_DOWN",
+      "稀土": "STRONG_DOWN"
+    },
+    "reserve": [],
+    "block": [
+      {
+        "stock_code": "002041",
+        "stock_name": "登海种业",
+        "sector": "种子农业",
+        "sector_phase": "STRONG_DOWN",
+        "strategy": "ma-bullish-strategy"
+      }
+    ],
+    "unknown_sector": [],
+    "reserve_count": 0,
+    "block_count": 1,
+    "unknown_sector_count": 0
+  },
+  "recommendations": [],
+  "total_position": 0,
+  "stock_count": 0,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

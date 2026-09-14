@@ -1,0 +1,109 @@
+{
+  "date": "20260825",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-25T08:31:45.805575",
+  "recommendations": [
+    {
+      "code": "601069",
+      "name": "西部黄金",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-25",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: neutral; 机构态度: 机构中性; 行业景气度: 板块温和增长",
+      "combined_score": 100,
+      "best_score": 89.9,
+      "strategies": [
+        "业绩超预期",
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "001337",
+      "name": "四川黄金",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-25",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构中性; 行业景气度: 板块温和增长",
+      "combined_score": 100,
+      "best_score": 89.9,
+      "strategies": [
+        "业绩超预期",
+        "突破新高"
+      ],
+      "position_pct": 20.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2
+    },
+    {
+      "code": "000603",
+      "name": "盛达资源",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-25",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 94.06,
+      "best_score": 90.4,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1641
+    },
+    {
+      "code": "601899",
+      "name": "紫金矿业",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-25",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构看好; 行业景气度: 板块温和增长",
+      "combined_score": 89.32,
+      "best_score": 83.8,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 12.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1293
+    },
+    {
+      "code": "603993",
+      "name": "洛阳钼业",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-25",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构看好; 行业景气度: 板块温和增长",
+      "combined_score": 88.49,
+      "best_score": 83.4,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 9.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0985
+    }
+  ],
+  "total_position": 82.1,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

@@ -1,0 +1,109 @@
+{
+  "date": "20260813",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-13T08:07:03.882676",
+  "recommendations": [
+    {
+      "code": "300394",
+      "name": "天孚通信",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 前期回踩充分，支撑有效，突破可靠性高; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 96.99,
+      "best_score": 90.1,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.227
+    },
+    {
+      "code": "300620",
+      "name": "光库科技",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 前期回踩充分，支撑有效，突破可靠性高; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 96.99,
+      "best_score": 90.1,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.197
+    },
+    {
+      "code": "600183",
+      "name": "生益科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 前期回踩充分，支撑有效，突破可靠性高; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 88.99,
+      "best_score": 88.3,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 15.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.159
+    },
+    {
+      "code": "000636",
+      "name": "风华高科",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，放量形态扎实; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 强势主升; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 83.78,
+      "best_score": 83.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1238
+    },
+    {
+      "code": "603087",
+      "name": "甘李药业",
+      "penalty": -8,
+      "penalty_reason": [
+        "甘李药业虽股价上涨3.67%强于行业，但主力资金净流出2.33亿元，规模居医药生物板块前列。资金出逃信号明确，无实质经营利好支撑，属于被动跟涨。资金流向维度权重更高，判定为中等利空。  URL: http://finance.eastmoney.com/a/202608123839217937.html"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-08-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 阶段性突破成型，结构中等偏稳; 接近历史新高，需关注后续走势",
+      "combined_score": 81.25,
+      "best_score": 86.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 9.1,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0913
+    }
+  ],
+  "total_position": 79.8,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

@@ -1,0 +1,77 @@
+{
+  "date": "20260529",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-05-29T14:26:27.678892",
+  "recommendations": [
+    {
+      "code": "603267",
+      "name": "鸿远电子",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-05-29",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 80.65,
+      "best_score": 84.9,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2107
+    },
+    {
+      "code": "002585",
+      "name": "双星新材",
+      "penalty": -4,
+      "penalty_reason": [
+        "公司2025年业绩预亏约5.27亿元属重大实质性利空；MLCC业务营收占比不足1%且明确未涉及AI算力服务器，题材炒作缺乏业绩支撑；近期三连板后公司主动提示市场过热风险，短期股价回调压力较大。"
+      ],
+      "source": "均线多头排列",
+      "recommend_date": "2026-05-29",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 79.05,
+      "best_score": 86.7,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1791
+    },
+    {
+      "code": "300831",
+      "name": "派瑞股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-05-29",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 77.98,
+      "best_score": 81.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.148
+    }
+  ],
+  "total_position": 53.8,
+  "stock_count": 3,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

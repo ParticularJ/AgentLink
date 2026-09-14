@@ -1,0 +1,107 @@
+{
+  "date": "20260731",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-07-31T08:03:22.822500",
+  "recommendations": [
+    {
+      "code": "600026",
+      "name": "中远海能",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-31",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 88.9,
+      "best_score": 88.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 21.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2189
+    },
+    {
+      "code": "603556",
+      "name": "海兴电力",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-31",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 强势主升; 前期回踩充分，支撑有效，突破可靠性高; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 86.14,
+      "best_score": 85.1,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 18.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1861
+    },
+    {
+      "code": "002595",
+      "name": "豪迈科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-31",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 强势主升; 前期回踩充分，支撑有效，突破可靠性高; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 86.14,
+      "best_score": 85.1,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 15.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1561
+    },
+    {
+      "code": "600900",
+      "name": "长江电力",
+      "penalty": 2,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-31",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，放量形态扎实; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 阶段性突破成型，结构中等偏稳; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 77.13,
+      "best_score": 78.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 11.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1171
+    },
+    {
+      "code": "000975",
+      "name": "山金国际",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-31",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，放量形态扎实; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 阶段性突破成型，结构中等偏稳; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 75.53,
+      "best_score": 78.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 8.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0855
+    }
+  ],
+  "total_position": 76.4,
+  "stock_count": 5,
+  "strategy_count": 1,
+  "no_result_count": 2,
+  "error_count": 0
+}

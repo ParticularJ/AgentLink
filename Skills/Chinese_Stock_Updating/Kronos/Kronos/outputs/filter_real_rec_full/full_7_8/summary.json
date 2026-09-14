@@ -1,0 +1,57 @@
+{
+  "args": {
+    "rec_dir": "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/recommendations",
+    "start": "2026-07-01",
+    "end": "2026-08-06",
+    "lookback": 200,
+    "pred_len": 5,
+    "hold_bd": 5,
+    "sample_count": 2,
+    "csv_dir": "/tmp/kilo/kronos_pool_csv",
+    "yf_dir": "/tmp/kilo/yf_data",
+    "model": "/data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/finetuned/pool_133_daily_uniform/basemodel/best_model",
+    "tokenizer": "NeoQuasar/Kronos-Tokenizer-base",
+    "device": "cuda",
+    "out_dir": "./outputs/filter_real_rec_full",
+    "run_tag": "full_7_8"
+  },
+  "summary": {
+    "A \u60a8\u7684\u539f\u63a8\u8350 (no filter)": {
+      "n": 26,
+      "avg_ret": 0.0015538585789902648,
+      "total_return": -0.013066811279704105,
+      "win_rate": 0.6538461538461539,
+      "sharpe": 0.1731645061468824
+    },
+    "B drop_bottom_1 (\u5254\u96641\u53ea)": {
+      "n": 23,
+      "avg_ret": 0.001903795691433172,
+      "total_return": -0.0033094222500296144,
+      "win_rate": 0.6086956521739131,
+      "sharpe": 0.21122857599714887
+    },
+    "C drop_bottom_2 (\u5254\u96642\u53ea)": {
+      "n": 22,
+      "avg_ret": 0.009317638558227176,
+      "total_return": 0.18031189030916694,
+      "win_rate": 0.6363636363636364,
+      "sharpe": 1.0993507070420132
+    },
+    "D drop_bottom_3 (\u5254\u96643\u53ea)": {
+      "n": 21,
+      "avg_ret": 0.013121240009095304,
+      "total_return": 0.2703328621172001,
+      "win_rate": 0.6666666666666666,
+      "sharpe": 1.5788085396236686
+    },
+    "E keep_top_K (N-2 \u53ea\u6700\u770b\u591a)": {
+      "n": 26,
+      "avg_ret": 0.0042244295841953735,
+      "total_return": 0.06262079789933228,
+      "win_rate": 0.5769230769230769,
+      "sharpe": 0.48163476684099477
+    },
+    "kronos_most_bearish_hit_rate": 0.4074074074074074,
+    "kronos_most_bullish_hit_rate": 0.5185185185185185
+  }
+}

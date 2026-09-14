@@ -1,0 +1,91 @@
+{
+  "date": "20260624",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-06-24T22:09:39.331932",
+  "recommendations": [
+    {
+      "code": "603259",
+      "name": "药明康德",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-24",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 96.54,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2265
+    },
+    {
+      "code": "001309",
+      "name": "德明利",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-24",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 93.34,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1933
+    },
+    {
+      "code": "601975",
+      "name": "招商南油",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-24",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头排列，整体趋势向好; 趋势温和多头; 前期回踩充分，支撑有效，突破可靠性高",
+      "combined_score": 87.65,
+      "best_score": 86.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 15.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1577
+    },
+    {
+      "code": "002428",
+      "name": "云南锗业",
+      "penalty": -12,
+      "penalty_reason": [
+        "云南锗业6月22日发生大宗交易，成交价93.98元较收盘价110.48元折价14.93%，属于高折价大宗交易，2笔交易累计成交2774万元。14.93%的折价幅度表明卖方存在较强的减持意愿或资金压力，虽然当日股价涨停（涨幅10%），但高折价大宗交易反映出主力资金实际看空情绪，属于实质性利空信号，不被盘面涨幅所抵消。",
+        "北向资金净卖出2.77亿元，占当日成交额1.95%，属大额减持行为直接认定利空；虽机构净买入2.91亿元形成短期对冲，但外资大额撤出反映专业投资者阶段性看空态度；18.53%高换手率显示筹码明显松动，资金分歧加大，短期调整压力上升。"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-06-24",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 80.54,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.1,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1205
+    }
+  ],
+  "total_position": 69.9,
+  "stock_count": 4,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

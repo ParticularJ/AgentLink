@@ -1,0 +1,57 @@
+{
+  "date": "20260717",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-07-17T14:22:33.352327",
+  "recommendations": [
+    {
+      "code": "600428",
+      "name": "中远海特",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-17",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 100,
+      "best_score": 80.4,
+      "strategies": [
+        "缺口填充",
+        "均线多头排列"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "000968",
+      "name": "蓝焰控股",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-17",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 有效突破",
+        "回踩确认: 回踩缺口中（量能正常）",
+        "趋势配合: 强势上涨",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 70.06,
+      "best_score": 72.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 17.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1701
+    }
+  ],
+  "total_position": 40.0,
+  "stock_count": 2,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

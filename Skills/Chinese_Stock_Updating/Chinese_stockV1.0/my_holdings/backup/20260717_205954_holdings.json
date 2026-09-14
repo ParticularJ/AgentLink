@@ -1,0 +1,184 @@
+[
+  {
+    "code": "002384",
+    "name": "东山精密",
+    "cost": 236.0,
+    "real_cost": 236.0,
+    "shares": 200,
+    "init_shares": 300,
+    "current_price": 241.92,
+    "highest_price": 276.14,
+    "entry_date": "2026-06-14",
+    "strategy_name": "突破新高",
+    "score": 41.749999999999986,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-18"
+  },
+  {
+    "code": "688809",
+    "name": "强一股份",
+    "cost": 572.94,
+    "real_cost": 572.94,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 436.1,
+    "highest_price": 626.0,
+    "entry_date": "2026-06-16",
+    "strategy_name": "强势多头",
+    "score": 32.85,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "603019",
+    "name": "中科曙光",
+    "cost": 109.01,
+    "real_cost": 109.01,
+    "shares": 300,
+    "init_shares": 500,
+    "current_price": 88.25,
+    "highest_price": 109.01,
+    "entry_date": "2026-07-01",
+    "strategy_name": "突破新高",
+    "score": 38.849999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-01"
+  },
+  {
+    "code": "600118",
+    "name": "中国卫星",
+    "cost": 85.22,
+    "real_cost": 85.22,
+    "shares": 300,
+    "init_shares": 500,
+    "current_price": 63.29,
+    "highest_price": 92.59,
+    "entry_date": "2026-07-02",
+    "strategy_name": "突破新高",
+    "score": 33.75000000000001,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-02"
+  },
+  {
+    "code": "600584",
+    "name": "长电科技",
+    "cost": 96.008,
+    "real_cost": 96.008,
+    "shares": 600,
+    "init_shares": 600,
+    "current_price": 85.88,
+    "highest_price": 104.56,
+    "entry_date": "2026-07-03",
+    "strategy_name": "缺口填充",
+    "score": 56.95,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-03"
+  },
+  {
+    "code": "002821",
+    "name": "凯莱英",
+    "cost": 166.6,
+    "real_cost": 166.6,
+    "shares": 200,
+    "init_shares": 300,
+    "current_price": 161.99,
+    "highest_price": 195.75,
+    "entry_date": "2026-07-03",
+    "strategy_name": "均线多头",
+    "score": 48.0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-03"
+  },
+  {
+    "code": "603131",
+    "name": "上海沪工",
+    "cost": 17.785,
+    "real_cost": 17.785,
+    "shares": 1700,
+    "init_shares": 1700,
+    "current_price": 14.16,
+    "highest_price": 17.78,
+    "entry_date": "2026-07-13",
+    "strategy_name": "手动买入",
+    "score": 33.650000000000006,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-13"
+  }
+]

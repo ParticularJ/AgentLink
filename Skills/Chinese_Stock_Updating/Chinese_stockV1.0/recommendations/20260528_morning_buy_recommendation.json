@@ -1,0 +1,52 @@
+{
+  "date": "20260528",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-05-28T08:03:03.551908",
+  "recommendations": [
+    {
+      "code": "603678",
+      "name": "火炬电子",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-05-28",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 73.48,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 20.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2035
+    },
+    {
+      "code": "301200",
+      "name": "大族数控",
+      "penalty": -4,
+      "penalty_reason": [
+        "大族数控融资余额环比下降14.39%，降幅超过10%阈值，反映市场做多动能明显减弱，属于资金面偏空信号，当日股价仅微涨0.13%未能形成支撑，融资客去杠杆行为暗示短期市场情绪偏谨慎。"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-05-28",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 70.28,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 17.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1703
+    }
+  ],
+  "total_position": 37.3,
+  "stock_count": 2,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

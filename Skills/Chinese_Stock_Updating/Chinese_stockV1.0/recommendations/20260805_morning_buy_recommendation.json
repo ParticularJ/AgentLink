@@ -1,0 +1,108 @@
+{
+  "date": "20260805",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-05T08:07:54.932560",
+  "recommendations": [
+    {
+      "code": "603259",
+      "name": "药明康德",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构看好; 行业景气度: 板块温和增长",
+      "combined_score": 100,
+      "best_score": 86.6,
+      "strategies": [
+        "业绩超预期",
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "000636",
+      "name": "风华高科",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 91.92,
+      "best_score": 91.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1919
+    },
+    {
+      "code": "300408",
+      "name": "三环集团",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 无明显回踩，直接强势上攻，进攻意愿足; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 90.14,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1601
+    },
+    {
+      "code": "000960",
+      "name": "锡业股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 强势主升; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 88.9,
+      "best_score": 88.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1289
+    },
+    {
+      "code": "000603",
+      "name": "盛达资源",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构中性; 行业景气度: 板块温和增长",
+      "combined_score": 86.17,
+      "best_score": 82.2,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 9.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0962
+    }
+  ],
+  "total_position": 80.7,
+  "stock_count": 5,
+  "strategy_count": 3,
+  "no_result_count": 0,
+  "error_count": 0
+}

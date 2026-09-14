@@ -1,0 +1,100 @@
+# ma-bullish-strategy/config/risk_rules.yaml
+
+# 风险管理规则配置
+version: "1.0.0"
+
+# 止损规则
+stop_loss_rules:
+  technical_stop:
+    enabled: true
+    condition: "close < ma20"
+    description: "跌破20日均线止损"
+  
+  atr_stop:
+    enabled: true
+    multiplier: 2
+    description: "2倍ATR动态止损"
+  
+  hard_stop:
+    enabled: true
+    percentage: 0.08
+    description: "固定8%止损"
+  
+  time_stop:
+    enabled: true
+    days: 10
+    min_profit: 0.02
+    description: "持仓10天盈利<2%则离场"
+
+# 止盈规则
+take_profit_rules:
+  technical_profit:
+    enabled: true
+    condition: "ma5_cross_below_ma10"
+    description: "5日线死叉10日线止盈"
+  
+  trailing_stop:
+    enabled: true
+    percentage: 0.08
+    description: "最高点回撤8%止盈"
+  
+  target_profit:
+    enabled: true
+    levels:
+      - percentage: 0.10
+        action: "减仓50%"
+      - percentage: 0.15
+        action: "减仓30%"
+      - percentage: 0.20
+        action: "清仓剩余仓位"
+
+# 仓位管理规则
+position_sizing_rules:
+  based_on_volatility:
+    enabled: true
+    formula: "position = risk_per_trade / (stop_loss_pct * 2)"
+    max_position: 0.30
+  
+  based_on_market:
+    enabled: true
+    bull_market: 0.30
+    range_market: 0.20
+    bear_market: 0.10
+  
+  based_on_signal_strength:
+    enabled: true
+    strong_signal: 0.30
+    normal_signal: 0.20
+    weak_signal: 0.10
+
+# 风险预警规则
+risk_warnings:
+  concentration_risk:
+    threshold: 0.30
+    message: "单只股票仓位超过30%"
+  
+  portfolio_risk:
+    threshold: 0.05
+    message: "组合风险超过5%"
+  
+  drawdown_warning:
+    threshold: 0.10
+    message: "账户回撤超过10%"
+  
+  consecutive_losses:
+    threshold: 3
+    message: "连续3笔亏损，暂停交易"
+
+# 市场环境过滤
+market_filters:
+  sh_index:
+    condition: "sh_index > ma60"
+    description: "上证指数在60日线上方才可交易"
+  
+  limit_up_count:
+    min_count: 30
+    description: "涨停家数少于30家时减少仓位"
+  
+  volatility_filter:
+    max_volatility: 0.40
+    description: "个股年化波动率超过40%降低仓位"

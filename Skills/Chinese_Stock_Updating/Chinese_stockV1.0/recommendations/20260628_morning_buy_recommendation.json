@@ -1,0 +1,110 @@
+{
+  "date": "20260628",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-06-28T23:48:37.294801",
+  "recommendations": [
+    {
+      "code": "002080",
+      "name": "中材科技",
+      "penalty": 2,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-28",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 91.74,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2217
+    },
+    {
+      "code": "600552",
+      "name": "凯盛科技",
+      "penalty": 2,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-28",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 91.74,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1917
+    },
+    {
+      "code": "001309",
+      "name": "德明利",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-28",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 90.14,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1601
+    },
+    {
+      "code": "605376",
+      "name": "博迁新材",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-28",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 90.14,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 13.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1301
+    },
+    {
+      "code": "600176",
+      "name": "中国巨石",
+      "penalty": -2,
+      "penalty_reason": [
+        "公司为AI算力产业链上游电子布核心供应商，光模块出口暴增100倍直接带动电子布需求爆发，叠加产线24小时满产、库存耗尽、供不应求的旺销格局，一季度净利同比大增73.48%且产品量价齐升，同时公告44.31亿元扩产电子布项目锁定未来产能，中期业绩高增长确定性较强。",
+        "该股虽随行业上涨4.69%，但主力资金大幅净流出7.30亿元，超出建筑材料行业整体净流出3.08亿元两倍有余，资金撤退力度远超行业平均，视为个股实质性利空信号，评级下调至中等利空区间。"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-06-28",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 阶段性突破成型，结构中等偏稳; 接近历史新高，需关注后续走势",
+      "combined_score": 87.3,
+      "best_score": 88.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 9.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0973
+    }
+  ],
+  "total_position": 80.1,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

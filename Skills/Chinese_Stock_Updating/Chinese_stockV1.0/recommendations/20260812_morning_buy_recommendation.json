@@ -1,0 +1,108 @@
+{
+  "date": "20260812",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-12T08:16:41.215512",
+  "recommendations": [
+    {
+      "code": "603087",
+      "name": "甘李药业",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-12",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 100,
+      "best_score": 85.1,
+      "strategies": [
+        "突破新高",
+        "涨停分析/打板"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "688017",
+      "name": "绿的谐波",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-12",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 95.12,
+      "best_score": 91.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1951
+    },
+    {
+      "code": "000636",
+      "name": "风华高科",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-12",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 无明显回踩，直接强势上攻，进攻意愿足; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 93.08,
+      "best_score": 92.9,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1631
+    },
+    {
+      "code": "300191",
+      "name": "潜能恒信",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-12",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构中性; 行业景气度: 行业数据不足",
+      "combined_score": 86.97,
+      "best_score": 82.6,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 12.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.127
+    },
+    {
+      "code": "301308",
+      "name": "江波龙",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-12",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，小幅换手分歧; 成交量大幅放大; 中等上影+放量，换手良性小幅分歧; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 84.35,
+      "best_score": 84.1,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 9.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0944
+    }
+  ],
+  "total_position": 80.9,
+  "stock_count": 5,
+  "strategy_count": 3,
+  "no_result_count": 0,
+  "error_count": 0
+}

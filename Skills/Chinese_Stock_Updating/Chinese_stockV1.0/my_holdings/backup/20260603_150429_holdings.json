@@ -1,0 +1,117 @@
+[
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "cost": 121.0615,
+    "shares": 400,
+    "init_shares": 400,
+    "current_price": 141.09,
+    "highest_price": 143.1,
+    "entry_date": "2026-05-20",
+    "strategy_name": "均线多头",
+    "score": 66.5,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "300408",
+    "name": "三环集团",
+    "cost": 120.99,
+    "shares": 400,
+    "init_shares": 400,
+    "current_price": 134.89,
+    "highest_price": 134.89,
+    "entry_date": "2026-05-25",
+    "strategy_name": "突破新高",
+    "score": 64.5,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002859",
+    "name": "洁美科技",
+    "cost": 64.578,
+    "shares": 300,
+    "init_shares": 800,
+    "current_price": 86.72,
+    "highest_price": 86.72,
+    "entry_date": "2026-05-26",
+    "strategy_name": "",
+    "score": 75.0,
+    "stop_level_hit": [
+      true,
+      true,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "603267",
+    "name": "鸿远电子",
+    "cost": 69.13,
+    "shares": 300,
+    "init_shares": 700,
+    "current_price": 77.1,
+    "highest_price": 78.98,
+    "entry_date": "2026-05-29",
+    "strategy_name": "均线多头排列",
+    "score": 51.8,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002436",
+    "name": "兴森科技",
+    "cost": 40.35,
+    "shares": 1200,
+    "init_shares": 1200,
+    "current_price": 39.82,
+    "highest_price": 40.35,
+    "entry_date": "2026-06-03",
+    "strategy_name": "缺口填补策略",
+    "score": 50.64999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "date": "20260615",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-06-15T08:05:26.338113",
+  "recommendations": [
+    {
+      "code": "300706",
+      "name": "阿石创",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-06-15",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强; 成交量明显放大; 量价配合正常，小幅分歧; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足",
+      "combined_score": 78.2,
+      "best_score": 81.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 20.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2082
+    }
+  ],
+  "total_position": 20.8,
+  "stock_count": 1,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

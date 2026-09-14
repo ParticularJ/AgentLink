@@ -1,0 +1,81 @@
+{
+  "date": "20260714",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-07-14T14:22:57.491126",
+  "recommendations": [
+    {
+      "code": "600988",
+      "name": "赤峰黄金",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-14",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 75.04,
+      "best_score": 78.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 20.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.205
+    },
+    {
+      "code": "688072",
+      "name": "拓荆科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-07-14",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 74.39,
+      "best_score": 77.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1744
+    },
+    {
+      "code": "603893",
+      "name": "瑞芯微",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-14",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 有效突破",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.26,
+      "best_score": 76.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1433
+    }
+  ],
+  "total_position": 52.2,
+  "stock_count": 3,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

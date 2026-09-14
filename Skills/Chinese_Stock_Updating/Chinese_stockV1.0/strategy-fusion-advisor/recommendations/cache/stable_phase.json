@@ -1,0 +1,176 @@
+{
+  "化工": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "__market__沪深300": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 129,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "__market__上证指数": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 129,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "军工": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "AI应用": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "人形机器人": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "光通信": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "创新药": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "航运": {
+    "stable_phase": "STRONG_UP",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_UP"
+  },
+  "新能源": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "种子农业": {
+    "stable_phase": "STRONG_UP",
+    "last_date": "2026-09-07",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_UP"
+  },
+  "消费电子": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "智能驾驶": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "燃气轮机": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "可控核聚变": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "商业航天": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-07",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "低空经济": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "稀土": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "电网设备": {
+    "stable_phase": "RANGE",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "RANGE"
+  },
+  "券商": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-09",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "底仓": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-08",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "半导体": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "贵金属": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-08",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "工业金属": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "工程机械": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "油气": {
+    "stable_phase": "STRONG_UP",
+    "last_date": "2026-09-11",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_UP"
+  },
+  "白酒": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-08",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "家电": {
+    "stable_phase": "STRONG_DOWN",
+    "last_date": "2026-09-08",
+    "last_candle_idx": 199,
+    "last_current_phase": "STRONG_DOWN"
+  },
+  "煤炭": {
+    "stable_phase": "RANGE",
+    "last_date": "2026-09-09",
+    "last_candle_idx": 199,
+    "last_current_phase": "UNKNOWN"
+  }
+}

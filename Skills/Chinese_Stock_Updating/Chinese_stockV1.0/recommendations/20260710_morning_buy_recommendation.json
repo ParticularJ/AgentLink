@@ -1,0 +1,107 @@
+{
+  "date": "20260710",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-07-10T08:27:27.686941",
+  "recommendations": [
+    {
+      "code": "300604",
+      "name": "长川科技",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-10",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 97.26,
+      "best_score": 90.4,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2273
+    },
+    {
+      "code": "688795",
+      "name": "摩尔线程",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-10",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 94.06,
+      "best_score": 90.4,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1941
+    },
+    {
+      "code": "688802",
+      "name": "沐曦股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-10",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 90.41,
+      "best_score": 89.9,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1604
+    },
+    {
+      "code": "000977",
+      "name": "浪潮信息",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-10",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 90.41,
+      "best_score": 89.9,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 13.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1304
+    },
+    {
+      "code": "300821",
+      "name": "东岳硅材",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-10",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 90.41,
+      "best_score": 89.9,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 10.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1004
+    }
+  ],
+  "total_position": 81.1,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

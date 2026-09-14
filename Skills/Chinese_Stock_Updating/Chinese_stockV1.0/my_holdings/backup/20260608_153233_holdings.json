@@ -1,0 +1,27 @@
+[
+  {
+    "code": "603267",
+    "name": "鸿远电子",
+    "cost": 72.012,
+    "shares": 700,
+    "init_shares": 1000,
+    "current_price": 67.32,
+    "highest_price": 81.11,
+    "entry_date": "2026-05-29",
+    "strategy_name": "均线多头排列",
+    "score": 44.5,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-08"
+  }
+]

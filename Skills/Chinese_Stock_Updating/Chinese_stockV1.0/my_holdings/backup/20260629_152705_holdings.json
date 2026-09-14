@@ -1,0 +1,277 @@
+[
+  {
+    "code": "002384",
+    "name": "东山精密",
+    "cost": 236.0,
+    "shares": 200,
+    "init_shares": 300,
+    "current_price": 249.59,
+    "highest_price": 276.14,
+    "entry_date": "2026-06-14",
+    "strategy_name": "波段仓建仓",
+    "score": 49.900000000000006,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-18"
+  },
+  {
+    "code": "600549",
+    "name": "厦门钨业",
+    "cost": 65.69,
+    "shares": 200,
+    "init_shares": 800,
+    "current_price": 83.86,
+    "highest_price": 94.5,
+    "entry_date": "2026-06-14",
+    "strategy_name": "均线多头策略建仓",
+    "score": 60.00000000000001,
+    "stop_level_hit": [
+      true,
+      true,
+      true
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-14"
+  },
+  {
+    "code": "300706",
+    "name": "阿石创",
+    "cost": 72.39,
+    "shares": 300,
+    "init_shares": 700,
+    "current_price": 91.88,
+    "highest_price": 91.88,
+    "entry_date": "2026-06-15",
+    "strategy_name": "突破新高",
+    "score": 58.75,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-15"
+  },
+  {
+    "code": "300666",
+    "name": "江丰电子",
+    "cost": 292.5,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 382.48,
+    "highest_price": 382.48,
+    "entry_date": "2026-06-15",
+    "strategy_name": "强势多头",
+    "score": 78.35,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-15"
+  },
+  {
+    "code": "688809",
+    "name": "强一股份",
+    "cost": 572.94,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 602.0,
+    "highest_price": 626.0,
+    "entry_date": "2026-06-16",
+    "strategy_name": "强势多头",
+    "score": 70.45,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "601975",
+    "name": "招商南油",
+    "cost": 4.65,
+    "shares": 5400,
+    "init_shares": 10800,
+    "current_price": 3.98,
+    "highest_price": 4.93,
+    "entry_date": "2026-06-16",
+    "strategy_name": "人工选股",
+    "score": 39.4,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "600026",
+    "name": "中远海能",
+    "cost": 19.24,
+    "shares": 900,
+    "init_shares": 2700,
+    "current_price": 18.7,
+    "highest_price": 22.83,
+    "entry_date": "2026-06-16",
+    "strategy_name": "人工选股",
+    "score": 43.5,
+    "stop_level_hit": [
+      true,
+      true,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "601872",
+    "name": "招商轮船",
+    "cost": 17.455531914893616,
+    "shares": 3200,
+    "init_shares": 4700,
+    "current_price": 18.26,
+    "highest_price": 21.91,
+    "entry_date": "2026-06-16",
+    "strategy_name": "人工选股",
+    "score": 48.5,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "002585",
+    "name": "双星新材",
+    "cost": 14.91,
+    "shares": 1000,
+    "init_shares": 3400,
+    "current_price": 12.38,
+    "highest_price": 14.98,
+    "entry_date": "2026-06-17",
+    "strategy_name": "均线多头",
+    "score": 39.75,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-17"
+  },
+  {
+    "code": "688525",
+    "name": "佰维存储",
+    "cost": 369.0,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 507.0,
+    "highest_price": 511.04,
+    "entry_date": "2026-06-18",
+    "strategy_name": "突破新高策略",
+    "score": 69.25,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-18"
+  },
+  {
+    "code": "000725",
+    "name": "京东方Ａ",
+    "cost": 7.97,
+    "shares": 6300,
+    "init_shares": 6300,
+    "current_price": 7.95,
+    "highest_price": 7.97,
+    "entry_date": "2026-06-29",
+    "strategy_name": "用户指令",
+    "score": 69.05,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-29"
+  }
+]

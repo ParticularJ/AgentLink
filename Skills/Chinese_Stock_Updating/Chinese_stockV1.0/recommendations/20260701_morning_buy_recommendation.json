@@ -1,0 +1,95 @@
+{
+  "date": "20260701",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-07-01T08:58:04.077026",
+  "recommendations": [
+    {
+      "code": "603019",
+      "name": "中科曙光",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 93.34,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2233
+    },
+    {
+      "code": "300751",
+      "name": "迈为股份",
+      "penalty": 2,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 无明显回踩，直接强势上攻，进攻意愿足",
+      "combined_score": 91.74,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1917
+    },
+    {
+      "code": "000021",
+      "name": "深科技",
+      "penalty": -4,
+      "penalty_reason": [
+        "HBM技术尚处研发阶段明确排除短期业绩贡献，股票异常波动公告本身隐含追高风险提示，57.64%的短期涨幅缺乏实质经营数据支撑，股价回落风险已在公告中明确警示  URL: http://finance.eastmoney.com/a/202606303788491970.html",
+        "一季度净利润同比+35.35%体现基本面改善，拟投14.7亿元扩充高端存储芯片封测产能属实质扩产利好；股价创年内新高突破千亿市值，但纯盘面描述降级处理；资金面无数据支撑。综合给予中等实质利好评级。  URL: http://finance.eastmoney.com/a/202606303788303143.html"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 无明显回踩，直接强势上攻，进攻意愿足; 接近历史新高，需关注后续走势",
+      "combined_score": 86.94,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 15.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1569
+    },
+    {
+      "code": "688048",
+      "name": "长光华芯",
+      "penalty": -12,
+      "penalty_reason": [
+        "公司主动发布风险提示公告，明确警示股价短期快速回落风险（区间涨幅50.14%可能存在非理性炒作），同时披露光通信业务处于市场拓展阶段、未来发展存在多重不确定性，属于轻微利空。未达中等利空标准，因无减持、业绩暴雷或监管动作等实质利空事项。  URL: http://finance.eastmoney.com/a/202606303788529826.html",
+        "公司主动发布风险提示，明确警示短期累计上涨50%存在回落风险，滚动市盈率2622倍、静态市盈率4065倍显著偏离行业均值，存在估值泡沫风险；光通信业务明确处于拓展阶段且未来发展具有不确定性；一季度净利润仅448万元，盈利能力薄弱。综合判定实质性利空。  URL: http://finance.eastmoney.com/a/202606303788524537.html",
+        "该股6月30日涨停但无经营层面实质利好支撑，属纯股价走势描述。虽有龙虎榜机构+沪股通合计净买入约17.5亿、主力资金净流入11.28亿，但仅反映短期市场交易情绪，未触发业绩、产能、订单、技术突破等核心多空维度。根据规则，纯涨停/放量等盘面现象无经营公告支撑严禁拔高评级，资金流向因无法排除大盘系统性因素需降级处理。综合判定为轻微盘面利好。  URL: http://finance.eastmoney.com/a/202606303788736127.html"
+      ],
+      "source": "突破新高",
+      "recommend_date": "2026-07-01",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，形态健康; 成交量大幅放大; 量价共振，形态优质; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 81.08,
+      "best_score": 90.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.1,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1211
+    }
+  ],
+  "total_position": 69.3,
+  "stock_count": 4,
+  "strategy_count": 1,
+  "no_result_count": 2,
+  "error_count": 0
+}

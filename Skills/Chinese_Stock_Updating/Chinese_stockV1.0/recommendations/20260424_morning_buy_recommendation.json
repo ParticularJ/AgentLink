@@ -1,0 +1,26 @@
+{
+  "date": "20260424",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-04-24T09:16:53.428957",
+  "recommendations": [
+    {
+      "code": "002281",
+      "name": "光迅科技",
+      "source": "突破新高",
+      "recommend_date": "2026-04-24",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 86.51,
+      "best_score": 79.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 21.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2165
+    }
+  ],
+  "total_position": 21.7,
+  "stock_count": 1
+}

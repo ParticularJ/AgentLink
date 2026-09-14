@@ -63,11 +63,11 @@ class SequentialTrainer:
         print(f"Created directory: {self.config.tokenizer_save_path}")
         print(f"Created directory: {self.config.basemodel_save_path}")
     
-    def train_tokenizer_phase(self):
+    def train_tokenizer_phase(self, resume_from: str = None):
         print("\n" + "="*60)
         print("Starting Tokenizer Fine-tuning Phase")
         print("="*60)
-        
+
         tokenizer_exists, _ = self._check_existing_models()
         if tokenizer_exists and self.config.skip_existing:
             print("Tokenizer model already exists, skipping training")
@@ -135,6 +135,7 @@ class SequentialTrainer:
             self.config,
             self.config.tokenizer_save_path,
             logger,
+            resume_from=resume_from,
         )
         training_time = time.time() - start_time
         
@@ -145,55 +146,44 @@ class SequentialTrainer:
         
         return True
     
-    def train_basemodel_phase(self):
+    def train_basemodel_phase(self, resume_from: str = None):
         print("\n" + "="*60)
         print("Starting Basemodel Fine-tuning Phase")
         print("="*60)
-        
-        if getattr(self.config, 'pre_trained_tokenizer', True):
+
+        # If we're skipping tokenizer training, fall back to the original
+        # pretrained tokenizer (the one we'd otherwise have started from).
+        use_pretrained_tokenizer = bool(
+            getattr(self.config, 'pre_trained_tokenizer', True) and
+            (not self.config.train_tokenizer or not os.path.exists(self.config.finetuned_tokenizer_path))
+        )
+
+        if not use_pretrained_tokenizer:
             if not os.path.exists(self.config.finetuned_tokenizer_path):
-                raise FileNotFoundError(f"Fine-tuned tokenizer does not exist: {self.config.finetuned_tokenizer_path}")
-        
+                raise FileNotFoundError(
+                    f"Fine-tuned tokenizer does not exist: {self.config.finetuned_tokenizer_path}"
+                )
+
         _, basemodel_exists = self._check_existing_models()
         if basemodel_exists and self.config.skip_existing:
             print("Basemodel model already exists, skipping training")
             return True
-        
+
         log_dir = os.path.join(self.config.base_save_path, "logs")
         logger = setup_basemodel_logging(self.config.exp_name, log_dir, self.rank)
-        
+
         set_seed(self.config.seed)
-        
-        if getattr(self.config, 'pre_trained_tokenizer', True):
+
+        if not use_pretrained_tokenizer:
             logger.info("Loading fine-tuned tokenizer...")
             if self.rank == 0:
                 print("Loading fine-tuned tokenizer...")
             tokenizer = KronosTokenizer.from_pretrained(self.config.finetuned_tokenizer_path)
         else:
+            logger.info("Using pre-trained tokenizer (skipped fine-tune)...")
             if self.rank == 0:
-                print("pre_trained_tokenizer=False, randomly initializing Tokenizer architecture for Predictor training")
-            import json
-            cfg_path = os.path.join(self.config.pretrained_tokenizer_path, 'config.json')
-            with open(cfg_path, 'r') as f:
-                arch = json.load(f)
-            tokenizer = KronosTokenizer(
-                d_in=arch.get('d_in', 6),
-                d_model=arch.get('d_model', 256),
-                n_heads=arch.get('n_heads', 4),
-                ff_dim=arch.get('ff_dim', 512),
-                n_enc_layers=arch.get('n_enc_layers', 4),
-                n_dec_layers=arch.get('n_dec_layers', 4),
-                ffn_dropout_p=arch.get('ffn_dropout_p', 0.0),
-                attn_dropout_p=arch.get('attn_dropout_p', 0.0),
-                resid_dropout_p=arch.get('resid_dropout_p', 0.0),
-                s1_bits=arch.get('s1_bits', 10),
-                s2_bits=arch.get('s2_bits', 10),
-                beta=arch.get('beta', 0.05),
-                gamma0=arch.get('gamma0', 1.0),
-                gamma=arch.get('gamma', 1.1),
-                zeta=arch.get('zeta', 0.05),
-                group_size=arch.get('group_size', 4)
-            )
+                print("Using pre-trained tokenizer (skip-tokenizer mode).")
+            tokenizer = KronosTokenizer.from_pretrained(self.config.pretrained_tokenizer_path)
         tokenizer = tokenizer.to(self.device)
         
         if getattr(self.config, 'pre_trained_predictor', True):
@@ -251,6 +241,7 @@ class SequentialTrainer:
             self.config,
             self.config.basemodel_save_path,
             logger,
+            resume_from=resume_from,
         )
         training_time = time.time() - start_time
         
@@ -261,39 +252,45 @@ class SequentialTrainer:
         
         return True
     
-    def run_training(self):
+    def run_training(self, resume_tokenizer_from: str = None,
+                     resume_basemodel_from: str = None):
         if self.rank == 0:
             print("Starting Kronos model sequential fine-tuning training")
             print(f"Experiment name: {self.config.experiment_name}")
             print(f"Experiment description: {self.config.experiment_description}")
-        
+            if resume_tokenizer_from or resume_basemodel_from:
+                print(f"Resume mode: tokenizer={resume_tokenizer_from}, "
+                      f"basemodel={resume_basemodel_from}")
+
         self._setup_distributed()
-        
+
         self._create_directories()
-        
+
         tokenizer_exists, basemodel_exists = self._check_existing_models()
-        
+
         total_start_time = time.time()
-        
+
         try:
             if self.config.train_tokenizer:
-                success = self.train_tokenizer_phase()
+                success = self.train_tokenizer_phase(
+                    resume_from=resume_tokenizer_from)
                 if not success:
                     print("Tokenizer training failed, terminating training")
                     return False
             else:
                 print("Skipping Tokenizer training phase")
-            
+
             if self.config.train_basemodel:
-                success = self.train_basemodel_phase()
+                success = self.train_basemodel_phase(
+                    resume_from=resume_basemodel_from)
                 if not success:
                     print("Basemodel training failed, terminating training")
                     return False
             else:
                 print("Skipping Basemodel training phase")
-            
+
             total_time = time.time() - total_start_time
-            
+
             if self.rank == 0:
                 print("\n" + "="*60)
                 print("Training completed!")
@@ -302,43 +299,65 @@ class SequentialTrainer:
                 print(f"Tokenizer model: {self.config.tokenizer_best_model_path}")
                 print(f"Basemodel model: {self.config.basemodel_best_model_path}")
                 print("="*60)
-            
+
             return True
-            
+
         except Exception as e:
             if self.rank == 0:
                 print(f"Error occurred during training: {str(e)}")
             import traceback
             traceback.print_exc()
             return False
-        
+
         finally:
             pass
 
+    def run_training_legacy(self):
+        """原始入口,保持向后兼容。"""
+        return self.run_training()
+
 
 def main():
-    parser = argparse.ArgumentParser(description='Kronos Model Sequential Fine-tuning Training')
-    parser.add_argument('--config', type=str, default='config.yaml', 
+    parser = argparse.ArgumentParser(
+        description='Kronos Model Sequential Fine-tuning Training',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--config', type=str, default='config.yaml',
                        help='Configuration file path (default: config.yaml)')
-    parser.add_argument('--skip-tokenizer', action='store_true', 
+    parser.add_argument('--skip-tokenizer', action='store_true',
                        help='Skip tokenizer training phase')
-    parser.add_argument('--skip-basemodel', action='store_true', 
+    parser.add_argument('--skip-basemodel', action='store_true',
                        help='Skip basemodel training phase')
-    parser.add_argument('--skip-existing', action='store_true', 
+    parser.add_argument('--skip-existing', action='store_true',
                        help='Skip training for existing models')
-    
+    parser.add_argument('--resume-tokenizer-from', type=str, default=None,
+                       help='Resume tokenizer training from checkpoint '
+                            '(default: auto-detect latest_checkpoint.pt in save_dir)')
+    parser.add_argument('--resume-basemodel-from', type=str, default=None,
+                       help='Resume basemodel training from checkpoint '
+                            '(default: auto-detect latest_checkpoint.pt in save_dir)')
+    parser.add_argument('--no-auto-resume', action='store_true',
+                       help='Disable auto-resume from latest_checkpoint.pt '
+                            '(start fresh even if checkpoint exists)')
+
     args = parser.parse_args()
-    
+
     trainer = SequentialTrainer(args.config)
-    
+
     if args.skip_tokenizer:
         trainer.config.train_tokenizer = False
     if args.skip_basemodel:
         trainer.config.train_basemodel = False
     if args.skip_existing:
         trainer.config.skip_existing = True
-    
-    success = trainer.run_training()
+
+    # 解析 resume 参数:None 表示自动检测
+    resume_tk = None if args.no_auto_resume else args.resume_tokenizer_from
+    resume_bm = None if args.no_auto_resume else args.resume_basemodel_from
+
+    success = trainer.run_training(
+        resume_tokenizer_from=resume_tk,
+        resume_basemodel_from=resume_bm,
+    )
     
     if success:
         print("Training completed successfully!")

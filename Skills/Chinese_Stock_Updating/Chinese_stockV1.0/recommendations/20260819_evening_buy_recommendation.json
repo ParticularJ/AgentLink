@@ -1,0 +1,120 @@
+{
+  "date": "20260819",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-08-19T14:23:41.077790",
+  "recommendations": [
+    {
+      "code": "301200",
+      "name": "大族数控",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-19",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 100,
+      "best_score": 76.5,
+      "strategies": [
+        "缺口填充",
+        "均线多头排列"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "300855",
+      "name": "图南股份",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-19",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 82.65,
+      "best_score": 79.9,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1827
+    },
+    {
+      "code": "300394",
+      "name": "天孚通信",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-19",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.2,
+      "best_score": 76.0,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1492
+    },
+    {
+      "code": "688630",
+      "name": "芯碁微装",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-19",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.62,
+      "best_score": 76.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1136
+    },
+    {
+      "code": "002353",
+      "name": "杰瑞股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-19",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.62,
+      "best_score": 76.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0836
+    }
+  ],
+  "total_position": 76.0,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

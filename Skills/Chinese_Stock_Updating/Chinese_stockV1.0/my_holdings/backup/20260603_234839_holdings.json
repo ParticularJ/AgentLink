@@ -1,0 +1,140 @@
+[
+  {
+    "code": "603267",
+    "name": "鸿远电子",
+    "shares": 1000,
+    "cost": 72.012,
+    "init_shares": 1000,
+    "current_price": 0,
+    "highest_price": 0,
+    "entry_date": "2026-06-01",
+    "strategy_name": "",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "shares": 400,
+    "cost": 112.296,
+    "init_shares": 400,
+    "current_price": 0,
+    "highest_price": 0,
+    "entry_date": "2026-06-01",
+    "strategy_name": "",
+    "score": 0,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "300408",
+    "name": "三环集团",
+    "shares": 400,
+    "cost": 121.023,
+    "init_shares": 400,
+    "current_price": 0,
+    "highest_price": 0,
+    "entry_date": "2026-06-01",
+    "strategy_name": "",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002436",
+    "name": "兴森科技",
+    "shares": 1200,
+    "cost": 40.061,
+    "init_shares": 1200,
+    "current_price": 0,
+    "highest_price": 0,
+    "entry_date": "2026-06-01",
+    "strategy_name": "",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002585",
+    "name": "双星新材",
+    "shares": 3500,
+    "cost": 10.871,
+    "init_shares": 3500,
+    "current_price": 0,
+    "highest_price": 0,
+    "entry_date": "2026-06-01",
+    "strategy_name": "",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002859",
+    "name": "洁美科技",
+    "shares": 300,
+    "cost": 42.115,
+    "init_shares": 300,
+    "current_price": 0,
+    "highest_price": 0,
+    "entry_date": "2026-06-01",
+    "strategy_name": "",
+    "score": 0,
+    "stop_level_hit": [
+      true,
+      true,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "date": "20260531",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-05-31T23:58:05.289571",
+  "recommendations": [
+    {
+      "code": "603678",
+      "name": "火炬电子",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-05-31",
+      "entry_price": 0.0,
+      "target_reason": "突破一般; 成交量大幅放大; 趋势强势上涨; 量价配合较弱; 90%~95%·趋势加速主升(不扣分)",
+      "combined_score": 71.26,
+      "best_score": 74.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 20.1,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2013
+    }
+  ],
+  "total_position": 20.1,
+  "stock_count": 1,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

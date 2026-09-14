@@ -1,0 +1,70 @@
+# config/strategy_config.yaml
+
+# 缺口回补策略参数配置
+strategy:
+  name: "缺口回补策略"
+  version: "1.0.0"
+  
+  # 缺口参数
+  gap_parameters:
+    min_gap_pct: 3.0          # 最小跳空幅度(%)
+    strong_gap_pct: 5.0       # 强势跳空幅度(%)
+    lookback_days: 30         # 缺口回看天数
+    require_volume_surge: true # 要求成交量放大
+  
+  # 成交量参数
+  volume_parameters:
+    min_volume_ratio: 1.5     # 最小放量倍数
+    strong_volume_ratio: 2.0  # 强势放量倍数
+    avg_volume_period: 20     # 均量周期
+  
+  # 回踩参数
+  pullback_parameters:
+    max_pullback_pct: 3.0     # 最大回踩幅度(%)
+    check_days: 10            # 回踩检查天数
+    require_support: true     # 要求获得支撑
+    allow_gap_fill: false     # 不允许完全回补缺口
+  
+  # 趋势参数
+  trend_parameters:
+    require_ma_bullish: true  # 要求均线多头
+    ma_periods: [5, 10, 20]   # 均线周期
+    min_price_above_ma: 0     # 最小偏离
+  
+  # 后续确认参数
+  confirmation_parameters:
+    require_volume: true      # 要求放量
+    min_confirmation_pct: 1.0 # 最小确认涨幅(%)
+    check_days: 3             # 确认天数
+
+# 评分权重
+scoring:
+  weights:
+    gap_quality: 0.35         # 缺口质量
+    pullback_confirm: 0.30    # 回踩确认
+    trend_cooperation: 0.20   # 趋势配合
+    follow_up: 0.15           # 后续确认
+  
+  thresholds:
+    strong: 85
+    recommend: 75
+    watch: 70
+
+# 风险管理
+risk_management:
+  stop_loss:
+    type: "gap_low"
+    condition: "close < gap_bottom"
+    hard_stop: 0.05
+  
+  take_profit:
+    target1: 0.08    # 第一目标8%
+    target2: 0.12    # 第二目标12%
+    target3: 0.15    # 第三目标15%
+  
+  position_sizing:
+    strong_signal: 0.25
+    normal_signal: 0.15
+    weak_signal: 0.10
+  
+  max_holding_days: 10

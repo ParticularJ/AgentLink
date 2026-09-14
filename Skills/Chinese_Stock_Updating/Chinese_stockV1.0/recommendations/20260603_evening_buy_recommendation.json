@@ -1,0 +1,81 @@
+{
+  "date": "20260603",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-03T14:25:05.171597",
+  "recommendations": [
+    {
+      "code": "603267",
+      "name": "鸿远电子",
+      "penalty": 2,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-03",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 80.52,
+      "best_score": 82.9,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2105
+    },
+    {
+      "code": "002436",
+      "name": "兴森科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-03",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.26,
+      "best_score": 76.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 17.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1733
+    },
+    {
+      "code": "002585",
+      "name": "双星新材",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-03",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.26,
+      "best_score": 76.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1433
+    }
+  ],
+  "total_position": 52.7,
+  "stock_count": 3,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

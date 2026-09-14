@@ -1,0 +1,177 @@
+[
+  {
+    "code": "603267",
+    "name": "鸿远电子",
+    "cost": 72.012,
+    "shares": 700,
+    "init_shares": 1000,
+    "current_price": 74.8,
+    "highest_price": 81.11,
+    "entry_date": "2026-05-29",
+    "strategy_name": "均线多头排列",
+    "score": 47.0,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-01"
+  },
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "cost": 112.296,
+    "shares": 200,
+    "init_shares": 400,
+    "current_price": 137.36,
+    "highest_price": 143.96,
+    "entry_date": "2026-05-20",
+    "strategy_name": "均线多头",
+    "score": 49.39999999999999,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-01"
+  },
+  {
+    "code": "300408",
+    "name": "三环集团",
+    "cost": 125.782,
+    "shares": 600,
+    "init_shares": 600,
+    "current_price": 134.83,
+    "highest_price": 139.03,
+    "entry_date": "2026-05-25",
+    "strategy_name": "突破新高",
+    "score": 50.199999999999996,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-06"
+  },
+  {
+    "code": "002436",
+    "name": "兴森科技",
+    "cost": 40.333263157894734,
+    "shares": 1000,
+    "init_shares": 1900,
+    "current_price": 37.9,
+    "highest_price": 40.87,
+    "entry_date": "2026-06-03",
+    "strategy_name": "缺口填补策略",
+    "score": 46.849999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-01"
+  },
+  {
+    "code": "002585",
+    "name": "双星新材",
+    "cost": 10.871,
+    "shares": 3500,
+    "init_shares": 3500,
+    "current_price": 11.82,
+    "highest_price": 11.84,
+    "entry_date": "2026-06-01",
+    "strategy_name": "均线多头排列",
+    "score": 65.60000000000001,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-01"
+  },
+  {
+    "code": "002859",
+    "name": "洁美科技",
+    "cost": 42.115,
+    "shares": 200,
+    "init_shares": 300,
+    "current_price": 86.56,
+    "highest_price": 94.39,
+    "entry_date": "2026-05-26",
+    "strategy_name": "",
+    "score": 48.0,
+    "stop_level_hit": [
+      true,
+      true,
+      true
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-01"
+  },
+  {
+    "code": "300394",
+    "name": "天孚通信",
+    "cost": 480.61,
+    "shares": 100,
+    "init_shares": 100,
+    "current_price": 457.0,
+    "highest_price": 480.61,
+    "entry_date": "2026-06-04",
+    "strategy_name": "缺口填补",
+    "score": 51.25,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-01"
+  }
+]

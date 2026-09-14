@@ -1,0 +1,76 @@
+# Pool finetune config — 133-symbol watchlist pool.
+# Designed for path-X multi-symbol training (per-symbol sampling,
+# per-symbol z-score). Symbol-aware weights come from the 'level' column
+# in pool.csv (populated by scripts/merge_level_into_pool.py).
+
+data:
+  data_path: "/data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/data/pool.csv"
+  lookback_window: 200
+  predict_window: 5
+  max_context: 200
+  clip: 5.0
+  train_ratio: 0.8
+  val_ratio: 0.2
+  test_ratio: 0.0
+
+  # NEW: multi-symbol pool mode
+  pool_mode: true
+  symbol_col: "symbol"
+  # level_weights: relative sampling probability per level.
+  # Per trader request: 'level' is just an a-priori tag for 是否龙头股,
+  # NOT a training-time signal. Sample every symbol uniformly.
+  level_weights:
+    "S": 1.0
+    "A": 1.0
+    "B+": 1.0
+    "压舱石": 1.0
+    "": 1.0    # unmatched — neutral weight
+
+training:
+  tokenizer_epochs: 3
+  basemodel_epochs: 15
+  batch_size: 64
+  log_interval: 50
+  num_workers: 4
+  seed: 42
+
+  tokenizer_learning_rate: 0.00005
+  predictor_learning_rate: 0.000001
+
+  # Direction-loss weight. Total loss = CE_loss + dir_loss_weight * dir_loss.
+  # 0.0 = pure token CE (default Kronos training).
+  # 0.3 = 30% weight on direction alignment (added 2026-08-12).
+  dir_loss_weight: 0.3
+
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_weight_decay: 0.1
+
+  accumulation_steps: 1
+
+model_paths:
+  pretrained_tokenizer: "NeoQuasar/Kronos-Tokenizer-base"
+  pretrained_predictor: "NeoQuasar/Kronos-base"
+
+  exp_name: "pool_133_daily_uniform"
+  base_path: "/data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/finetuned/"
+
+  base_save_path: ""
+  finetuned_tokenizer: ""
+
+  tokenizer_save_name: "tokenizer"
+  basemodel_save_name: "basemodel"
+
+experiment:
+  name: "kronos_pool_v1"
+  description: "Multi-symbol pool fine-tune on 133-symbol watchlist (path-X)"
+  use_comet: false
+
+  train_tokenizer: true
+  train_basemodel: true
+
+  skip_existing: false
+
+device:
+  use_cuda: true
+  device_id: 0

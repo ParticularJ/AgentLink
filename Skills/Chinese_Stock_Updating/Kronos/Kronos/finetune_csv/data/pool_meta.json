@@ -1,0 +1,1436 @@
+{
+  "totals": {
+    "requested": 152,
+    "ok": 133,
+    "too_short": 3,
+    "fail": 4
+  },
+  "sector_counts_ok": {
+    "油气开采与油服": 8,
+    "船舶油运": 6,
+    "创新药": 8,
+    "军工_主机厂与兵装": 3,
+    "军工_航发产业链": 4,
+    "存储芯片": 7,
+    "半导体设备": 7,
+    "AI芯片": 7,
+    "先进封装": 4,
+    "光通信": 6,
+    "PCB": 6,
+    "商业航天": 7,
+    "人形机器人": 6,
+    "AI应用_传媒游戏": 6,
+    "消费电子_端侧AI": 5,
+    "燃气轮机": 5,
+    "化工_涨价链": 4,
+    "电力电网_特高压": 5,
+    "电池与储能": 3,
+    "贵金属_黄金": 8,
+    "贵金属_白银": 4,
+    "工业金属": 6,
+    "券商保险": 5,
+    "高股息_红利防御": 3
+  },
+  "symbols": {
+    "600938": {
+      "name": "中国海油",
+      "sector": "油气开采与油服",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1043,
+      "first_date": "2022-04-21 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601808": {
+      "name": "中海油服",
+      "sector": "油气开采与油服",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300191": {
+      "name": "潜能恒信",
+      "sector": "油气开采与油服",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603619": {
+      "name": "中曼石油",
+      "sector": "油气开采与油服",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000968": {
+      "name": "蓝焰控股",
+      "sector": "油气开采与油服",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603393": {
+      "name": "新天然气",
+      "sector": "油气开采与油服",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601872": {
+      "name": "招商轮船",
+      "sector": "船舶油运",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600968": {
+      "name": "海油发展",
+      "sector": "油气开采与油服",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601975": {
+      "name": "招商南油",
+      "sector": "船舶油运",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600428": {
+      "name": "中远海特",
+      "sector": "船舶油运",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300164": {
+      "name": "通源石油",
+      "sector": "油气开采与油服",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600150": {
+      "name": "中国船舶",
+      "sector": "船舶油运",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1585,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601989": {
+      "name": "中国重工",
+      "sector": "船舶油运",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1350,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2025-08-12 15:00",
+      "status": "ok"
+    },
+    "688235": {
+      "name": "百济神州",
+      "sector": "创新药",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1126,
+      "first_date": "2021-12-15 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600276": {
+      "name": "恒瑞医药",
+      "sector": "创新药",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688331": {
+      "name": "荣昌生物",
+      "sector": "创新药",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1056,
+      "first_date": "2022-03-31 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002821": {
+      "name": "凯莱英",
+      "sector": "创新药",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 0,
+      "first_date": null,
+      "last_date": null,
+      "status": "fail"
+    },
+    "002422": {
+      "name": "科伦药业",
+      "sector": "创新药",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688076": {
+      "name": "诺泰生物",
+      "sector": "创新药",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1266,
+      "first_date": "2021-05-20 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688578": {
+      "name": "艾力斯",
+      "sector": "创新药",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 0,
+      "first_date": null,
+      "last_date": null,
+      "status": "fail"
+    },
+    "688266": {
+      "name": "泽璟制药",
+      "sector": "创新药",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1584,
+      "first_date": "2020-01-23 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603087": {
+      "name": "甘李药业",
+      "sector": "创新药",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1484,
+      "first_date": "2020-06-29 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300760": {
+      "name": "迈瑞医疗",
+      "sector": "创新药",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000768": {
+      "name": "中航西飞",
+      "sector": "军工_主机厂与兵装",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603259": {
+      "name": "药明康德",
+      "sector": "创新药",
+      "level": "S",
+      "role": "core",
+      "n_rows": 0,
+      "first_date": null,
+      "last_date": null,
+      "status": "fail"
+    },
+    "600316": {
+      "name": "洪都航空",
+      "sector": "军工_主机厂与兵装",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "301357": {
+      "name": "北方长龙",
+      "sector": "军工_主机厂与兵装",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 792,
+      "first_date": "2023-04-18 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "too_short"
+    },
+    "600026": {
+      "name": "中远海能",
+      "sector": "船舶油运",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601606": {
+      "name": "长城军工",
+      "sector": "军工_主机厂与兵装",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 0,
+      "first_date": null,
+      "last_date": null,
+      "status": "fail"
+    },
+    "688002": {
+      "name": "睿创微纳",
+      "sector": "军工_主机厂与兵装",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600893": {
+      "name": "航发动力",
+      "sector": "军工_航发产业链",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300855": {
+      "name": "图南股份",
+      "sector": "军工_航发产业链",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1466,
+      "first_date": "2020-07-23 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000738": {
+      "name": "航发控制",
+      "sector": "军工_航发产业链",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300034": {
+      "name": "钢研高纳",
+      "sector": "军工_航发产业链",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "301308": {
+      "name": "江波龙",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "core",
+      "n_rows": 971,
+      "first_date": "2022-08-05 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603986": {
+      "name": "兆易创新",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688008": {
+      "name": "澜起科技",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688825": {
+      "name": "长鑫科技",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "core",
+      "n_rows": 10,
+      "first_date": "2026-07-27 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "too_short"
+    },
+    "300475": {
+      "name": "香农芯创",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1593,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688525": {
+      "name": "佰维存储",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 872,
+      "first_date": "2022-12-30 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "001309": {
+      "name": "德明利",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 996,
+      "first_date": "2022-07-01 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688809": {
+      "name": "强一股份",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 146,
+      "first_date": "2025-12-30 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "too_short"
+    },
+    "688766": {
+      "name": "普冉股份",
+      "sector": "存储芯片",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1191,
+      "first_date": "2021-08-23 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002371": {
+      "name": "北方华创",
+      "sector": "半导体设备",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688012": {
+      "name": "中微公司",
+      "sector": "半导体设备",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1590,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688120": {
+      "name": "华海清科",
+      "sector": "半导体设备",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1013,
+      "first_date": "2022-06-08 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300604": {
+      "name": "长川科技",
+      "sector": "半导体设备",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1589,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688072": {
+      "name": "拓荆科技",
+      "sector": "半导体设备",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1034,
+      "first_date": "2022-04-20 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688630": {
+      "name": "芯碁微装",
+      "sector": "半导体设备",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1298,
+      "first_date": "2021-04-01 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "301200": {
+      "name": "大族数控",
+      "sector": "半导体设备",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1079,
+      "first_date": "2022-02-28 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688256": {
+      "name": "寒武纪",
+      "sector": "AI芯片",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1469,
+      "first_date": "2020-07-20 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688041": {
+      "name": "海光信息",
+      "sector": "AI芯片",
+      "level": "A",
+      "role": "core",
+      "n_rows": 956,
+      "first_date": "2022-08-12 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601138": {
+      "name": "工业富联",
+      "sector": "AI芯片",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603019": {
+      "name": "中科曙光",
+      "sector": "AI芯片",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1589,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000977": {
+      "name": "浪潮信息",
+      "sector": "AI芯片",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603893": {
+      "name": "瑞芯微",
+      "sector": "AI芯片",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1579,
+      "first_date": "2020-02-07 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300474": {
+      "name": "景嘉微",
+      "sector": "AI芯片",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600584": {
+      "name": "长电科技",
+      "sector": "先进封装",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1594,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002156": {
+      "name": "通富微电",
+      "sector": "先进封装",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002185": {
+      "name": "华天科技",
+      "sector": "先进封装",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1589,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000021": {
+      "name": "深科技",
+      "sector": "先进封装",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300308": {
+      "name": "中际旭创",
+      "sector": "光通信",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300502": {
+      "name": "新易盛",
+      "sector": "光通信",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300394": {
+      "name": "天孚通信",
+      "sector": "光通信",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000988": {
+      "name": "华工科技",
+      "sector": "光通信",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300620": {
+      "name": "光库科技",
+      "sector": "光通信",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1589,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688498": {
+      "name": "源杰科技",
+      "sector": "光通信",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 879,
+      "first_date": "2022-12-21 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002463": {
+      "name": "沪电股份",
+      "sector": "PCB",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300476": {
+      "name": "胜宏科技",
+      "sector": "PCB",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002916": {
+      "name": "深南电路",
+      "sector": "PCB",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688183": {
+      "name": "生益电子",
+      "sector": "PCB",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1323,
+      "first_date": "2021-02-25 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600183": {
+      "name": "生益科技",
+      "sector": "PCB",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002384": {
+      "name": "东山精密",
+      "sector": "PCB",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600118": {
+      "name": "中国卫星",
+      "sector": "商业航天",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "001270": {
+      "name": "铖昌科技",
+      "sector": "商业航天",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1010,
+      "first_date": "2022-06-06 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600879": {
+      "name": "航天电子",
+      "sector": "商业航天",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688270": {
+      "name": "臻镭科技",
+      "sector": "商业航天",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1095,
+      "first_date": "2022-01-27 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002179": {
+      "name": "中航光电",
+      "sector": "商业航天",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002342": {
+      "name": "巨力索具",
+      "sector": "商业航天",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300065": {
+      "name": "海兰信",
+      "sector": "商业航天",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1589,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688017": {
+      "name": "绿的谐波",
+      "sector": "人形机器人",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1440,
+      "first_date": "2020-08-28 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002050": {
+      "name": "三花智控",
+      "sector": "人形机器人",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603728": {
+      "name": "鸣志电器",
+      "sector": "人形机器人",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601689": {
+      "name": "拓普集团",
+      "sector": "人形机器人",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300580": {
+      "name": "贝斯特",
+      "sector": "人形机器人",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603662": {
+      "name": "柯力传感",
+      "sector": "人形机器人",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002517": {
+      "name": "恺英网络",
+      "sector": "AI应用_传媒游戏",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002558": {
+      "name": "巨人网络",
+      "sector": "AI应用_传媒游戏",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300418": {
+      "name": "昆仑万维",
+      "sector": "AI应用_传媒游戏",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002555": {
+      "name": "三七互娱",
+      "sector": "AI应用_传媒游戏",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002602": {
+      "name": "世纪华通",
+      "sector": "AI应用_传媒游戏",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1597,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688111": {
+      "name": "金山办公",
+      "sector": "AI应用_传媒游戏",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002475": {
+      "name": "立讯精密",
+      "sector": "消费电子_端侧AI",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300433": {
+      "name": "蓝思科技",
+      "sector": "消费电子_端侧AI",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002241": {
+      "name": "歌尔股份",
+      "sector": "消费电子_端侧AI",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002273": {
+      "name": "水晶光电",
+      "sector": "消费电子_端侧AI",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688036": {
+      "name": "传音控股",
+      "sector": "消费电子_端侧AI",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600875": {
+      "name": "东方电气",
+      "sector": "燃气轮机",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002353": {
+      "name": "杰瑞股份",
+      "sector": "燃气轮机",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603308": {
+      "name": "应流股份",
+      "sector": "燃气轮机",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688239": {
+      "name": "航宇科技",
+      "sector": "燃气轮机",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1236,
+      "first_date": "2021-07-05 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002595": {
+      "name": "豪迈科技",
+      "sector": "燃气轮机",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600309": {
+      "name": "万华化学",
+      "sector": "化工_涨价链",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600160": {
+      "name": "巨化股份",
+      "sector": "化工_涨价链",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600426": {
+      "name": "华鲁恒升",
+      "sector": "化工_涨价链",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002601": {
+      "name": "龙佰集团",
+      "sector": "化工_涨价链",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600089": {
+      "name": "特变电工",
+      "sector": "电力电网_特高压",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600406": {
+      "name": "国电南瑞",
+      "sector": "电力电网_特高压",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000400": {
+      "name": "许继电气",
+      "sector": "电力电网_特高压",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002028": {
+      "name": "思源电气",
+      "sector": "电力电网_特高压",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "688676": {
+      "name": "金盘科技",
+      "sector": "电力电网_特高压",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1315,
+      "first_date": "2021-03-09 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300750": {
+      "name": "宁德时代",
+      "sector": "电池与储能",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300274": {
+      "name": "阳光电源",
+      "sector": "电池与储能",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300014": {
+      "name": "亿纬锂能",
+      "sector": "电池与储能",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601899": {
+      "name": "紫金矿业",
+      "sector": "贵金属_黄金",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600489": {
+      "name": "中金黄金",
+      "sector": "贵金属_黄金",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600547": {
+      "name": "山东黄金",
+      "sector": "贵金属_黄金",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600988": {
+      "name": "赤峰黄金",
+      "sector": "贵金属_黄金",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1597,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000975": {
+      "name": "山金国际",
+      "sector": "贵金属_黄金",
+      "level": "S",
+      "role": "core",
+      "n_rows": 1594,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601069": {
+      "name": "西部黄金",
+      "sector": "贵金属_黄金",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1588,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002155": {
+      "name": "湖南黄金",
+      "sector": "贵金属_黄金",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 1589,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "001337": {
+      "name": "四川黄金",
+      "sector": "贵金属_黄金",
+      "level": "S",
+      "role": "focus",
+      "n_rows": 833,
+      "first_date": "2023-03-03 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000426": {
+      "name": "兴业银锡",
+      "sector": "贵金属_白银",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "002716": {
+      "name": "湖南白银",
+      "sector": "贵金属_白银",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1589,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000603": {
+      "name": "盛达资源",
+      "sector": "贵金属_白银",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1591,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600497": {
+      "name": "驰宏锌锗",
+      "sector": "贵金属_白银",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600362": {
+      "name": "江西铜业",
+      "sector": "工业金属",
+      "level": "B+",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601600": {
+      "name": "中国铝业",
+      "sector": "工业金属",
+      "level": "B+",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "603993": {
+      "name": "洛阳钼业",
+      "sector": "工业金属",
+      "level": "B+",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600111": {
+      "name": "北方稀土",
+      "sector": "工业金属",
+      "level": "B+",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "000960": {
+      "name": "锡业股份",
+      "sector": "工业金属",
+      "level": "B+",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600549": {
+      "name": "厦门钨业",
+      "sector": "工业金属",
+      "level": "B+",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300059": {
+      "name": "东方财富",
+      "sector": "券商保险",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600030": {
+      "name": "中信证券",
+      "sector": "券商保险",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1593,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601601": {
+      "name": "中国太保",
+      "sector": "券商保险",
+      "level": "A",
+      "role": "core",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "300033": {
+      "name": "同花顺",
+      "sector": "券商保险",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601318": {
+      "name": "中国平安",
+      "sector": "券商保险",
+      "level": "A",
+      "role": "focus",
+      "n_rows": 1599,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600900": {
+      "name": "长江电力",
+      "sector": "高股息_红利防御",
+      "level": "压舱石",
+      "role": "core",
+      "n_rows": 1588,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "601088": {
+      "name": "中国神华",
+      "sector": "高股息_红利防御",
+      "level": "压舱石",
+      "role": "core",
+      "n_rows": 1589,
+      "first_date": "2020-01-02 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    },
+    "600941": {
+      "name": "中国移动",
+      "sector": "高股息_红利防御",
+      "level": "压舱石",
+      "role": "core",
+      "n_rows": 1112,
+      "first_date": "2022-01-05 15:00",
+      "last_date": "2026-08-07 15:00",
+      "status": "ok"
+    }
+  }
+}

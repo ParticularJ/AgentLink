@@ -1,0 +1,236 @@
+[
+  {
+    "code": "588000",
+    "name": "科创50ETF华夏",
+    "cost": 1.728,
+    "real_cost": 1.728,
+    "shares": 4400,
+    "init_shares": 17400,
+    "current_price": 1.833,
+    "highest_price": 1.84,
+    "entry_date": "2026-07-31",
+    "strategy_name": "买入",
+    "score": 62.5,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-31"
+  },
+  {
+    "code": "600406",
+    "name": "国电南瑞",
+    "cost": 25.218,
+    "real_cost": 25.218,
+    "shares": 1200,
+    "init_shares": 1200,
+    "current_price": 24.06,
+    "highest_price": 25.218,
+    "entry_date": "2026-08-04",
+    "strategy_name": "突破新高",
+    "score": 42.35,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-04"
+  },
+  {
+    "code": "000975",
+    "name": "山金国际",
+    "cost": 25.68,
+    "real_cost": 25.68,
+    "shares": 400,
+    "init_shares": 800,
+    "current_price": 26.48,
+    "highest_price": 27.14,
+    "entry_date": "2026-08-06",
+    "strategy_name": "用户指令",
+    "score": 69.85000000000001,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-06"
+  },
+  {
+    "code": "002716",
+    "name": "湖南白银",
+    "cost": 9.37,
+    "real_cost": 9.37,
+    "shares": 1100,
+    "init_shares": 1100,
+    "current_price": 9.78,
+    "highest_price": 9.78,
+    "entry_date": "2026-08-10",
+    "strategy_name": "手动操作",
+    "score": 63.849999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-10"
+  },
+  {
+    "code": "600547",
+    "name": "山东黄金",
+    "cost": 31.38,
+    "real_cost": 31.38,
+    "shares": 200,
+    "init_shares": 400,
+    "current_price": 31.02,
+    "highest_price": 31.47,
+    "entry_date": "2026-08-10",
+    "strategy_name": "手动操作",
+    "score": 76.05,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-10"
+  },
+  {
+    "code": "601138",
+    "name": "工业富联",
+    "cost": 68.55,
+    "real_cost": 68.55,
+    "shares": 200,
+    "init_shares": 800,
+    "current_price": 65.6,
+    "highest_price": 69.18,
+    "entry_date": "2026-08-10",
+    "strategy_name": "手动操作",
+    "score": 53.24999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-08-10"
+  },
+  {
+    "code": "520500",
+    "name": "恒生创新药ETF华泰柏瑞",
+    "cost": 1.441,
+    "real_cost": 1.441,
+    "shares": 10500,
+    "init_shares": 20900,
+    "current_price": 1.432,
+    "highest_price": 1.445,
+    "entry_date": "2026-08-10",
+    "strategy_name": "手动操作",
+    "score": 55.099999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-10"
+  },
+  {
+    "code": "688017",
+    "name": "绿的谐波",
+    "cost": 358.26,
+    "real_cost": 358.26,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 354.99,
+    "highest_price": 358.26,
+    "entry_date": "2026-08-12",
+    "strategy_name": "用户指令买入",
+    "score": 52.199999999999996,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-12"
+  },
+  {
+    "code": "301308",
+    "name": "江波龙",
+    "cost": 418.07,
+    "real_cost": 418.07,
+    "shares": 100,
+    "init_shares": 100,
+    "current_price": 414.3,
+    "highest_price": 418.07,
+    "entry_date": "2026-08-12",
+    "strategy_name": "用户指令买入",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-12"
+  }
+]

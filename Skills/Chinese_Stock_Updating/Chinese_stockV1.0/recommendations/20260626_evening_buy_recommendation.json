@@ -1,0 +1,127 @@
+{
+  "date": "20260626",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-26T14:26:11.317965",
+  "recommendations": [
+    {
+      "code": "002436",
+      "name": "兴森科技",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.91,
+      "best_score": 82.7,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2119
+    },
+    {
+      "code": "000636",
+      "name": "风华高科",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.91,
+      "best_score": 82.7,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1819
+    },
+    {
+      "code": "688041",
+      "name": "海光信息",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 74.95,
+      "best_score": 74.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.145
+    },
+    {
+      "code": "002585",
+      "name": "双星新材",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 均线缠绕",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 73.53,
+      "best_score": 76.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1135
+    },
+    {
+      "code": "300014",
+      "name": "亿纬锂能",
+      "penalty": -4,
+      "penalty_reason": [
+        "国泰海通证券研究员徐强将亿纬锂能2026年净利润预测下调9.10%至67.87亿元，每股收益同步下调13.33%至3.12元，机构下调盈利预期反映对短期业绩增长动能存忧，属于实质性利空信号"
+      ],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-26",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 多头排列",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 73.0,
+      "best_score": 79.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.083
+    }
+  ],
+  "total_position": 73.6,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

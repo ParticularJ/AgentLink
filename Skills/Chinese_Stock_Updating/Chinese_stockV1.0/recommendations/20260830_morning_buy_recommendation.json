@@ -1,0 +1,106 @@
+{
+  "date": "20260830",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-30T16:16:17.883900",
+  "market_phase": "RANGE",
+  "market_phase_label": "震荡",
+  "position_cap": 0.5,
+  "sector_filter": {
+    "sector_phases": {
+      "底仓": "RANGE",
+      "半导体": "STRONG_DOWN",
+      "AI应用": "STRONG_DOWN",
+      "创新药": "RANGE",
+      "光通信": "STRONG_UP",
+      "军工": "STRONG_DOWN",
+      "商业航天": "STRONG_DOWN",
+      "人形机器人": "STRONG_DOWN",
+      "智能驾驶": "STRONG_DOWN",
+      "消费电子": "RANGE",
+      "燃气轮机": "STRONG_DOWN",
+      "化工": "STRONG_UP",
+      "电网设备": "STRONG_DOWN",
+      "新能源": "STRONG_DOWN",
+      "贵金属": "STRONG_DOWN",
+      "工业金属": "STRONG_DOWN",
+      "油气": "RANGE",
+      "航运": "RANGE",
+      "券商": "UNKNOWN",
+      "白酒": "UNKNOWN",
+      "家电": "UNKNOWN",
+      "可控核聚变": "STRONG_DOWN",
+      "种子农业": "UNKNOWN"
+    },
+    "reserve": [
+      {
+        "stock_code": "688183",
+        "stock_name": "生益电子",
+        "sector": "消费电子",
+        "sector_phase": "RANGE",
+        "strategy": "breakout-high-strategy"
+      }
+    ],
+    "block": [
+      {
+        "stock_code": "600316",
+        "stock_name": "洪都航空",
+        "sector": "军工",
+        "sector_phase": "STRONG_DOWN",
+        "strategy": "breakout-high-strategy"
+      },
+      {
+        "stock_code": "600354",
+        "stock_name": "敦煌种业",
+        "sector": "种子农业",
+        "sector_phase": "UNKNOWN",
+        "strategy": "breakout-high-strategy"
+      },
+      {
+        "stock_code": "159698",
+        "stock_name": "粮食ETF鹏华",
+        "sector": "UNKNOWN",
+        "sector_phase": "UNKNOWN",
+        "strategy": "breakout-high-strategy"
+      }
+    ],
+    "unknown_sector": [],
+    "reserve_count": 1,
+    "block_count": 3,
+    "unknown_sector_count": 0
+  },
+  "recommendations": [
+    {
+      "code": "600309",
+      "name": "万华化学",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-30",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 强势主升; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 87.39,
+      "best_score": 86.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 20.7,
+      "sectors": [
+        "化工"
+      ],
+      "sectors_detail": [
+        {
+          "name": "化工",
+          "phase": "STRONG_UP",
+          "phase_label": "单边上行"
+        }
+      ],
+      "session": "MORNING_BUY",
+      "weight": 0.2074
+    }
+  ],
+  "total_position": 20.7,
+  "stock_count": 1,
+  "strategy_count": 1,
+  "no_result_count": 0,
+  "error_count": 0
+}

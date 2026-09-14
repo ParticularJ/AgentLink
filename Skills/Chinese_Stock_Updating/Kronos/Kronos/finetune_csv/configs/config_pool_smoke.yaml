@@ -1,0 +1,50 @@
+data:
+  data_path: /data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/data/pool.csv
+  lookback_window: 200
+  predict_window: 5
+  max_context: 200
+  clip: 5.0
+  train_ratio: 0.8
+  val_ratio: 0.2
+  test_ratio: 0.0
+  pool_mode: true
+  symbol_col: symbol
+  level_weights:
+    S: 2.0
+    A: 1.5
+    B+: 1.0
+    压舱石: 0.5
+    ? ''
+    : 1.0
+training:
+  tokenizer_epochs: 2
+  basemodel_epochs: 2
+  batch_size: 32
+  log_interval: 5
+  num_workers: 4
+  seed: 42
+  tokenizer_learning_rate: 5.0e-05
+  predictor_learning_rate: 1.0e-06
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_weight_decay: 0.1
+  accumulation_steps: 1
+model_paths:
+  pretrained_tokenizer: NeoQuasar/Kronos-Tokenizer-base
+  pretrained_predictor: NeoQuasar/Kronos-base
+  exp_name: pool_133_smoke
+  base_path: /data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/finetuned/
+  base_save_path: ''
+  finetuned_tokenizer: ''
+  tokenizer_save_name: tokenizer
+  basemodel_save_name: basemodel
+experiment:
+  name: kronos_pool_smoke
+  description: Multi-symbol pool fine-tune on 133-symbol watchlist (path-X)
+  use_comet: false
+  train_tokenizer: true
+  train_basemodel: true
+  skip_existing: false
+device:
+  use_cuda: true
+  device_id: 0

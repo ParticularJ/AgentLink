@@ -1,0 +1,140 @@
+[
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "cost": 101.003,
+    "shares": 200,
+    "init_shares": 300,
+    "current_price": 135.63,
+    "highest_price": 143.1,
+    "entry_date": "2026-05-20",
+    "strategy_name": "均线多头",
+    "score": 52.199999999999996,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "300408",
+    "name": "三环集团",
+    "cost": 120.99,
+    "shares": 400,
+    "init_shares": 400,
+    "current_price": 125.63,
+    "highest_price": 132.41,
+    "entry_date": "2026-05-25",
+    "strategy_name": "突破新高",
+    "score": 53.7,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002859",
+    "name": "洁美科技",
+    "cost": 64.578,
+    "shares": 600,
+    "init_shares": 800,
+    "current_price": 75.05,
+    "highest_price": 75.05,
+    "entry_date": "2026-05-26",
+    "strategy_name": "",
+    "score": 80.0,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002916",
+    "name": "深南电路",
+    "cost": 399.0,
+    "shares": 100,
+    "init_shares": 200,
+    "current_price": 380.0,
+    "highest_price": 411.88,
+    "entry_date": "2026-05-28",
+    "strategy_name": "均线多头",
+    "score": 53.099999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "688519",
+    "name": "南亚新材",
+    "cost": 233.945,
+    "shares": 200,
+    "init_shares": 400,
+    "current_price": 216.55,
+    "highest_price": 246.57,
+    "entry_date": "2026-05-29",
+    "strategy_name": "均线多头",
+    "score": 42.85,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "603267",
+    "name": "鸿远电子",
+    "cost": 69.13,
+    "shares": 700,
+    "init_shares": 700,
+    "current_price": 71.8,
+    "highest_price": 71.8,
+    "entry_date": "2026-05-29",
+    "strategy_name": "均线多头排列",
+    "score": 68.3,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+]

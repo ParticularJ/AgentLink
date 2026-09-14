@@ -1,0 +1,74 @@
+# Pool finetune config — 498-symbol watchlist pool (v3.5)
+# v3 升级版:3 epoch + rank_loss_weight 0.003 (从 0.001 提升,让 ranking 学习更充分)
+# 期望:val loss 2.5752 → 2.40-2.50,8 月 OOS p 值可能从 0.015 降到 0.005
+
+data:
+  data_path: "/data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/data/pool_300.csv"
+  lookback_window: 200
+  predict_window: 5
+  max_context: 200
+  clip: 5.0
+  train_ratio: 0.8
+  val_ratio: 0.2
+  test_ratio: 0.0
+
+  pool_mode: true
+  symbol_col: "symbol"
+  level_weights:
+    "S": 1.0
+    "A": 1.0
+    "B+": 1.0
+    "压舱石": 1.0
+    "": 1.0
+
+training:
+  tokenizer_epochs: 0  # 跳过(继承 v3 1 epoch 产物)
+  basemodel_epochs: 3   # 3 epoch(从 v3 的 1 epoch 升到 3)
+  batch_size: 64
+  log_interval: 100
+  num_workers: 4
+  seed: 42
+
+  tokenizer_learning_rate: 0.00005
+  predictor_learning_rate: 0.0000008
+
+  # 方向损失(保持 v3 强度)
+  dir_loss_weight: 0.3
+
+  # 🔥 提升: ranking loss 权重从 0.001 → 0.003
+  # 实测 rank_loss 值范围 70-150, 0.001 → 贡献 ~0.1
+  # 0.003 → 贡献 ~0.3 (总 loss 的 10-15%,更充分学排序)
+  rank_loss_weight: 0.003
+
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_weight_decay: 0.1
+
+  accumulation_steps: 1
+
+model_paths:
+  pretrained_tokenizer: "NeoQuasar/Kronos-Tokenizer-base"
+  pretrained_predictor: "NeoQuasar/Kronos-base"
+
+  exp_name: "pool_300_daily_uniform_rank_v35"
+  base_path: "/data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/finetuned/"
+
+  base_save_path: ""
+  finetuned_tokenizer: ""
+
+  tokenizer_save_name: "tokenizer"
+  basemodel_save_name: "basemodel"
+
+experiment:
+  name: "kronos_pool_v3_5_rank"
+  description: "Multi-symbol pool fine-tune, 3 epoch with stronger ranking loss"
+  use_comet: false
+
+  train_tokenizer: false
+  train_basemodel: true
+
+  skip_existing: false
+
+device:
+  use_cuda: true
+  device_id: 0

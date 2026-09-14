@@ -1,0 +1,94 @@
+{
+  "date": "20260419",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-04-19T23:45:50.226224",
+  "recommendations": [
+    {
+      "code": "002384",
+      "name": "东山精密",
+      "source": "突破新高",
+      "recommend_date": "2026-04-19",
+      "entry_price": 0.0,
+      "target_reason": "突破动量强劲，早盘追涨，综合得分100；突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 100,
+      "best_score": 90.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "300620",
+      "name": "光库科技",
+      "source": "突破新高",
+      "recommend_date": "2026-04-19",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；趋势确认，逢低买入博新高",
+      "combined_score": 77.66,
+      "best_score": 74.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 17.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1777
+    },
+    {
+      "code": "300308",
+      "name": "中际旭创",
+      "source": "突破新高",
+      "recommend_date": "2026-04-19",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认",
+      "combined_score": 69.9,
+      "best_score": 65.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 14.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1399
+    },
+    {
+      "code": "603083",
+      "name": "剑桥科技",
+      "source": "突破新高",
+      "recommend_date": "2026-04-19",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认",
+      "combined_score": 69.7,
+      "best_score": 70.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 11.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1097
+    },
+    {
+      "code": "300502",
+      "name": "新易盛",
+      "source": "突破新高",
+      "recommend_date": "2026-04-19",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认",
+      "combined_score": 62.2,
+      "best_score": 55.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 8.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.08
+    }
+  ],
+  "total_position": 73.8,
+  "stock_count": 5
+}

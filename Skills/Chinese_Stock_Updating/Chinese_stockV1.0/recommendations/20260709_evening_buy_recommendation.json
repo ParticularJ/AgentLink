@@ -1,0 +1,100 @@
+{
+  "date": "20260709",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-07-09T14:23:07.718628",
+  "recommendations": [
+    {
+      "code": "000977",
+      "name": "浪潮信息",
+      "penalty": 6,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-07-09",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.58,
+      "best_score": 78.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2096
+    },
+    {
+      "code": "600276",
+      "name": "恒瑞医药",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-07-09",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 73.85,
+      "best_score": 77.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1739
+    },
+    {
+      "code": "688017",
+      "name": "绿的谐波",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-09",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 71.4,
+      "best_score": 74.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1414
+    },
+    {
+      "code": "601899",
+      "name": "紫金矿业",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-07-09",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 短期向好",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 70.51,
+      "best_score": 73.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1105
+    }
+  ],
+  "total_position": 63.6,
+  "stock_count": 4,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

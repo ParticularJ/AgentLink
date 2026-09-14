@@ -1,0 +1,119 @@
+{
+  "date": "20260622",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-22T14:23:12.371626",
+  "recommendations": [
+    {
+      "code": "600183",
+      "name": "生益科技",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-22",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.15,
+      "best_score": 81.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2112
+    },
+    {
+      "code": "000636",
+      "name": "风华高科",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-22",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 78.62,
+      "best_score": 82.6,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1786
+    },
+    {
+      "code": "002463",
+      "name": "沪电股份",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-22",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 78.16,
+      "best_score": 78.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 14.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1482
+    },
+    {
+      "code": "001257",
+      "name": "盛龙股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-22",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强势突破",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 77.63,
+      "best_score": 81.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1176
+    },
+    {
+      "code": "688630",
+      "name": "芯碁微装",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-22",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 77.29,
+      "best_score": 81.1,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 8.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0873
+    }
+  ],
+  "total_position": 74.3,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

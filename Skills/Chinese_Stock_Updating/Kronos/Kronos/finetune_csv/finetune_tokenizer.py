@@ -13,6 +13,7 @@ import datetime
 import logging
 from logging.handlers import RotatingFileHandler
 import torch.distributed as dist
+from typing import Optional
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 sys.path.append("../")
@@ -93,7 +94,13 @@ def setup_logging(exp_name: str, log_dir: str, rank: int = 0) -> logging.Logger:
 def create_dataloaders(config):
     if not dist.is_available() or not dist.is_initialized() or dist.get_rank() == 0:
         print("Creating tokenizer training data loaders...")
-    
+
+    pool_kwargs = dict(
+        pool_mode=getattr(config, 'pool_mode', False),
+        symbol_col=getattr(config, 'symbol_col', 'symbol'),
+        level_weights=getattr(config, 'level_weights', {}),
+    )
+
     train_dataset = CustomKlineDataset(
         data_path=config.data_path,
         data_type="train",
@@ -103,9 +110,10 @@ def create_dataloaders(config):
         seed=config.seed,
         train_ratio=config.train_ratio,
         val_ratio=config.val_ratio,
-        test_ratio=config.test_ratio
+        test_ratio=config.test_ratio,
+        **pool_kwargs,
     )
-    
+
     val_dataset = CustomKlineDataset(
         data_path=config.data_path,
         data_type="val",
@@ -115,7 +123,8 @@ def create_dataloaders(config):
         seed=config.seed + 1,
         train_ratio=config.train_ratio,
         val_ratio=config.val_ratio,
-        test_ratio=config.test_ratio
+        test_ratio=config.test_ratio,
+        **pool_kwargs,
     )
     
     use_ddp = dist.is_available() and dist.is_initialized()
@@ -148,7 +157,7 @@ def create_dataloaders(config):
     return train_loader, val_loader, train_dataset, val_dataset, train_sampler, val_sampler
 
 
-def train_tokenizer(model, device, config, save_dir, logger):
+def train_tokenizer(model, device, config, save_dir, logger, resume_from: Optional[str] = None):
     logger.info("Starting tokenizer training...")
     use_ddp = dist.is_available() and dist.is_initialized()
     rank = dist.get_rank() if use_ddp else 0
@@ -177,10 +186,47 @@ def train_tokenizer(model, device, config, save_dir, logger):
 
     best_val_loss = float("inf")
     batch_idx_global = 0
+    start_epoch = 0
     
     accumulation_steps = getattr(config, 'accumulation_steps', 1)
+
+    # ---------- 断点训练恢复 ----------
+    ckpt = None
+    if resume_from is None and os.path.isdir(save_dir):
+        auto_ckpt = os.path.join(save_dir, "latest_checkpoint.pt")
+        if os.path.exists(auto_ckpt):
+            resume_from = auto_ckpt
+            logger.info(f"Auto-resume detected: {resume_from}")
+    if resume_from and os.path.exists(resume_from):
+        ckpt = torch.load(resume_from, map_location='cpu', weights_only=False)
+        raw = model.module if use_ddp else model
+        raw.load_state_dict(ckpt['model_state_dict'])
+        try:
+            optimizer.load_state_dict(ckpt['optimizer_state_dict'])
+        except Exception as e:
+            logger.warning(f"[RESUME] optimizer state 不兼容,跳过 (常见于 config 变更): {e}")
+        try:
+            scheduler.load_state_dict(ckpt['scheduler_state_dict'])
+            # 强制 OneCycleLR 从记录的 last_epoch 恢复,避免"已结束"问题
+            if 'last_epoch' in ckpt:
+                scheduler.last_epoch = ckpt['last_epoch']
+        except Exception as e:
+            logger.warning(f"[RESUME] scheduler state 不兼容,跳过: {e}")
+        start_epoch = ckpt['epoch'] + 1
+        batch_idx_global = ckpt.get('batch_idx_global', 0)
+        best_val_loss = ckpt.get('best_val_loss', float('inf'))
+        if 'rng_state' in ckpt:
+            torch.manual_seed(ckpt['rng_state'])
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(ckpt['rng_state'])
+            logger.info(f"Restored RNG state")
+        logger.info(f"[RESUME] tokenizer from epoch {start_epoch}/{config.tokenizer_epochs}, "
+                    f"best_val_loss={best_val_loss:.4f}")
+        if rank == 0:
+            print(f"\n[RESUME] tokenizer from epoch {start_epoch}/{config.tokenizer_epochs}")
+    # ----------------------------------
     
-    for epoch in range(config.tokenizer_epochs):
+    for epoch in range(start_epoch, config.tokenizer_epochs):
         epoch_start_time = time.time()
         model.train()
         
@@ -274,7 +320,24 @@ def train_tokenizer(model, device, config, save_dir, logger):
                 save_msg = f"Best model saved to: {model_save_path} (validation loss: {best_val_loss:.4f})"
                 logger.info(save_msg)
                 print(save_msg)
-    
+
+        # ---------- 每 epoch 结束保存 checkpoint (供断点恢复) ----------
+        if rank == 0:
+            ckpt_path = os.path.join(save_dir, "latest_checkpoint.pt")
+            raw = model.module if use_ddp else model
+            torch.save({
+                'epoch': epoch,
+                'batch_idx_global': batch_idx_global,
+                'model_state_dict': raw.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'scheduler_state_dict': scheduler.state_dict(),
+                'last_epoch': getattr(scheduler, 'last_epoch', epoch),
+                'best_val_loss': best_val_loss,
+                'rng_state': torch.get_rng_state(),
+            }, ckpt_path)
+            logger.info(f"Checkpoint saved: {ckpt_path}")
+        # --------------------------------------------------------
+
     return best_val_loss
 
 

@@ -1,0 +1,95 @@
+{
+  "date": "20260423",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-04-23T17:48:57.062863",
+  "recommendations": [
+    {
+      "code": "688008",
+      "name": "澜起科技",
+      "source": "均线多头排列",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "技术面强烈看涨，综合得分86；均线多头排列信号确认；尾盘低位吸纳，次日冲高概率大",
+      "combined_score": 86.4,
+      "best_score": 85.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2164
+    },
+    {
+      "code": "688126",
+      "name": "沪硅产业",
+      "source": "均线多头排列",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "技术面强烈看涨，综合得分86；均线多头排列信号确认；尾盘低位吸纳，次日冲高概率大",
+      "combined_score": 86.4,
+      "best_score": 85.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1864
+    },
+    {
+      "code": "002436",
+      "name": "兴森科技",
+      "source": "均线多头排列",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "技术面强烈看涨，综合得分86；均线多头排列信号确认；尾盘低位吸纳，次日冲高概率大",
+      "combined_score": 86.4,
+      "best_score": 85.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 15.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1564
+    },
+    {
+      "code": "603228",
+      "name": "景旺电子",
+      "source": "均线多头排列",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "技术面强烈看涨，综合得分86；均线多头排列信号确认；尾盘低位吸纳，次日冲高概率大",
+      "combined_score": 86.4,
+      "best_score": 85.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 12.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1264
+    },
+    {
+      "code": "603083",
+      "name": "剑桥科技",
+      "source": "均线多头排列",
+      "recommend_date": "2026-04-23",
+      "entry_price": 0.0,
+      "target_reason": "技术面强烈看涨，综合得分83；均线多头排列、缺口填充双信号共振；尾盘低位吸纳，次日冲高概率大",
+      "combined_score": 83.28,
+      "best_score": 85.5,
+      "strategies": [
+        "均线多头排列",
+        "缺口填充"
+      ],
+      "position_pct": 9.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0933
+    }
+  ],
+  "total_position": 77.7,
+  "stock_count": 5
+}

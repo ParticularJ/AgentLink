@@ -1,0 +1,232 @@
+[
+  {
+    "code": "603728",
+    "name": "鸣志电器",
+    "cost": 63.199,
+    "shares": 300,
+    "init_shares": 300,
+    "current_price": 66.55,
+    "highest_price": 71.06,
+    "entry_date": "2026-05-11",
+    "strategy_name": "突破新高",
+    "score": 49.39999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "600584",
+    "name": "长电科技",
+    "cost": 56.76,
+    "shares": 300,
+    "init_shares": 500,
+    "current_price": 86.16,
+    "highest_price": 93.25,
+    "entry_date": "2026-05-12",
+    "strategy_name": "突破新高",
+    "score": 56.550000000000004,
+    "stop_level_hit": [
+      true,
+      true,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "cost": 101.003,
+    "shares": 300,
+    "init_shares": 300,
+    "current_price": 131.76,
+    "highest_price": 137.87,
+    "entry_date": "2026-05-20",
+    "strategy_name": "均线多头",
+    "score": 70.7,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "600276",
+    "name": "恒瑞医药",
+    "cost": 51.12,
+    "shares": 300,
+    "init_shares": 600,
+    "current_price": 50.37,
+    "highest_price": 51.12,
+    "entry_date": "2026-05-21",
+    "strategy_name": "RSI超卖",
+    "score": 56.550000000000004,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "603893",
+    "name": "瑞芯微",
+    "cost": 187.6,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 201.91,
+    "highest_price": 201.91,
+    "entry_date": "2026-05-21",
+    "strategy_name": "缺口填充",
+    "score": 73.7,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "000021",
+    "name": "深科技",
+    "cost": 38.886923076923075,
+    "shares": 1300,
+    "init_shares": 1300,
+    "current_price": 43.98,
+    "highest_price": 46.28,
+    "entry_date": "2026-05-22",
+    "strategy_name": "缺口填充，均线多头",
+    "score": 70.7,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "300408",
+    "name": "三环集团",
+    "cost": 120.99,
+    "shares": 400,
+    "init_shares": 400,
+    "current_price": 122.99,
+    "highest_price": 123.72,
+    "entry_date": "2026-05-25",
+    "strategy_name": "突破新高",
+    "score": 73.14999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "300831",
+    "name": "派瑞股份",
+    "cost": 24.05,
+    "shares": 2100,
+    "init_shares": 2100,
+    "current_price": 26.42,
+    "highest_price": 26.42,
+    "entry_date": "2026-05-25",
+    "strategy_name": "均线多头 缺口填充",
+    "score": 77.5,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "002859",
+    "name": "洁美科技",
+    "cost": 64.578,
+    "shares": 800,
+    "init_shares": 800,
+    "current_price": 63.59,
+    "highest_price": 64.578,
+    "entry_date": "2026-05-26",
+    "strategy_name": "",
+    "score": 64.1,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "code": "688072",
+    "name": "拓荆科技",
+    "cost": 733.307,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 667.0,
+    "highest_price": 733.307,
+    "entry_date": "2026-05-27",
+    "strategy_name": "突破新高",
+    "score": 51.099999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+]

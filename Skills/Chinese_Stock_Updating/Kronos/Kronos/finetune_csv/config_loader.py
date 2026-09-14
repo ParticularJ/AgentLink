@@ -127,6 +127,12 @@ class CustomFinetuneConfig:
         self.train_ratio = data_config.get('train_ratio', 0.9)
         self.val_ratio = data_config.get('val_ratio', 0.1)
         self.test_ratio = data_config.get('test_ratio', 0.0)
+        # Pool-mode flags (NEW). When pool_mode=True, CustomKlineDataset treats
+        # the CSV as long-format multi-symbol data and samples per-symbol windows.
+        self.pool_mode = data_config.get('pool_mode', False)
+        self.symbol_col = data_config.get('symbol_col', 'symbol')
+        # level_weights: dict mapping 'S'/'A'/'B+'/'压舱石' -> relative weight.
+        self.level_weights = data_config.get('level_weights', {})
         
         # training configuration
         training_config = self.loader.get_training_config()
@@ -149,6 +155,10 @@ class CustomFinetuneConfig:
         self.adam_beta2 = training_config.get('adam_beta2', 0.95)
         self.adam_weight_decay = training_config.get('adam_weight_decay', 0.1)
         self.accumulation_steps = training_config.get('accumulation_steps', 1)
+        # Direction-loss weight (added 2026-08-12; default 0.0 = pure CE).
+        self.dir_loss_weight = training_config.get('dir_loss_weight', 0.0)
+        # Ranking-loss weight (added 2026-08-16; default 0.0 = pure CE+dir).
+        self.rank_loss_weight = training_config.get('rank_loss_weight', 0.0)
         
         model_paths = self.loader.get_model_paths()
         self.exp_name = model_paths.get('exp_name', 'default_experiment')

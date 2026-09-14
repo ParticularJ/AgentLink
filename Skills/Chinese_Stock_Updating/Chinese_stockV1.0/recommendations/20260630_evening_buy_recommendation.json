@@ -1,0 +1,119 @@
+{
+  "date": "20260630",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-30T14:22:39.298189",
+  "recommendations": [
+    {
+      "code": "603259",
+      "name": "药明康德",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 84.59,
+      "best_score": 89.3,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2146
+    },
+    {
+      "code": "603019",
+      "name": "中科曙光",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 83.26,
+      "best_score": 87.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1833
+    },
+    {
+      "code": "002821",
+      "name": "凯莱英",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 81.94,
+      "best_score": 86.3,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 15.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1519
+    },
+    {
+      "code": "002491",
+      "name": "通鼎互联",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 普通缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 73.44,
+      "best_score": 76.2,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1134
+    },
+    {
+      "code": "601869",
+      "name": "长飞光纤",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-30",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方缩量企稳 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 73.22,
+      "best_score": 76.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0832
+    }
+  ],
+  "total_position": 74.6,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

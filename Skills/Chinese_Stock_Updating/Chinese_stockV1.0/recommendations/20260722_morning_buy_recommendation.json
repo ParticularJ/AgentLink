@@ -1,0 +1,107 @@
+{
+  "date": "20260722",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-07-22T08:03:56.343319",
+  "recommendations": [
+    {
+      "code": "603993",
+      "name": "洛阳钼业",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-22",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 前期回踩充分，支撑有效，突破可靠性高; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 100,
+      "best_score": 85.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "600547",
+      "name": "山东黄金",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-22",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 前期回踩充分，支撑有效，突破可靠性高; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 92.19,
+      "best_score": 88.3,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.2,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1922
+    },
+    {
+      "code": "000975",
+      "name": "山金国际",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-22",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 前期回踩充分，支撑有效，突破可靠性高; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 89.25,
+      "best_score": 85.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 15.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1593
+    },
+    {
+      "code": "600863",
+      "name": "华能蒙电",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-22",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 87.39,
+      "best_score": 86.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1274
+    },
+    {
+      "code": "688809",
+      "name": "强一股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-07-22",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 75.8,
+      "best_score": 77.0,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 8.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0858
+    }
+  ],
+  "total_position": 79.4,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

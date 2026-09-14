@@ -1,0 +1,119 @@
+{
+  "date": "20260805",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-08-05T14:23:19.660944",
+  "recommendations": [
+    {
+      "code": "000975",
+      "name": "山金国际",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.28,
+      "best_score": 83.3,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 20.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2093
+    },
+    {
+      "code": "002595",
+      "name": "豪迈科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 78.62,
+      "best_score": 82.6,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1786
+    },
+    {
+      "code": "001337",
+      "name": "四川黄金",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": "健康多头",
+      "combined_score": 78.5,
+      "best_score": 78.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1485
+    },
+    {
+      "code": "600428",
+      "name": "中远海特",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.26,
+      "best_score": 76.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1133
+    },
+    {
+      "code": "600547",
+      "name": "山东黄金",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-05",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.26,
+      "best_score": 76.0,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0833
+    }
+  ],
+  "total_position": 73.3,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

@@ -1,0 +1,108 @@
+{
+  "date": "20260818",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-18T08:14:17.901986",
+  "recommendations": [
+    {
+      "code": "002028",
+      "name": "思源电气",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 超预期; 增长质量: 良好增长; 市场反应: 看好; 机构态度: 机构看好; 行业景气度: 板块温和增长",
+      "combined_score": 100,
+      "best_score": 89.9,
+      "strategies": [
+        "业绩超预期",
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "600584",
+      "name": "长电科技",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 强势主升; 无明显回踩，直接强势上攻，进攻意愿足; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 96.54,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1965
+    },
+    {
+      "code": "688766",
+      "name": "普冉股份",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量明显放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 无明显回踩，直接强势上攻，进攻意愿足; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 93.34,
+      "best_score": 89.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1633
+    },
+    {
+      "code": "688002",
+      "name": "睿创微纳",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: neutral; 机构态度: 机构中性; 行业景气度: 行业数据不足",
+      "combined_score": 93.2,
+      "best_score": 82.5,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 13.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1332
+    },
+    {
+      "code": "300394",
+      "name": "天孚通信",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 无明显回踩，直接强势上攻，进攻意愿足",
+      "combined_score": 90.41,
+      "best_score": 89.9,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 10.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1004
+    }
+  ],
+  "total_position": 82.3,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

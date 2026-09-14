@@ -1,0 +1,82 @@
+{
+  "args": {
+    "start": "2024-09-01",
+    "end": "2024-12-31",
+    "rebalance_freq": "W",
+    "pick_source": "csv",
+    "universe": "csi300",
+    "qlib_provider": "~/.qlib/qlib_data/cn_data",
+    "csv_pick_file": "/data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/scripts/_smoke/picks.csv",
+    "csv_dir": "/data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/scripts/_smoke",
+    "tokenizer": "NeoQuasar/Kronos-Tokenizer-base",
+    "model": "NeoQuasar/Kronos-base",
+    "device": "cpu",
+    "max_context": 512,
+    "lookback": 120,
+    "pred_len": 5,
+    "sample_count": 2,
+    "T": 1.0,
+    "top_p": 0.9,
+    "realise_horizon": 5,
+    "price_limit": 0.1,
+    "max_symbols_per_day": 5,
+    "out_dir": "./outputs/contrarian",
+    "run_tag": "contrarian_smoke"
+  },
+  "n_rebalance_days": 17,
+  "n_unique_candidates": 5,
+  "strategies": {
+    "contrarian": {
+      "strategy": "contrarian",
+      "n_trades": 16,
+      "total_return": 0.7140243678243707,
+      "cagr": 3.7625804106565433,
+      "ann_vol": 0.7099330123819805,
+      "sharpe": 5.299909068930692,
+      "max_drawdown": -0.09068079164826004,
+      "win_rate": 0.75,
+      "avg_trade_ret": 0.038196296746720405,
+      "start_date": "2024-09-02",
+      "end_date": "2024-12-31"
+    },
+    "bullish": {
+      "strategy": "bullish",
+      "n_trades": 16,
+      "total_return": 0.1750364281080734,
+      "cagr": 0.5955385534979416,
+      "ann_vol": 0.5940584676792678,
+      "sharpe": 1.00249148172983,
+      "max_drawdown": -0.10357347011293594,
+      "win_rate": 0.4375,
+      "avg_trade_ret": 0.013294573672664442,
+      "start_date": "2024-09-02",
+      "end_date": "2024-12-31"
+    },
+    "bottom_3": {
+      "strategy": "bottom_3",
+      "n_trades": 48,
+      "total_return": 0.47973959985030357,
+      "cagr": 2.111361785851172,
+      "ann_vol": 0.5110291573783575,
+      "sharpe": 4.131587709559897,
+      "max_drawdown": -0.06440012967124886,
+      "win_rate": 0.6458333333333334,
+      "avg_trade_ret": 0.02699998844301422,
+      "start_date": "2024-09-02",
+      "end_date": "2024-12-31"
+    },
+    "equal_weight": {
+      "strategy": "equal_weight",
+      "n_trades": 80,
+      "total_return": 0.3573782248245405,
+      "cagr": 1.4231201926967518,
+      "ann_vol": 0.4724468618517652,
+      "sharpe": 3.0122333485691977,
+      "max_drawdown": -0.06444088116067803,
+      "win_rate": 0.575,
+      "avg_trade_ret": 0.021239385976549383,
+      "start_date": "2024-09-02",
+      "end_date": "2024-12-31"
+    }
+  }
+}

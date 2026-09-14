@@ -1,0 +1,119 @@
+{
+  "date": "20260629",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-29T14:22:20.913852",
+  "recommendations": [
+    {
+      "code": "601869",
+      "name": "长飞光纤",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-29",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 79.14,
+      "best_score": 82.7,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 20.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2091
+    },
+    {
+      "code": "603259",
+      "name": "药明康德",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-29",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 78.11,
+      "best_score": 82.0,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.8,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1781
+    },
+    {
+      "code": "300655",
+      "name": "晶瑞电材",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-29",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 76.52,
+      "best_score": 80.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1465
+    },
+    {
+      "code": "600497",
+      "name": "驰宏锌锗",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-29",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 76.52,
+      "best_score": 80.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 11.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1165
+    },
+    {
+      "code": "688041",
+      "name": "海光信息",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-06-29",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.8,
+      "best_score": 76.7,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0838
+    }
+  ],
+  "total_position": 73.5,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

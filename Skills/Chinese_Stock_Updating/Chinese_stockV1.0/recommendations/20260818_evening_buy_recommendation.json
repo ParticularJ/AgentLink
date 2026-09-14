@@ -1,0 +1,120 @@
+{
+  "date": "20260818",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-08-18T14:22:29.475750",
+  "recommendations": [
+    {
+      "code": "301200",
+      "name": "大族数控",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 100,
+      "best_score": 80.3,
+      "strategies": [
+        "缺口填充",
+        "均线多头排列"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "688002",
+      "name": "睿创微纳",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 84.96,
+      "best_score": 82.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.185
+    },
+    {
+      "code": "300855",
+      "name": "图南股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 78.56,
+      "best_score": 82.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1486
+    },
+    {
+      "code": "603087",
+      "name": "甘李药业",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方缩量企稳 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 横盘整理"
+      ],
+      "combined_score": 76.16,
+      "best_score": 79.3,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1162
+    },
+    {
+      "code": "688630",
+      "name": "芯碁微装",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-18",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 72.82,
+      "best_score": 75.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0828
+    }
+  ],
+  "total_position": 76.3,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

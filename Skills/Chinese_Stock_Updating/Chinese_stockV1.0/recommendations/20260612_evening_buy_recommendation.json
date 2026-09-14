@@ -1,0 +1,50 @@
+{
+  "date": "20260612",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-06-12T14:27:10.508772",
+  "recommendations": [
+    {
+      "code": "600549",
+      "name": "厦门钨业",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-12",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.72,
+      "best_score": 80.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2097
+    },
+    {
+      "code": "603256",
+      "name": "宏和科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-06-12",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 76.52,
+      "best_score": 80.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1765
+    }
+  ],
+  "total_position": 38.7,
+  "stock_count": 2,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

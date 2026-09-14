@@ -1,0 +1,152 @@
+[
+  {
+    "code": "002384",
+    "name": "东山精密",
+    "cost": 236.0,
+    "shares": 200,
+    "init_shares": 300,
+    "current_price": 246.31,
+    "highest_price": 276.14,
+    "entry_date": "2026-06-14",
+    "strategy_name": "突破新高",
+    "score": 46.849999999999994,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-06-18"
+  },
+  {
+    "code": "600549",
+    "name": "厦门钨业",
+    "cost": 65.69,
+    "shares": 200,
+    "init_shares": 800,
+    "current_price": 84.9,
+    "highest_price": 94.5,
+    "entry_date": "2026-06-14",
+    "strategy_name": "均线多头策略建仓",
+    "score": 56.5,
+    "stop_level_hit": [
+      true,
+      true,
+      true
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-14"
+  },
+  {
+    "code": "300666",
+    "name": "江丰电子",
+    "cost": 292.5,
+    "shares": 100,
+    "init_shares": 200,
+    "current_price": 394.33,
+    "highest_price": 394.33,
+    "entry_date": "2026-06-15",
+    "strategy_name": "强势多头",
+    "score": 72.85,
+    "stop_level_hit": [
+      true,
+      true,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-15"
+  },
+  {
+    "code": "688809",
+    "name": "强一股份",
+    "cost": 572.94,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 605.74,
+    "highest_price": 626.0,
+    "entry_date": "2026-06-16",
+    "strategy_name": "强势多头",
+    "score": 44.95,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-16"
+  },
+  {
+    "code": "000725",
+    "name": "京东方Ａ",
+    "cost": 8.174470588235295,
+    "shares": 8500,
+    "init_shares": 8500,
+    "current_price": 8.77,
+    "highest_price": 8.77,
+    "entry_date": "2026-06-29",
+    "strategy_name": "新闻利好",
+    "score": 66.85000000000001,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-07-01"
+  },
+  {
+    "code": "603019",
+    "name": "中科曙光",
+    "cost": 109.01,
+    "shares": 500,
+    "init_shares": 500,
+    "current_price": 102.45,
+    "highest_price": 109.01,
+    "entry_date": "2026-07-01",
+    "strategy_name": "突破新高",
+    "score": 49.65,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-01"
+  }
+]

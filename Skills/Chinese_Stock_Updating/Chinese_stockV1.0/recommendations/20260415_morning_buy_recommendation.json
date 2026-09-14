@@ -1,0 +1,60 @@
+{
+  "date": "20260415",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-04-15T23:50:39.945559",
+  "recommendations": [
+    {
+      "code": "603256",
+      "name": "宏和科技",
+      "source": "突破新高",
+      "recommend_date": "2026-04-15",
+      "entry_price": 0.0,
+      "target_reason": "突破动量强劲，早盘追涨，综合得分100；突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 100,
+      "best_score": 94.75,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "603538",
+      "name": "美诺华",
+      "source": "突破新高",
+      "recommend_date": "2026-04-15",
+      "entry_price": 0.0,
+      "target_reason": "突破动量强劲，早盘追涨，综合得分100；突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 100,
+      "best_score": 92.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 20.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2
+    },
+    {
+      "code": "301150",
+      "name": "同飞股份",
+      "source": "突破新高",
+      "recommend_date": "2026-04-15",
+      "entry_price": 0.0,
+      "target_reason": "突破动量强劲，早盘追涨，综合得分100；突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 100,
+      "best_score": 87.25,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 17.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.17
+    }
+  ],
+  "total_position": 60.0,
+  "stock_count": 3
+}

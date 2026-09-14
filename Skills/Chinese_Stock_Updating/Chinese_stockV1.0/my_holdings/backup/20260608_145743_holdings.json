@@ -1,0 +1,127 @@
+[
+  {
+    "code": "603267",
+    "name": "鸿远电子",
+    "cost": 72.012,
+    "shares": 700,
+    "init_shares": 1000,
+    "current_price": 67.32,
+    "highest_price": 81.11,
+    "entry_date": "2026-05-29",
+    "strategy_name": "均线多头排列",
+    "score": 44.5,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-08"
+  },
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "cost": 112.296,
+    "shares": 200,
+    "init_shares": 400,
+    "current_price": 134.08,
+    "highest_price": 143.96,
+    "entry_date": "2026-05-20",
+    "strategy_name": "均线多头",
+    "score": 49.2,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-08"
+  },
+  {
+    "code": "002436",
+    "name": "兴森科技",
+    "cost": 40.333263157894734,
+    "shares": 1000,
+    "init_shares": 1900,
+    "current_price": 36.92,
+    "highest_price": 40.87,
+    "entry_date": "2026-06-03",
+    "strategy_name": "缺口填补策略",
+    "score": 50.699999999999996,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      true,
+      true,
+      true,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-08"
+  },
+  {
+    "code": "002585",
+    "name": "双星新材",
+    "cost": 10.871,
+    "shares": 3500,
+    "init_shares": 3500,
+    "current_price": 11.09,
+    "highest_price": 11.84,
+    "entry_date": "2026-06-01",
+    "strategy_name": "均线多头排列",
+    "score": 47.0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-08"
+  },
+  {
+    "code": "300394",
+    "name": "天孚通信",
+    "cost": 480.61,
+    "shares": 100,
+    "init_shares": 100,
+    "current_price": 425.11,
+    "highest_price": 480.61,
+    "entry_date": "2026-06-04",
+    "strategy_name": "缺口填补",
+    "score": 46.849999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-06-08"
+  }
+]

@@ -1,0 +1,119 @@
+{
+  "date": "20260806",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-08-06T14:23:02.002611",
+  "recommendations": [
+    {
+      "code": "600489",
+      "name": "中金黄金",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-06",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 80.56,
+      "best_score": 84.8,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.1,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2106
+    },
+    {
+      "code": "000975",
+      "name": "山金国际",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-06",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 79.23,
+      "best_score": 83.3,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1792
+    },
+    {
+      "code": "001337",
+      "name": "四川黄金",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-06",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 78.56,
+      "best_score": 82.5,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.9,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1486
+    },
+    {
+      "code": "603619",
+      "name": "中曼石油",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-06",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 多头排列",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 75.4,
+      "best_score": 78.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1154
+    },
+    {
+      "code": "601872",
+      "name": "招商轮船",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-06",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 普通缺口",
+        "缺口质量: 普通缺口",
+        "回踩确认: 缺口上方缩量企稳 ✅",
+        "趋势配合: 强势上涨",
+        "后续走势: 小幅上涨"
+      ],
+      "combined_score": 74.51,
+      "best_score": 77.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0845
+    }
+  ],
+  "total_position": 73.9,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

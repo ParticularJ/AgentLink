@@ -10,8 +10,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_DIR="$SCRIPT_DIR/skills/scripts"
 
 # 默认值
-BUY_WATCH_PATH="${BUY_WATCH_PATH:-/home/jarvis/.openclaw/workspace/skills/Chinese_Stock/hot-spot-strategy/my_holdings/buy_watch.yaml}"
-HOLDINGS_PATH="${HOLDINGS_PATH:-/home/jarvis/.openclaw/workspace/skills/Chinese_Stock/hot-spot-strategy/my_holdings/holdings.json}"
+BUY_WATCH_PATH="${BUY_WATCH_PATH:-}"
+HOLDINGS_PATH="${HOLDINGS_PATH:-/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json}"
 
 # Python路径
 PYTHON_CMD="${PYTHON_CMD:-python3}"
@@ -24,10 +24,13 @@ CMD=(
     "$PYTHON_CMD"
     "$SKILLS_DIR/emotion_monitor.py"
     --holdings "$HOLDINGS_PATH"
-    --buy-watch "$BUY_WATCH_PATH"
     --interval 15
     --duration "$DURATION"
 )
+
+if [[ -n "$BUY_WATCH_PATH" ]]; then
+    CMD+=(--buy-watch "$BUY_WATCH_PATH")
+fi
 
 # 追加可选参数
 if [[ "$*" == *"--once"* ]]; then
@@ -47,4 +50,11 @@ echo ""
 
 # 进入脚本目录再执行（确保相对路径正确）
 cd "$SCRIPT_DIR"
+
+# 激活 conda 环境（优先使用 vllm）
+if command -v conda >/dev/null 2>&1; then
+    eval "$(conda shell.bash hook)"
+    conda activate vllm || echo "⚠️  未找到 conda 环境 vllm，继续使用当前 Python"
+fi
+
 eval "${CMD[@]}"

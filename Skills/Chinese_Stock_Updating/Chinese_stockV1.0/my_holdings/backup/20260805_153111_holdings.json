@@ -1,0 +1,158 @@
+[
+  {
+    "code": "601899",
+    "name": "紫金矿业",
+    "cost": 33.02,
+    "real_cost": 33.02,
+    "shares": 1000,
+    "init_shares": 1000,
+    "current_price": 34.09,
+    "highest_price": 34.09,
+    "entry_date": "2026-07-23",
+    "strategy_name": "均线多头排列",
+    "score": 80.60000000000001,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-23"
+  },
+  {
+    "code": "600550",
+    "name": "保变电气",
+    "cost": 11.9,
+    "real_cost": 11.9,
+    "shares": 2600,
+    "init_shares": 2600,
+    "current_price": 12.33,
+    "highest_price": 12.33,
+    "entry_date": "2026-07-24",
+    "strategy_name": "涨停连板",
+    "score": 58.74999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-24"
+  },
+  {
+    "code": "600026",
+    "name": "中远海能",
+    "cost": 16.87,
+    "real_cost": 16.87,
+    "shares": 1800,
+    "init_shares": 1800,
+    "current_price": 17.85,
+    "highest_price": 17.88,
+    "entry_date": "2026-07-31",
+    "strategy_name": "缺口填充",
+    "score": 77.25,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-31"
+  },
+  {
+    "code": "588000",
+    "name": "科创50ETF华夏",
+    "cost": 1.728,
+    "real_cost": 1.728,
+    "shares": 17400,
+    "init_shares": 17400,
+    "current_price": 1.728,
+    "highest_price": 1.728,
+    "entry_date": "2026-07-31",
+    "strategy_name": "买入",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-31"
+  },
+  {
+    "code": "600406",
+    "name": "国电南瑞",
+    "cost": 25.218,
+    "real_cost": 25.218,
+    "shares": 1200,
+    "init_shares": 1200,
+    "current_price": 24.61,
+    "highest_price": 25.218,
+    "entry_date": "2026-08-04",
+    "strategy_name": "突破新高",
+    "score": 53.35,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-04"
+  },
+  {
+    "code": "000603",
+    "name": "盛达资源",
+    "cost": 26.988,
+    "real_cost": 26.988,
+    "shares": 1200,
+    "init_shares": 1200,
+    "current_price": 29.15,
+    "highest_price": 29.15,
+    "entry_date": "2026-08-05",
+    "strategy_name": "手动买入",
+    "score": 76.75,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-05"
+  }
+]

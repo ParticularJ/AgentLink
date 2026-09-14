@@ -1,0 +1,119 @@
+{
+  "date": "20260817",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-08-17T14:22:08.491575",
+  "recommendations": [
+    {
+      "code": "001337",
+      "name": "四川黄金",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 77.16,
+      "best_score": 80.9,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 20.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2072
+    },
+    {
+      "code": "603259",
+      "name": "药明康德",
+      "penalty": 2,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 76.77,
+      "best_score": 78.7,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 17.7,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1768
+    },
+    {
+      "code": "688002",
+      "name": "睿创微纳",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 76.49,
+      "best_score": 80.2,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1465
+    },
+    {
+      "code": "002821",
+      "name": "凯莱英",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.71,
+      "best_score": 76.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1137
+    },
+    {
+      "code": "300475",
+      "name": "香农芯创",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 73.71,
+      "best_score": 76.5,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.4,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0837
+    }
+  ],
+  "total_position": 72.8,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

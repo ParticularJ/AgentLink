@@ -1,0 +1,108 @@
+{
+  "date": "20260821",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-21T08:36:41.572925",
+  "recommendations": [
+    {
+      "code": "688766",
+      "name": "普冉股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-21",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构中性; 行业景气度: 板块温和增长",
+      "combined_score": 100,
+      "best_score": 86.5,
+      "strategies": [
+        "业绩超预期",
+        "突破新高"
+      ],
+      "position_pct": 23.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.23
+    },
+    {
+      "code": "600988",
+      "name": "赤峰黄金",
+      "penalty": 6,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-21",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 前期回踩充分，支撑有效，突破可靠性高; 接近历史新高，需关注后续走势",
+      "combined_score": 95.66,
+      "best_score": 90.4,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1957
+    },
+    {
+      "code": "002821",
+      "name": "凯莱英",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-21",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 强势主升; 阶段性突破成型，结构中等偏稳",
+      "combined_score": 94.05,
+      "best_score": 86.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.4,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1641
+    },
+    {
+      "code": "688002",
+      "name": "睿创微纳",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-21",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构中性; 行业景气度: 行业数据不足",
+      "combined_score": 89.39,
+      "best_score": 83.8,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 12.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1294
+    },
+    {
+      "code": "601318",
+      "name": "中国平安",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-21",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 良好增长; 市场反应: neutral; 机构态度: 机构看好; 行业景气度: 行业数据不足",
+      "combined_score": 88.17,
+      "best_score": 79.8,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 9.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0982
+    }
+  ],
+  "total_position": 81.7,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

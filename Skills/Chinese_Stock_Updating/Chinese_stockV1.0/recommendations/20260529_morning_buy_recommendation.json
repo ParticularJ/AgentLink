@@ -1,0 +1,88 @@
+{
+  "date": "20260529",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-05-29T08:05:02.073612",
+  "recommendations": [
+    {
+      "code": "300408",
+      "name": "三环集团",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-05-29",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 79.89,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 21.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2099
+    },
+    {
+      "code": "688519",
+      "name": "南亚新材",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-05-29",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 76.69,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 17.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1767
+    },
+    {
+      "code": "688630",
+      "name": "芯碁微装",
+      "penalty": 2,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-05-29",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 75.09,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 14.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1451
+    },
+    {
+      "code": "002121",
+      "name": "科陆电子",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-05-29",
+      "entry_price": 0.0,
+      "target_reason": "趋势新高主升浪，连续走强",
+      "combined_score": 73.48,
+      "best_score": 76.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 11.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1135
+    }
+  ],
+  "total_position": 64.5,
+  "stock_count": 4,
+  "strategy_count": 1,
+  "no_result_count": 1,
+  "error_count": 0
+}

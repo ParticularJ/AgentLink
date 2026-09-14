@@ -1,0 +1,28 @@
+[
+  {
+    "code": "688017",
+    "name": "绿的谐波",
+    "cost": 358.26,
+    "real_cost": 358.26,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 290.1,
+    "highest_price": 380.8,
+    "entry_date": "2026-08-12",
+    "strategy_name": "用户指令买入",
+    "score": 48.625,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-12"
+  }
+]

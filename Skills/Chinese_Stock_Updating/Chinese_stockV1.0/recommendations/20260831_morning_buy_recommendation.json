@@ -1,0 +1,128 @@
+{
+  "date": "20260831",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-31T22:55:17.052728",
+  "market_phase": "STRONG_DOWN",
+  "market_phase_label": "下行",
+  "position_cap": 0.3,
+  "sector_filter": {
+    "sector_phases": {
+      "底仓": "RANGE",
+      "半导体": "STRONG_UP",
+      "AI应用": "STRONG_DOWN",
+      "创新药": "STRONG_DOWN",
+      "光通信": "STRONG_DOWN",
+      "军工": "STRONG_DOWN",
+      "商业航天": "STRONG_DOWN",
+      "人形机器人": "STRONG_DOWN",
+      "智能驾驶": "STRONG_DOWN",
+      "消费电子": "STRONG_DOWN",
+      "燃气轮机": "STRONG_DOWN",
+      "化工": "STRONG_DOWN",
+      "电网设备": "STRONG_DOWN",
+      "新能源": "STRONG_DOWN",
+      "贵金属": "STRONG_UP",
+      "工业金属": "STRONG_DOWN",
+      "工程机械": "STRONG_DOWN",
+      "油气": "STRONG_UP",
+      "航运": "RANGE",
+      "券商": "STRONG_DOWN",
+      "白酒": "UNKNOWN",
+      "家电": "RANGE",
+      "可控核聚变": "STRONG_DOWN",
+      "种子农业": "STRONG_DOWN",
+      "稀土": "STRONG_DOWN"
+    },
+    "reserve": [],
+    "block": [
+      {
+        "stock_code": "688239",
+        "stock_name": "航宇科技",
+        "sector": "燃气轮机",
+        "sector_phase": "STRONG_DOWN",
+        "strategy": "breakout-high-strategy"
+      },
+      {
+        "stock_code": "688002",
+        "stock_name": "睿创微纳",
+        "sector": "军工",
+        "sector_phase": "STRONG_DOWN",
+        "strategy": "breakout-high-strategy"
+      },
+      {
+        "stock_code": "600031",
+        "stock_name": "三一重工",
+        "sector": "工程机械",
+        "sector_phase": "STRONG_DOWN",
+        "strategy": "breakout-high-strategy"
+      }
+    ],
+    "unknown_sector": [],
+    "reserve_count": 0,
+    "block_count": 3,
+    "unknown_sector_count": 0
+  },
+  "recommendations": [
+    {
+      "code": "000977",
+      "name": "浪潮信息",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-31",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 前期回踩充分，支撑有效，突破可靠性高",
+      "combined_score": 94.06,
+      "best_score": 90.4,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 16.3,
+      "sectors": [
+        "半导体"
+      ],
+      "sectors_detail": [
+        {
+          "name": "半导体",
+          "phase": "STRONG_UP",
+          "phase_label": "单边上行"
+        }
+      ],
+      "session": "MORNING_BUY",
+      "weight": 0.163
+    },
+    {
+      "code": "002837",
+      "name": "英维克",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-31",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 90.32,
+      "best_score": 89.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 13.7,
+      "sectors": [
+        "半导体"
+      ],
+      "sectors_detail": [
+        {
+          "name": "半导体",
+          "phase": "STRONG_UP",
+          "phase_label": "单边上行"
+        }
+      ],
+      "session": "MORNING_BUY",
+      "weight": 0.137
+    }
+  ],
+  "total_position": 30.0,
+  "stock_count": 2,
+  "strategy_count": 1,
+  "no_result_count": 0,
+  "error_count": 0
+}

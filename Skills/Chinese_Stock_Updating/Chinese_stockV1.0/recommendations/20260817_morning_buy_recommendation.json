@@ -1,0 +1,107 @@
+{
+  "date": "20260817",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-17T08:09:11.936637",
+  "recommendations": [
+    {
+      "code": "600183",
+      "name": "生益科技",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: neutral; 机构态度: 机构中性; 行业景气度: 板块温和增长",
+      "combined_score": 88.97,
+      "best_score": 80.6,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 21.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.219
+    },
+    {
+      "code": "002353",
+      "name": "杰瑞股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，放量形态扎实; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 强势主升; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 88.01,
+      "best_score": 87.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 18.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.188
+    },
+    {
+      "code": "688183",
+      "name": "生益电子",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 良好增长; 市场反应: neutral; 机构态度: 机构中性; 行业景气度: 板块温和增长",
+      "combined_score": 85.53,
+      "best_score": 76.9,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 15.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1555
+    },
+    {
+      "code": "301308",
+      "name": "江波龙",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 增长质量存疑; 市场反应: 中性; 机构态度: 机构看好; 行业景气度: 板块温和增长",
+      "combined_score": 83.24,
+      "best_score": 74.4,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 12.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1232
+    },
+    {
+      "code": "002602",
+      "name": "世纪华通",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-17",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 前期回踩充分，支撑有效，突破可靠性高; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 82.84,
+      "best_score": 83.3,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 9.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0928
+    }
+  ],
+  "total_position": 77.9,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

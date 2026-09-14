@@ -1,0 +1,107 @@
+{
+  "date": "20260804",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-04T08:06:54.192274",
+  "recommendations": [
+    {
+      "code": "600406",
+      "name": "国电南瑞",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-04",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 前期回踩充分，支撑有效，突破可靠性高; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 89.24,
+      "best_score": 83.3,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 21.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2192
+    },
+    {
+      "code": "000603",
+      "name": "盛达资源",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-04",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 中性; 机构态度: 机构中性; 行业景气度: 板块景气下行",
+      "combined_score": 87.64,
+      "best_score": 79.2,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 18.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1876
+    },
+    {
+      "code": "603259",
+      "name": "药明康德",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-04",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: neutral; 机构态度: 机构中性; 行业景气度: 板块景气下行",
+      "combined_score": 86.21,
+      "best_score": 77.6,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 15.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1562
+    },
+    {
+      "code": "002517",
+      "name": "恺英网络",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-04",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 强势主升; 阶段性突破成型，结构中等偏稳; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 85.85,
+      "best_score": 83.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.6,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1259
+    },
+    {
+      "code": "688111",
+      "name": "金山办公",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-04",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，放量形态扎实; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 阶段性突破成型，结构中等偏稳; 接近历史新高，需关注后续走势",
+      "combined_score": 84.54,
+      "best_score": 84.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 9.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0945
+    }
+  ],
+  "total_position": 78.4,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

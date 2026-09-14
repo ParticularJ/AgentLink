@@ -1,0 +1,119 @@
+{
+  "date": "20260807",
+  "session": "EVENING_BUY",
+  "generated_at": "2026-08-07T14:22:55.130089",
+  "recommendations": [
+    {
+      "code": "600489",
+      "name": "中金黄金",
+      "penalty": 6,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 82.33,
+      "best_score": 81.4,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 21.2,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.2123
+    },
+    {
+      "code": "601069",
+      "name": "西部黄金",
+      "penalty": 6,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 80.34,
+      "best_score": 79.1,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 18.0,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1803
+    },
+    {
+      "code": "002716",
+      "name": "湖南白银",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "均线多头排列",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": "强势多头",
+      "combined_score": 75.54,
+      "best_score": 79.1,
+      "strategies": [
+        "均线多头排列"
+      ],
+      "position_pct": 14.6,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1455
+    },
+    {
+      "code": "603619",
+      "name": "中曼石油",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缩量回踩缺口中 ✅",
+        "趋势配合: 多头排列",
+        "后续走势: 回调中"
+      ],
+      "combined_score": 74.69,
+      "best_score": 77.7,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 11.5,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.1147
+    },
+    {
+      "code": "600428",
+      "name": "中远海特",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "缺口填充",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": [
+        "缺口信息: 突破性缺口",
+        "缺口质量: 强缺口",
+        "回踩确认: 缺口上方运行",
+        "趋势配合: 强势上涨",
+        "后续走势: 强势延续"
+      ],
+      "combined_score": 72.91,
+      "best_score": 75.7,
+      "strategies": [
+        "缺口填充"
+      ],
+      "position_pct": 8.3,
+      "sectors": [],
+      "session": "EVENING_BUY",
+      "weight": 0.0829
+    }
+  ],
+  "total_position": 73.6,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

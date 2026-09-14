@@ -1,0 +1,288 @@
+[
+  {
+    "code": "601899",
+    "name": "紫金矿业",
+    "cost": 33.02,
+    "real_cost": 33.02,
+    "shares": 200,
+    "init_shares": 1000,
+    "current_price": 33.18,
+    "highest_price": 35.45,
+    "entry_date": "2026-07-23",
+    "strategy_name": "均线多头排列",
+    "score": 51.099999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-23"
+  },
+  {
+    "code": "600026",
+    "name": "中远海能",
+    "cost": 17.150689655172414,
+    "real_cost": 17.150689655172414,
+    "shares": 2900,
+    "init_shares": 2900,
+    "current_price": 16.3,
+    "highest_price": 17.88,
+    "entry_date": "2026-07-31",
+    "strategy_name": "缺口填充",
+    "score": 46.75,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-08-06"
+  },
+  {
+    "code": "588000",
+    "name": "科创50ETF华夏",
+    "cost": 1.728,
+    "real_cost": 1.728,
+    "shares": 4400,
+    "init_shares": 17400,
+    "current_price": 1.806,
+    "highest_price": 1.84,
+    "entry_date": "2026-07-31",
+    "strategy_name": "买入",
+    "score": 46.0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-07-31"
+  },
+  {
+    "code": "600406",
+    "name": "国电南瑞",
+    "cost": 25.218,
+    "real_cost": 25.218,
+    "shares": 1200,
+    "init_shares": 1200,
+    "current_price": 23.99,
+    "highest_price": 25.218,
+    "entry_date": "2026-08-04",
+    "strategy_name": "突破新高",
+    "score": 45.25,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-04"
+  },
+  {
+    "code": "000603",
+    "name": "盛达资源",
+    "cost": 26.988,
+    "real_cost": 34.0,
+    "shares": 300,
+    "init_shares": 1200,
+    "current_price": 34.55,
+    "highest_price": 37.24,
+    "entry_date": "2026-08-05",
+    "strategy_name": "手动买入",
+    "score": 47.74999999999999,
+    "stop_level_hit": [
+      true,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-05"
+  },
+  {
+    "code": "601872",
+    "name": "招商轮船",
+    "cost": 17.9,
+    "real_cost": 17.9,
+    "shares": 1700,
+    "init_shares": 1700,
+    "current_price": 16.48,
+    "highest_price": 18.19,
+    "entry_date": "2026-08-06",
+    "strategy_name": "用户指令",
+    "score": 46.0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-06"
+  },
+  {
+    "code": "000975",
+    "name": "山金国际",
+    "cost": 25.68,
+    "real_cost": 25.68,
+    "shares": 800,
+    "init_shares": 800,
+    "current_price": 25.96,
+    "highest_price": 27.14,
+    "entry_date": "2026-08-06",
+    "strategy_name": "用户指令",
+    "score": 49.49999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-06"
+  },
+  {
+    "code": "002716",
+    "name": "湖南白银",
+    "cost": 9.37,
+    "real_cost": 9.37,
+    "shares": 1100,
+    "init_shares": 1100,
+    "current_price": 9.59,
+    "highest_price": 9.66,
+    "entry_date": "2026-08-10",
+    "strategy_name": "手动操作",
+    "score": 66.05,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-10"
+  },
+  {
+    "code": "600547",
+    "name": "山东黄金",
+    "cost": 31.38,
+    "real_cost": 31.38,
+    "shares": 400,
+    "init_shares": 400,
+    "current_price": 30.05,
+    "highest_price": 31.47,
+    "entry_date": "2026-08-10",
+    "strategy_name": "手动操作",
+    "score": 52.5,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-10"
+  },
+  {
+    "code": "601138",
+    "name": "工业富联",
+    "cost": 68.55,
+    "real_cost": 68.55,
+    "shares": 400,
+    "init_shares": 800,
+    "current_price": 66.01,
+    "highest_price": 69.18,
+    "entry_date": "2026-08-10",
+    "strategy_name": "手动操作",
+    "score": 46.14999999999999,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 1,
+    "last_add_date": "2026-08-10"
+  },
+  {
+    "code": "520500",
+    "name": "恒生创新药ETF华泰柏瑞",
+    "cost": 1.441,
+    "real_cost": 1.441,
+    "shares": 20900,
+    "init_shares": 20900,
+    "current_price": 1.445,
+    "highest_price": 1.445,
+    "entry_date": "2026-08-10",
+    "strategy_name": "手动操作",
+    "score": 55.099999999999994,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-10"
+  }
+]

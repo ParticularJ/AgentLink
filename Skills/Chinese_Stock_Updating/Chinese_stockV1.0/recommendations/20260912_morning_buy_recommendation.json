@@ -1,0 +1,168 @@
+{
+  "date": "20260912",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-09-12T23:54:45.362667",
+  "market_phase": "STRONG_DOWN",
+  "market_phase_label": "下行",
+  "position_cap": 0.3,
+  "sector_filter": {
+    "sector_phases": {
+      "底仓": "STRONG_DOWN",
+      "半导体": "STRONG_DOWN",
+      "AI应用": "STRONG_DOWN",
+      "创新药": "STRONG_DOWN",
+      "光通信": "STRONG_DOWN",
+      "军工": "STRONG_DOWN",
+      "商业航天": "STRONG_DOWN",
+      "人形机器人": "STRONG_DOWN",
+      "智能驾驶": "STRONG_DOWN",
+      "消费电子": "STRONG_DOWN",
+      "燃气轮机": "STRONG_DOWN",
+      "化工": "STRONG_DOWN",
+      "电网设备": "RANGE",
+      "新能源": "STRONG_DOWN",
+      "贵金属": "STRONG_DOWN",
+      "工业金属": "STRONG_DOWN",
+      "工程机械": "STRONG_DOWN",
+      "油气": "STRONG_UP",
+      "航运": "STRONG_UP",
+      "券商": "STRONG_DOWN",
+      "白酒": "STRONG_DOWN",
+      "家电": "STRONG_DOWN",
+      "可控核聚变": "STRONG_DOWN",
+      "种子农业": "STRONG_UP",
+      "稀土": "STRONG_DOWN"
+    },
+    "reserve": [],
+    "block": [
+      {
+        "stock_code": "300408",
+        "stock_name": "三环集团",
+        "sector": "消费电子",
+        "sector_phase": "STRONG_DOWN",
+        "strategy": "breakout-high-strategy"
+      },
+      {
+        "stock_code": "601869",
+        "stock_name": "长飞光纤",
+        "sector": "光通信",
+        "sector_phase": "STRONG_DOWN",
+        "strategy": "breakout-high-strategy"
+      },
+      {
+        "stock_code": "600105",
+        "stock_name": "永鼎股份",
+        "sector": "可控核聚变",
+        "sector_phase": "STRONG_DOWN",
+        "strategy": "breakout-high-strategy"
+      }
+    ],
+    "unknown_sector": [],
+    "reserve_count": 0,
+    "block_count": 3,
+    "unknown_sector_count": 0
+  },
+  "recommendations": [
+    {
+      "code": "sz159309",
+      "name": "油气ETF",
+      "penalty": 0.0,
+      "penalty_reason": [],
+      "source": "etf_phase_detector",
+      "recommend_date": "2026-09-12",
+      "entry_price": 0.0,
+      "target_reason": "板块【油气】STRONG_UP（连续 3 日单边上行），gain_20=5.2%, slope=1.54%, 站上 MA60 28 日；推荐买入板块ETF",
+      "combined_score": 85.0,
+      "best_score": 85.0,
+      "strategies": [
+        "板块ETF-单边上行"
+      ],
+      "position_pct": 8.0,
+      "sectors": [
+        "油气"
+      ],
+      "sectors_detail": [
+        {
+          "name": "油气",
+          "phase": "STRONG_UP",
+          "phase_label": "单边上行"
+        }
+      ],
+      "sector_held_bonus": 0.0,
+      "session": "MORNING_BUY",
+      "weight": 0.08,
+      "is_etf": true,
+      "is_etf_phase_recommendation": true,
+      "sector_action": "run"
+    },
+    {
+      "code": "sz159309",
+      "name": "航运ETF",
+      "penalty": 0.0,
+      "penalty_reason": [],
+      "source": "etf_phase_detector",
+      "recommend_date": "2026-09-12",
+      "entry_price": 0.0,
+      "target_reason": "板块【航运】STRONG_UP（连续 3 日单边上行），gain_20=5.2%, slope=1.54%, 站上 MA60 28 日；推荐买入板块ETF",
+      "combined_score": 85.0,
+      "best_score": 85.0,
+      "strategies": [
+        "板块ETF-单边上行"
+      ],
+      "position_pct": 8.0,
+      "sectors": [
+        "航运"
+      ],
+      "sectors_detail": [
+        {
+          "name": "航运",
+          "phase": "STRONG_UP",
+          "phase_label": "单边上行"
+        }
+      ],
+      "sector_held_bonus": 0.0,
+      "session": "MORNING_BUY",
+      "weight": 0.08,
+      "is_etf": true,
+      "is_etf_phase_recommendation": true,
+      "sector_action": "run"
+    },
+    {
+      "code": "sz159698",
+      "name": "种子农业ETF",
+      "penalty": 0.0,
+      "penalty_reason": [],
+      "source": "etf_phase_detector",
+      "recommend_date": "2026-09-12",
+      "entry_price": 0.0,
+      "target_reason": "板块【种子农业】STRONG_UP（连续 3 日单边上行），gain_20=14.6%, slope=3.96%, 站上 MA60 0 日；推荐买入板块ETF",
+      "combined_score": 85.0,
+      "best_score": 85.0,
+      "strategies": [
+        "板块ETF-单边上行"
+      ],
+      "position_pct": 8.0,
+      "sectors": [
+        "种子农业"
+      ],
+      "sectors_detail": [
+        {
+          "name": "种子农业",
+          "phase": "STRONG_UP",
+          "phase_label": "单边上行"
+        }
+      ],
+      "sector_held_bonus": 0.0,
+      "session": "MORNING_BUY",
+      "weight": 0.08,
+      "is_etf": true,
+      "is_etf_phase_recommendation": true,
+      "sector_action": "run"
+    }
+  ],
+  "total_position": 24.0,
+  "stock_count": 3,
+  "strategy_count": 0,
+  "no_result_count": 1,
+  "error_count": 0
+}

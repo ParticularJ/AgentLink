@@ -1,0 +1,107 @@
+{
+  "date": "20260713",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-07-13T08:08:27.083849",
+  "recommendations": [
+    {
+      "code": "600879",
+      "name": "航天电子",
+      "penalty": 4,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 前期回踩充分，支撑有效，突破可靠性高; 历史新高·强趋势加速(极小扣)",
+      "combined_score": 89.34,
+      "best_score": 85.1,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 21.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2193
+    },
+    {
+      "code": "000977",
+      "name": "浪潮信息",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 阶段性突破成型，结构中等偏稳; 接近历史新高，需关注后续走势",
+      "combined_score": 89.25,
+      "best_score": 88.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 18.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1893
+    },
+    {
+      "code": "600988",
+      "name": "赤峰黄金",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 前期回踩充分，支撑有效，突破可靠性高; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 88.99,
+      "best_score": 88.3,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 15.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.159
+    },
+    {
+      "code": "688270",
+      "name": "臻镭科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-07-13",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，换手温和; 成交量大幅放大; 中等上影+放量，换手良性小幅分歧; 均线多头排列，整体趋势向好; 强势主升; 前期回踩充分，支撑有效，突破可靠性高; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 86.85,
+      "best_score": 85.9,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1269
+    },
+    {
+      "code": "600118",
+      "name": "中国卫星",
+      "penalty": 8,
+      "penalty_reason": [],
+      "source": "涨停分析/打板",
+      "recommend_date": "2026-07-13",
+      "entry_price": 0.0,
+      "target_reason": null,
+      "combined_score": 78.69,
+      "best_score": 73.1,
+      "strategies": [
+        "涨停分析/打板"
+      ],
+      "position_pct": 8.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0887
+    }
+  ],
+  "total_position": 78.3,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

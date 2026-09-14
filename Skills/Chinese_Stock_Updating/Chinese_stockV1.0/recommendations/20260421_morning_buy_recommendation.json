@@ -1,0 +1,94 @@
+{
+  "date": "20260421",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-04-21T22:46:26.679438",
+  "recommendations": [
+    {
+      "code": "002361",
+      "name": "神剑股份",
+      "source": "突破新高",
+      "recommend_date": "2026-04-21",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 92.71,
+      "best_score": 83.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.3,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2227
+    },
+    {
+      "code": "002436",
+      "name": "兴森科技",
+      "source": "突破新高",
+      "recommend_date": "2026-04-21",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 88.28,
+      "best_score": 80.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 18.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1883
+    },
+    {
+      "code": "301150",
+      "name": "同飞股份",
+      "source": "突破新高",
+      "recommend_date": "2026-04-21",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 87.4,
+      "best_score": 80.0,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 15.7,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1574
+    },
+    {
+      "code": "002709",
+      "name": "天赐材料",
+      "source": "突破新高",
+      "recommend_date": "2026-04-21",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；早盘确认动量，开盘即买入",
+      "combined_score": 84.75,
+      "best_score": 78.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.5,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1248
+    },
+    {
+      "code": "300342",
+      "name": "天银机电",
+      "source": "突破新高",
+      "recommend_date": "2026-04-21",
+      "entry_price": 0.0,
+      "target_reason": "突破新高信号确认；趋势确认，逢低买入博新高",
+      "combined_score": 77.66,
+      "best_score": 74.5,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 8.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0877
+    }
+  ],
+  "total_position": 78.1,
+  "stock_count": 5
+}

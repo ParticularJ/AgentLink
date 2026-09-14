@@ -1,0 +1,106 @@
+[
+  {
+    "code": "600406",
+    "name": "国电南瑞",
+    "cost": 25.218,
+    "real_cost": 25.218,
+    "shares": 1200,
+    "init_shares": 1200,
+    "current_price": 23.01,
+    "highest_price": 25.218,
+    "entry_date": "2026-08-04",
+    "strategy_name": "突破新高",
+    "score": 38.375,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-04"
+  },
+  {
+    "code": "688017",
+    "name": "绿的谐波",
+    "cost": 358.26,
+    "real_cost": 358.26,
+    "shares": 200,
+    "init_shares": 200,
+    "current_price": 292.0,
+    "highest_price": 380.8,
+    "entry_date": "2026-08-12",
+    "strategy_name": "用户指令买入",
+    "score": 37.95,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-12"
+  },
+  {
+    "code": "600183",
+    "name": "生益科技",
+    "cost": 144.65,
+    "real_cost": 144.65,
+    "shares": 100,
+    "init_shares": 200,
+    "current_price": 145.65,
+    "highest_price": 146.8,
+    "entry_date": "2026-08-18",
+    "strategy_name": "手动买入",
+    "score": 71.45,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-18"
+  },
+  {
+    "code": "159267",
+    "name": "航天ETF华安",
+    "cost": 0.898,
+    "real_cost": 0.898,
+    "shares": 17500,
+    "init_shares": 35000,
+    "current_price": 0.832,
+    "highest_price": 0.832,
+    "entry_date": "2026-08-21",
+    "strategy_name": "手动买入",
+    "score": 0,
+    "stop_level_hit": [
+      false,
+      false,
+      false
+    ],
+    "stop_lose_hit": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "add_count": 0,
+    "last_add_date": "2026-08-21"
+  }
+]

@@ -1,0 +1,107 @@
+{
+  "date": "20260807",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-07T08:04:39.403113",
+  "recommendations": [
+    {
+      "code": "601138",
+      "name": "工业富联",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 短期加速上涨; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 90.32,
+      "best_score": 89.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 22.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2203
+    },
+    {
+      "code": "000426",
+      "name": "兴业银锡",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": "突破力度较强，放量收盘站稳; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 强势主升; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 90.32,
+      "best_score": 89.8,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 19.0,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1903
+    },
+    {
+      "code": "001337",
+      "name": "四川黄金",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 阶段性突破成型，结构中等偏稳; 接近历史新高，需关注后续走势",
+      "combined_score": 89.25,
+      "best_score": 88.6,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 15.9,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.1593
+    },
+    {
+      "code": "000960",
+      "name": "锡业股份",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": "突破力度良好，放量形态扎实; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头向上，趋势陡峭，主升力度强; 强势主升; 阶段性突破成型，结构中等偏稳; 距离历史高点存在空间，上方抛压较小，+3分",
+      "combined_score": 88.01,
+      "best_score": 87.2,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 12.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.128
+    },
+    {
+      "code": "603259",
+      "name": "药明康德",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "业绩超预期",
+      "recommend_date": "2026-08-07",
+      "entry_price": 0.0,
+      "target_reason": "财报超预期: 显著超预期; 增长质量: 高质量增长; 市场反应: 看好; 机构态度: 机构看好; 行业景气度: 板块景气下行",
+      "combined_score": 87.74,
+      "best_score": 83.0,
+      "strategies": [
+        "业绩超预期"
+      ],
+      "position_pct": 9.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.0977
+    }
+  ],
+  "total_position": 79.5,
+  "stock_count": 5,
+  "strategy_count": 2,
+  "no_result_count": 1,
+  "error_count": 0
+}

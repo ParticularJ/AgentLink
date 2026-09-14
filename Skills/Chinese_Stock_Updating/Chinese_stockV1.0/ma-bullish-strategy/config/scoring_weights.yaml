@@ -1,0 +1,52 @@
+# ma-bullish-strategy/config/scoring_weights.yaml
+
+# 均线多头排列策略评分权重配置
+version: "1.0.0"
+description: "各维度评分权重及评分标准"
+
+weights:
+  ma_arrangement: 0.35
+  price_position: 0.20
+  volume_trend: 0.20
+  trend_strength: 0.15
+  market_environment: 0.10
+
+# 均线排列评分标准
+ma_arrangement:
+  perfect: 100      # MA5>MA10>MA20 且发散良好
+  standard: 85      # MA5>MA10>MA20
+  weak: 70          # MA5>MA10 但 MA10<MA20
+  none: 0           # 非多头排列
+  
+  # 加分项
+  bonus:
+    good_spread: 15   # 均线发散良好
+    golden_cross: 10  # 近期出现金叉
+
+# 价格位置评分标准
+price_position:
+  ideal: 100        # 刚站上20日线，乖离率<5%
+  good: 85          # 20日线上方，乖离率5-10%
+  caution: 70       # 乖离率10-15%，注意追高
+  poor: 0           # 20日线下方
+
+# 成交量趋势评分标准
+volume_trend:
+  strong: 100       # 放量>1.5倍
+  normal: 85        # 放量1.2-1.5倍
+  mild: 70          # 放量1-1.2倍
+  weak: 0           # 缩量
+
+# 趋势强度评分标准
+trend_strength:
+  strong: 100       # 斜率>0.5，稳定上涨
+  normal: 85        # 斜率0.2-0.5
+  weak: 70          # 斜率<0.2
+  downtrend: 0      # 下跌趋势
+
+# 市场环境评分标准
+market_environment:
+  bull: 100         # 牛市氛围
+  range_up: 85      # 震荡偏多
+  range_down: 60    # 震荡偏空
+  bear: 40          # 熊市氛围

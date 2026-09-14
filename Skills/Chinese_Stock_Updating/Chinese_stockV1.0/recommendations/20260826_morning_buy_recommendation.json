@@ -1,0 +1,31 @@
+{
+  "date": "20260826",
+  "session": "MORNING_BUY",
+  "generated_at": "2026-08-26T08:00:45.707097",
+  "recommendations": [
+    {
+      "code": "688239",
+      "name": "航宇科技",
+      "penalty": 0,
+      "penalty_reason": [],
+      "source": "突破新高",
+      "recommend_date": "2026-08-26",
+      "entry_price": 0.0,
+      "target_reason": "突破力度极强，放量光头形态健康; 成交量大幅放大; 放量光头突破，资金合力进攻，量价共振; 均线多头排列，整体趋势向好; 温和多头; 前期回踩充分，支撑有效，突破可靠性高",
+      "combined_score": 87.92,
+      "best_score": 87.1,
+      "strategies": [
+        "突破新高"
+      ],
+      "position_pct": 20.8,
+      "sectors": [],
+      "session": "MORNING_BUY",
+      "weight": 0.2079
+    }
+  ],
+  "total_position": 20.8,
+  "stock_count": 1,
+  "strategy_count": 1,
+  "no_result_count": 0,
+  "error_count": 0
+}
