@@ -3,7 +3,11 @@
 """
 配置文件 - Medium-termHoldingStrategy
 提供所有策略配置
+
+路径与飞书凭据请使用 common/paths.py 与 common/feishu_config.py，
+本文件只放策略参数。
 """
+import os
 
 # ── 仓位配置 ────────────────────────────────────────────
 POSITION_CONFIG = {
@@ -75,12 +79,12 @@ MA_CONFIG = {
 # ── 再平衡阈值 ─────────────────────────────────────────
 REBALANCE_THRESHOLD = 0.15  # 仓位偏离15%时触发再平衡
 
-# ── 飞书 Webhook 配置 ──────────────────────────────────
-FEISHU_WEBHOOK = "https://open.feishu.cn/open-apis/bot/v2/hook/your-webhook-url"
+# ── 飞书 Webhook 配置（可选，从环境变量读取，避免明文入库）──
+FEISHU_WEBHOOK = os.environ.get("FEISHU_WEBHOOK", "")
 
 WEBHOOK_CONFIG = {
     "feishu_webhook": FEISHU_WEBHOOK,
-    "default_bot_name": "StockBot"
+    "default_bot_name": "StockBot",
 }
 
 

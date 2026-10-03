@@ -7,6 +7,14 @@
 import os
 import sys
 import time
+
+# ── 统一路径：不再硬编码 / 相对 cwd 的路径 ──────────────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+from holdings import holding_codes  # noqa: E402
+from watchlist import load_watchlist_df  # noqa: E402
 # 清除代理环境变量
 for key in ['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY']:
     if key in os.environ:
@@ -17,11 +25,9 @@ import numpy as np
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 import warnings
-import yaml
-import json
 warnings.filterwarnings('ignore')
 
-# 2026-09-12 导入 Medium-termHoldingStrategy 的 get_stock_realtime
+# 2026-09-12：导入 Medium-termHoldingStrategy 的 get_stock_realtime
 # 替代 pytdx（已失效）：腾讯实时行情 + 新浪/腾讯 K 线（含 MA5/10/20/60）
 try:
     from data_source import get_stock_realtime
@@ -41,6 +47,13 @@ except ImportError:
         get_stock_realtime = None
         _HAS_REALTIME = False
 
+# 兜底数据源：DataSourceAdapter（pytdx/akshare/baostock/yfinance 自动降级）
+try:
+    from data_source_adapter import DataSourceAdapter
+except ImportError as _e:
+    print(f"[WARN] DataSourceAdapter 导入失败: {_e}")
+    DataSourceAdapter = None
+
 
 class MarketEnvironment:
     """市场环境评估（大盘/科创板/创业板等涨跌、涨停家数、成交量）"""
@@ -50,7 +63,7 @@ class MarketEnvironment:
         self.zt_count = 0
         self.zt_pool_date = ''
         self._load()
-
+    
     def _load(self):
         """加载市场环境数据"""
         try:
@@ -62,7 +75,7 @@ class MarketEnvironment:
             try:
                 zt_df = ak.stock_zt_pool_em(date=today)
                 self.zt_count = len(zt_df) if zt_df is not None and not zt_df.empty else 0
-            except:
+            except Exception:
                 self.zt_count = 0
             
             # 获取主要指数数据
@@ -86,7 +99,7 @@ class MarketEnvironment:
                         if not df.empty:
                             self.index_data[name] = df.tail(5)
                     time.sleep(0.1)
-                except:
+                except Exception:
                     pass
                     
         except Exception as e:
@@ -200,67 +213,43 @@ class MABullishAnalyzer:
         else:
             self.analysis_date = None
 
-        # 2026-09-12：DataSourceAdapter (pytdx) 已失效，改用 get_stock_realtime
-        # 保留 data_adapter 作为 fallback（仅在 _HAS_REALTIME 不可用时 init）
+        # 2026-09-12：DataSourceAdapter (pytdx) 已失效，改用 get_stock_realtime；
+        # data_adapter 仅在实时数据源不可用时初始化，作为 fallback。
         self.data_adapter = None
         if not _HAS_REALTIME or get_stock_realtime is None:
+            if DataSourceAdapter is None:
+                raise RuntimeError("没有可用的数据源（get_stock_realtime 与 DataSourceAdapter 均不可用）")
             self.data_adapter = DataSourceAdapter()
             if not self.data_adapter.data_source:
-                raise RuntimeError("没有可用的数据源")
-  
+                raise RuntimeError("没有可用的数据源，请安装akshare、tushare、baostock或yfinance")
         
         # 全局市场环境（只加载一次）
         self.market_env = MarketEnvironment()
 
     def _load_watchlist(self) -> Optional[pd.DataFrame]:
-        """加载自选股池"""
-        watchlist_path = './my_stock_pool/watchlist.yaml'
-        if not os.path.exists(watchlist_path):
-            
-            watchlist_path = '../../../my_stock_pool/watchlist.yaml'
-            if not os.path.exists(watchlist_path):
-                print(f"watchlist.yaml 文件不存在: {watchlist_path}")
-                return None
-        
-        try:
-            with open(watchlist_path, 'r', encoding='utf-8') as f:
-                data = yaml.safe_load(f)
-            
-            stocks = []
-            if 'watchlist' in data:
-                for sector, categories in data['watchlist'].items():
-                    for category, stock_list in categories.items():
-                        for stock in stock_list:
-                            if len(stock) >= 2:
-                                stocks.append({
-                                    'code': stock[1],
-                                    'name': stock[0]
-                                })
-            
-            if stocks:
-                return pd.DataFrame(stocks)
-            return None
-            
-        except Exception as e:
-            print(f"加载自选股池失败: {e}")
-            return None
-        
+        """加载自选股池（实现见 common/watchlist.py）。"""
+        return load_watchlist_df()
+
     def _load_holdings(self) -> set:
-        """加载持仓股代码集合，用于排除已持仓股票"""
-        # holdings.json 与 breakout-high-strategy 同级目录
-        holdings_path ="/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json"
-        if not os.path.exists(holdings_path):
-            return set()
-        try:
-            with open(holdings_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            if isinstance(data, list):
-                return {item['code'] for item in data if 'code' in item}
-            return set()
-        except Exception as e:
-            print(f"加载持仓数据失败: {e}")
-            return set()
-        
+        """加载持仓股代码集合（实现见 common/holdings.py）。"""
+        return holding_codes()
+
+    def _get_stock_data(self, stock_code: str, start_date=None, end_date=None):
+        """取 K 线：优先 get_stock_realtime（腾讯实时 + 新浪/腾讯 K 线），失败回退 DataSourceAdapter。
+
+        2026-09-12 起 pytdx 通道失效，get_stock_realtime 成为首选数据源。
+        """
+        if _HAS_REALTIME and get_stock_realtime is not None:
+            try:
+                df, _realtime = get_stock_realtime(stock_code)
+                if df is not None and not df.empty:
+                    return df
+            except Exception as _e:
+                print(f"[get_stock_realtime 失败] {stock_code}: {_e}，回退到 adapter")
+        if self.data_adapter is not None:
+            return self.data_adapter.get_stock_data(stock_code, start_date, end_date)
+        return None
+
     def analyze_stock(self, stock_code: str, stock_name: str = "") -> Dict:
         """分析单只股票"""
         result = {
@@ -277,18 +266,8 @@ class MABullishAnalyzer:
         try:
             end_date = self.analysis_date.strftime('%Y-%m-%d') if self.analysis_date else None
             start_date = (self.analysis_date - timedelta(days=60)).strftime('%Y-%m-%d') if self.analysis_date else None
-            realtime = None  # 实时行情
-            df = None
-            # 优先用 get_stock_realtime（腾讯实时 + 新浪/腾讯 K 线）
-            if _HAS_REALTIME and get_stock_realtime is not None:
-                try:
-                    df, realtime = get_stock_realtime(stock_code)
-                    if df is not None and len(df) > 0:
-                        df = df.rename(columns={'day': 'date'})
-                except Exception as _e:
-                    print(f"[get_stock_realtime 失败] {stock_code}: {_e}，回退到 adapter")
-                    df = None
-           # df = self.data_adapter.get_stock_data(stock_code, start_date, end_date)
+
+            df = self._get_stock_data(stock_code, start_date, end_date)
            
             if df is None or df.empty:
                 result['error'] = '获取数据失败'
@@ -339,14 +318,18 @@ class MABullishAnalyzer:
     def scan_all_stocks(self, top_n: int = 20) -> List[Dict]:
         """扫描全市场，找出符合均线多头排列的股票"""
         print(f"开始扫描全市场股票... {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        #print(f"使用数据源: {self.data_adapter.source}")
+        source_desc = self.data_adapter.source if self.data_adapter is not None else "get_stock_realtime"
+        print(f"使用数据源: {source_desc}")
         
         # 优先使用自选股池
         stock_list = self._load_watchlist()
         if stock_list is not None and not stock_list.empty:
             print(f"使用自选股池，共{len(stock_list)}只股票")
         else:
-            # 获取A股列表
+            # 获取A股列表（仅 adapter 可用时）
+            if self.data_adapter is None:
+                print("无自选股池且实时数据源不支持全市场列表，跳过本次扫描")
+                return []
             try:
                 stock_list = self.data_adapter.get_stock_list()
                 if stock_list is None or stock_list.empty:
@@ -390,15 +373,6 @@ class MABullishAnalyzer:
                 
                 if quality_ok and tech_ok and result['score'] >= 75:
                     candidates.append(result)
-
-        # 剔除已持仓股票
-        holdings_codes = self._load_holdings()
-        print(holdings_codes)
-        if holdings_codes:
-            before = len(candidates)
-            candidates = [c for c in candidates if c['stock_code'] not in holdings_codes]
-            print(f"剔除已持仓股票: {before} -> {len(candidates)} 只")
-
         # 按得分排序
         candidates.sort(key=lambda x: x['score'], reverse=True)
         
@@ -411,7 +385,7 @@ class MABullishAnalyzer:
         df[f'ma{self.ma_short}'] = df['close'].rolling(window=self.ma_short).mean()
         df[f'ma{self.ma_mid}'] = df['close'].rolling(window=self.ma_mid).mean()
         df[f'ma{self.ma_long}'] = df['close'].rolling(window=self.ma_long).mean()
-        df[f'volume_ma'] = df['volume'].rolling(window=self.volume_ma).mean()
+        df['volume_ma'] = df['volume'].rolling(window=self.volume_ma).mean()
         return df
 
     def is_ma_bullish(self, df: pd.DataFrame) -> bool:
@@ -462,7 +436,7 @@ class MABullishAnalyzer:
             return '非多头', 0
         
         latest = df.iloc[-1]
-        ma5, ma10, ma20 = latest['ma5'], latest['ma10'], latest['ma20']
+        ma5, ma20 = latest['ma5'], latest['ma20']
         
         # 发散度
         spread_5_20 = (ma5 - ma20) / ma20 * 100
@@ -522,7 +496,6 @@ class MABullishAnalyzer:
         
         latest = df.iloc[-1]
         ma_s = latest[f'ma{self.ma_short}']
-        ma_m = latest[f'ma{self.ma_mid}']
         ma_l = latest[f'ma{self.ma_long}']
         
         # 发散程度（很重要）
@@ -734,7 +707,6 @@ class MABullishAnalyzer:
         }
 
 
-
 def main():
     """命令行入口"""
     import argparse
@@ -802,16 +774,4 @@ def main():
 
 
 if __name__ == '__main__':
-    
-    # 测试
-    analyzer = MABullishAnalyzer()
-    result = analyzer.scan_all_stocks(top_n=10)
-    #coresult = analyzer.analyze_stock('000001', '平安银行')
-    if result:
-        print(f"股票: {result['stock_name']}")
-        print(f"信号: {result['signal']}")
-        print(f"得分: {result['score']}")
-    
-    else:
-        print("未检测到缺口回踩信号")
-
+    main()

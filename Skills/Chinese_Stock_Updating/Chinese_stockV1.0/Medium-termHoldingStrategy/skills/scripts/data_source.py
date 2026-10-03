@@ -8,12 +8,11 @@
 """
 import os
 import sys
-import json,random
+import json, random
 import re
 import requests, urllib3
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import numpy as np
 import pandas as pd
 from typing import Optional, Tuple, List, Dict
 from datetime import datetime, timedelta
@@ -22,6 +21,14 @@ from concurrent.futures import ThreadPoolExecutor
 
 from functools import wraps
 import time
+
+# ── 统一路径：代码规范化统一走 common/holdings.py ───────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+from holdings import to_pure_code  # noqa: E402
+
 
 def retry(max_attempts=3, delay=1):
     def decorator(func):
@@ -42,7 +49,7 @@ for k in list(os.environ.keys()):
     if 'proxy' in k.lower():
         try:
             del os.environ[k]
-        except:
+        except Exception:
             pass
 
 
@@ -138,7 +145,7 @@ def fetch_realtime_tencent(codes: List[str]) -> Dict[str, dict]:
 def fetch_single_tencent(code: str) -> Optional[dict]:
     """获取单只股票的腾讯实时行情"""
     results = fetch_realtime_tencent([code])
-    return results.get(code.lstrip('sh').lstrip('sz'))
+    return results.get(to_pure_code(code))
 
 
 # ── 新浪历史K线 ────────────────────────────────────────
@@ -274,14 +281,8 @@ def fetch_index_tencent() -> Dict[str, dict]:
     return results
 
 
-import requests
-import json
-import time
 from typing import Dict
 
-import requests
-import json
-import time
 from typing import Dict
 
 # 禁用SSL警告
@@ -573,7 +574,7 @@ if __name__ == '__main__':
 
     idx = get_index_realtime()
     if idx:
-        print(f"\n大盘指数:")
+        print("\n大盘指数:")
         for k, v in idx.items():
             if v:
                 print(f"  {v['name']}: {v['price']} ({v['chg_pct']:+.2f}%)")
@@ -581,7 +582,7 @@ if __name__ == '__main__':
     # 测试涨跌家数
     stats = get_market_stats()
     if stats:
-        print(f"\n涨跌家数统计:")
+        print("\n涨跌家数统计:")
         for k, v in stats.items():
             if v:
                 total = v.get('advance', 0) + v.get('decline', 0) + v.get('unchanged', 0)

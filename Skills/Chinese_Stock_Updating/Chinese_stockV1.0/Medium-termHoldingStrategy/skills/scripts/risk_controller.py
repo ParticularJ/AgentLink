@@ -1,7 +1,6 @@
 from typing import List, Optional, Tuple
-from datetime import datetime
 
-from models import Holding, Alert, RiskLevel, StockData, TechnicalIndicators, StockScore
+from models import Holding, Alert, RiskLevel, TechnicalIndicators, StockScore
 from config import MA_CONFIG
 
 class RiskController:
@@ -10,6 +9,34 @@ class RiskController:
     def __init__(self):
         self.alerts = []
         
+    # ── 统一止损入口（2026-10 合并）────────────────────────────
+    # 背景：多级止损逻辑原先在 stop_loss_engine.py 里，但**从未被生产入口调用**
+    # （main.py 只用 check_ma_breakdown），是死代码。现合并进 RiskController，
+    # 使优先级 1~9 的止损规则真正生效，同时保留原有均线跌破预警不变。
+    def check_stop_loss(self, holding_state, current_price, current_data, tech,
+                        df_history, today_str, n_multiplier: float = 2.0):
+        """按优先级 1→9 检查单只持仓，返回 StopLossEngine 的 Action。
+
+        这是**权威的止损判定**（含分级减仓、时间止损、移动止盈等）；
+        check_ma_breakdown 仅作为均线跌破的辅助预警保留。
+        """
+        engine = self._stop_engine(n_multiplier)
+        return engine.check(holding_state, current_price, current_data, tech,
+                            df_history, today_str)
+
+    def _stop_engine(self, n_multiplier: float = 2.0):
+        """懒构造 StopLossEngine（需要 MarketSentiment，失败时不阻断主流程）。"""
+        try:
+            from stop_loss_engine import StopLossEngine
+            from market_sentiment import MarketSentiment
+            sentiment = getattr(self, "_sentiment", None)
+            if sentiment is None:
+                sentiment = MarketSentiment()
+                self._sentiment = sentiment
+            return StopLossEngine(sentiment, n_multiplier)
+        except Exception as e:
+            raise RuntimeError(f"止损引擎不可用：{e}") from e
+
     def check_ma_breakdown(self, holding: Holding, current_price: float,
                            tech: TechnicalIndicators, volume_ratio: float = 1.0) -> Optional[Alert]:
         """检查均线跌破预警"""

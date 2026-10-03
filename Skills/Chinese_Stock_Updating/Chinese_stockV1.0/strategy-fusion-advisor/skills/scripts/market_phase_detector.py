@@ -13,7 +13,6 @@ import sys
 import json
 import argparse
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import numpy as np
 
@@ -54,9 +53,9 @@ for k in list(os.environ.keys()):
 
 # ── 路径：复用 ma-bullish-strategy 的 DataSourceAdapter (pytdx) ──
 # market_phase_detector.py 位于
-#   strategy-fusion-advisor/skills/scripts/market_phase_detector.py
-# dirname ×3 → strategy-fusion-advisor/  (SKILL_DIR)
-# dirname ×4 → Chinese_Stock_back/      (BASE_DIR)
+#   <repo>/strategy-fusion-advisor/skills/scripts/market_phase_detector.py
+# _SKILL_DIR = <repo>/strategy-fusion-advisor
+# _BASE_DIR  = <repo>
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _SKILL_DIR = os.path.dirname(os.path.dirname(_SCRIPT_DIR))
 _BASE_DIR = os.path.dirname(_SKILL_DIR)
@@ -97,17 +96,24 @@ if _USE_ADAPTER:
         print(f"[WARN] DataSourceAdapter 初始化失败: {e}")
         _ADAPTER = None
 
-# ── 输出目录 ────────────────────────────────────────────
-RECO_DIR = os.path.join(_BASE_DIR, 'strategy-fusion-advisor', 'recommendations')
-os.makedirs(RECO_DIR, exist_ok=True)
-OUTPUT_FILE = os.path.join(RECO_DIR, 'market_phase.json')
+# ── 输出目录：统一由 common/paths.py 推导，不硬编码绝对路径 ──
+_root = _BASE_DIR
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+from paths import (  # noqa: E402
+    MARKET_PHASE_FILE as _MARKET_PHASE_FILE,
+    MARKET_PHASE_CACHE_DIR as _MARKET_PHASE_CACHE_DIR,
+    STABLE_PHASE_FILE as _STABLE_PHASE_FILE,
+    WATCHLIST_FILE as _WATCHLIST_FILE,
+)
 
-# ── 稳定 phase 状态缓存（跨进程持久化）───────────────
-# 文件结构：{ "<key>": {"stable_phase": "...", "last_date": "YYYY-MM-DD", "last_candle_idx": N}, ... }
-# key 用 "<sector>:<code>" 或 "<sector>:index"（大盘/合成）
-CACHE_DIR = os.path.join(RECO_DIR, 'cache')
+RECO_DIR = str(_MARKET_PHASE_FILE.parent)
+CACHE_DIR = str(_MARKET_PHASE_CACHE_DIR)
+OUTPUT_FILE = str(_MARKET_PHASE_FILE)
+STABLE_PHASE_FILE = str(_STABLE_PHASE_FILE)
+os.makedirs(RECO_DIR, exist_ok=True)
 os.makedirs(CACHE_DIR, exist_ok=True)
-STABLE_PHASE_FILE = os.path.join(CACHE_DIR, 'stable_phase.json')
 
 
 # ════════════════════════════════════════════════════════════
@@ -839,7 +845,7 @@ def judge_v2_sector(
     # 条件 1：close > MA20
     cond1 = cur_close > cur_ma20
     if cond1:
-        reasons.append(f'close>MA20')
+        reasons.append('close>MA20')
 
     # 条件 2：近 N 日 close 至少 1 次回踩 MA20
     recent_close = close[-pullback_lookback:]
@@ -1301,7 +1307,7 @@ def judge_semicon_v5(close: np.ndarray, df: pd.DataFrame) -> Tuple[str, Dict]:
         return 'STRONG_UP', detail
 
     return 'NO_BUY_V5', {
-        'reason': f'slow_bull 未触发',
+        'reason': 'slow_bull 未触发',
         'close': round(cur, 3),
         'dd_60': round(dd_60, 4),
         'slow_bull_detail': sb_detail,
@@ -2273,7 +2279,7 @@ WATCHLIST_TO_SECTOR: Dict[str, str] = {
 #   - ETF 标的（如 159698 粮食ETF）默认 UNKNOWN → 保守禁止（ETF 由 SECTOR_ETFS 独立管理）
 #   - 文件路径 = <BASE_DIR>/my_stock_pool/watchlist.yaml
 # ════════════════════════════════════════════════════════════
-WATCHLIST_YAML_PATH = os.path.join(_BASE_DIR, 'my_stock_pool', 'watchlist.yaml')
+WATCHLIST_YAML_PATH = str(_WATCHLIST_FILE)
 
 
 def _build_stock_to_sector() -> Dict[str, str]:
@@ -2523,7 +2529,7 @@ def get_kline(code: str, days: int = 130, max_retries: int = 2) -> Optional[pd.D
                     if 'date' in df.columns and 'day' not in df.columns:
                         df = df.rename(columns={'date': 'day'})
                     return df
-            except Exception as e:
+            except Exception:
                 if attempt < max_retries - 1:
                     import time
                     time.sleep(1)
@@ -3262,7 +3268,7 @@ def judge_sector(sector: str) -> Dict:
                 test_df = get_kline(c, 200)
                 if test_df is None or len(test_df) < 30:
                     failed.append(c)
-            etf_fail_reason = f"多 ETF 中失败: {failed}" if failed else f"ETF blend 拿不到 K 线"
+            etf_fail_reason = "多 ETF 中失败: {failed}" if failed else "ETF blend 拿不到 K 线"
 
     # 成分股合成回退
     constituents = SECTOR_CONSTITUENTS.get(actual_sector, [])

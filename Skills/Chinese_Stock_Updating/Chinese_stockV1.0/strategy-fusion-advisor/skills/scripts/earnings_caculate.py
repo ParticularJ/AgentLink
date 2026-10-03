@@ -6,8 +6,6 @@
 """
 
 import json
-import sys
-from datetime import datetime
 from typing import Dict, List, Optional, Any
 import os
 
@@ -249,7 +247,7 @@ class EarningsDataProcessor:
         print(f"🟢 BUY信号: {len(buy_signals)}")
         
         # Top 5
-        print(f"\n🏆 Top 5 推荐股票 (按分数排序):")
+        print("\n🏆 Top 5 推荐股票 (按分数排序):")
         top_stocks = self.get_top_stocks(5)
         for i, stock in enumerate(top_stocks, 1):
             code = stock.get('stock_code', 'N/A')
@@ -279,7 +277,7 @@ class EarningsDataProcessor:
         print("="*60)
         
         # 基础信息
-        print(f"\n基础信息:")
+        print("\n基础信息:")
         print(f"  股票代码: {stock.get('stock_code')}")
         print(f"  股票名称: {stock.get('stock_name')}")
         print(f"  季度: {stock.get('quarter', 'N/A')}")
@@ -287,7 +285,7 @@ class EarningsDataProcessor:
         print(f"  评分: {stock.get('score')}")
         
         # 业绩超预期分析
-        print(f"\n业绩超预期分析:")
+        print("\n业绩超预期分析:")
         surprise = stock.get('surprise_analysis', {})
         if surprise:
             print(f"  等级: {surprise.get('level', 'N/A')}")
@@ -306,7 +304,7 @@ class EarningsDataProcessor:
                 print(f"  超预期幅度: {rev_data.get('surprise_pct', 0):.2f}%")
         
         # 增长质量分析
-        print(f"\n增长质量分析:")
+        print("\n增长质量分析:")
         quality = stock.get('quality_analysis', {})
         if quality:
             print(f"  等级: {quality.get('level', 'N/A')}")
@@ -318,7 +316,7 @@ class EarningsDataProcessor:
                 print(f"  毛利率变化: {margin.get('margin_change', 0):.2f}%")
         
         # 市场反应分析
-        print(f"\n市场反应分析:")
+        print("\n市场反应分析:")
         market = stock.get('market_analysis', {})
         if market:
             print(f"  等级: {market.get('level', 'N/A')}")
@@ -329,7 +327,7 @@ class EarningsDataProcessor:
                 print(f"  成交量变化: {details.get('volume_change', 0):.2f}%")
         
         # 机构态度分析
-        print(f"\n机构态度分析:")
+        print("\n机构态度分析:")
         inst = stock.get('institutional_analysis', {})
         if inst:
             print(f"  等级: {inst.get('level', 'N/A')}")
@@ -338,14 +336,14 @@ class EarningsDataProcessor:
             print(f"  目标上升空间: {inst.get('target_upside', 0):.2f}%")
         
         # 行业分析
-        print(f"\n行业分析:")
+        print("\n行业分析:")
         industry = stock.get('industry_analysis', {})
         if industry:
             print(f"  等级: {industry.get('level', 'N/A')}")
             print(f"  表现: {industry.get('performance', 0):.2f}%")
         
         # 推荐信息
-        print(f"\n推荐信息:")
+        print("\n推荐信息:")
         rec = stock.get('recommendation', {})
         if rec:
             print(f"  推荐: {rec.get('action', 'N/A')}")
@@ -411,25 +409,6 @@ def get_dangerous_stocks() -> List[Dict]:
                 name = stock.get('stock_name', 'N/A')
                 stock_codes.append(code)
                 stock_names.append(name)
-                score = stock.get('score', 0)
-                signal = stock.get('signal', 'N/A')
-                surprise = stock.get('surprise_analysis', {})
-                
-                #print(f"{i}. [{code}] {name}")
-                #print(f"   信号: {signal} | 分数: {score:.2f}")
-                
-                # 不及预期的具体数据
-                np_data = surprise.get('net_profit', {})
-                if np_data:
-                    actual = np_data.get('actual_yoy', 0)
-                    expected = np_data.get('expected_yoy', 0)
-                    #print(f"   净利润: {actual:.2f}% (预期: {expected:.2f}%)")
-                
-                rev_data = surprise.get('revenue', {})
-                if rev_data:
-                    actual = rev_data.get('actual_yoy', 0)
-                    expected = rev_data.get('expected_yoy', 0)
-                    #print(f"   营收: {actual:.2f}% (预期: {expected:.2f}%)")
                 print()
     return [
         {

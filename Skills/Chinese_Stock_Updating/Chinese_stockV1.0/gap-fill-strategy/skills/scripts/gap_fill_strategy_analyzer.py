@@ -11,9 +11,7 @@ import os
 sys.path.insert(0, os.path.dirname(__file__))
 
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -110,7 +108,6 @@ class GapFillAnalyzer:
         try:
             # 获取数据
             df = self._get_stock_data(stock_code)
-
 
 
             if df is None or len(df) < 20:
@@ -346,7 +343,6 @@ class GapFillAnalyzer:
         # 检查当前价格是否回踩到缺口区域
         in_gap_zone = gap_low <= current_price <= gap_high
         above_gap = current_price > gap_high
-        below_gap = current_price < gap_low
         
         # 检查是否完全回补缺口
         gap_filled = current_price <= gap_low
@@ -621,7 +617,7 @@ class GapFillAnalyzer:
             # =====================================================
             return result
 
-        except Exception as e:
+        except Exception:
             res = {
                 'score': 50,
                 'sh_change': 0,

@@ -1,48 +1,48 @@
 # 策略融合投资顾问
 
-融合11个交易策略的推荐结果，按时段分组输出最优投资组合。
+融合多个选股策略的输出，叠加「大盘 + 板块行情门控」后给出最优组合。
 
-## 运行方式
+完整设计与回测记录见 [DESIGN.md](DESIGN.md)。
 
-### 尾盘买（14:30）
+## 运行
+
 ```bash
-python3 skills/scripts/fusion_runner.py --session EVENING --top 5
+# 尾盘买（当日 14:30 前）
+python skills/scripts/fusion_runner.py --session EVENING --top 5
+
+# 早盘买（次日 16:00 后）
+python skills/scripts/fusion_runner.py --session MORNING --top 5
 ```
 
-### 早盘买次日（16:00）
+推荐用根目录的包装脚本（自带路径推导与代理清理）：
+
 ```bash
-python3 skills/scripts/fusion_runner.py --session MORNING --top 5
+bash ../../run_evening_fusion.sh
+bash ../../run_morning_fusion.sh
 ```
 
-## 输出文件
+## 输出
 
-`recommendations/YYYYMMDD_EVENING_BUY_recommendation.json`
-`recommendations/YYYYMMDD_MORNING_BUY_recommendation.json`
+| 文件 | 内容 |
+|:---|:---|
+| `<repo>/recommendations/YYYYMMDD_EVENING_BUY_recommendation.json` | 尾盘推荐 |
+| `<repo>/recommendations/YYYYMMDD_MORNING_BUY_recommendation.json` | 早盘推荐 |
+| `recommendations/market_phase.json` | 大盘 + 各板块行情状态快照 |
+| `recommendations/cache/stable_phase.json` | 跨进程的稳定 phase 缓存 |
 
-## 融合策略分组
+## 策略分组
 
-### 尾盘买（EVENING）
-- 缺口填充、涨停回踩、MACD底背离、RSI超卖、地量见底、缩量回踩均线、均线多头
+分组定义在 `skills/scripts/fusion_runner.py` 顶部：
 
-### 早盘买（MORNING）
-- 突破新高、涨停分析/打板、业绩超预期、早晨之星
+| 时段 | 当前启用 | 预留（注释中，改一行即可开启） |
+|:---|:---|:---|
+| EVENING（尾盘买） | 缺口填充、均线多头 | 涨停回踩、MACD 底背离、RSI 超卖、地量见底、缩量回踩均线 |
+| MORNING（早盘买次日） | 突破新高 | 涨停分析/打板、业绩超预期、早晨之星 |
 
-## 安装依赖
+## 依赖
 
 ```bash
 pip install -r requirements.txt
-```
-
-## 目录结构
-
-```
-strategy-fusion-advisor/
-├── crons/                    # 定时任务配置
-├── skills/scripts/
-│   └── fusion_runner.py      # 主入口
-├── SKILL.md
-├── README.md
-└── requirements.txt
 ```
 
 ## 免责声明

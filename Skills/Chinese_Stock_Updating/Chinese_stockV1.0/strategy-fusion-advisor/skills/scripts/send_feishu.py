@@ -1,31 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """推送最新早盘推荐至飞书群"""
-import os, json, glob, sys, requests
+import os, json, glob, sys
 from datetime import datetime
 
-RECO_DIR = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/recommendations'
-FEISHU_APP_ID = "cli_a93eb458ceb81cc0"
-FEISHU_APP_SECRET = "1i18JUKuFhQEejUOkNividRbMdJBMpV8"
-FEISHU_GROUP_ID = "oc_01eafbec4f9b3fb54ff669d792e3fb72"
+# ── 统一路径与凭据：不再硬编码绝对路径 / 明文 Secret ──────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+import feishu
+from paths import RECO_DIR as _RECO_DIR  # noqa: E402
 
-def get_tenant_token():
-    url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
-    resp = requests.post(url, json={"app_id": FEISHU_APP_ID, "app_secret": FEISHU_APP_SECRET}, timeout=10)
-    resp.raise_for_status()
-    return resp.json()["tenant_access_token"]
-
-def send_feishu_msg(token, group_id, content):
-    url = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=chat_id"
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    payload = {
-        "receive_id": group_id,
-        "msg_type": "text",
-        "content": json.dumps({"text": content})
-    }
-    resp = requests.post(url, headers=headers, json=payload, timeout=10)
-    resp.raise_for_status()
-    return resp.json()
+RECO_DIR = str(_RECO_DIR)
 
 def get_latest_reco():
     files = glob.glob(os.path.join(RECO_DIR, "*_morning*recommendation.json"))
@@ -68,8 +55,8 @@ if __name__ == "__main__":
     print(msg)
 
     try:
-        token = get_tenant_token()
-        result = send_feishu_msg(token, FEISHU_GROUP_ID, msg)
+        token = feishu.get_tenant_token()
+        result = feishu.send_text_with_token(token, msg)
         print(f"[OK] 已推送至飞书群: {result}")
     except Exception as e:
         print(f"[ERROR] 推送失败: {e}")

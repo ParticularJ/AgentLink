@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """推送最新推荐至飞书群（interactive card格式）"""
-import os, json, glob, sys, requests, traceback
+import os, json, glob, sys, traceback
 from datetime import datetime
-from pathlib import Path
 
-RECO_DIR = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/recommendations'
-FEISHU_APP_ID = "cli_a93eb458ceb81cc0"
-FEISHU_APP_SECRET = "1i18JUKuFhQEejUOkNividRbMdJBMpV8"
-FEISHU_GROUP_ID = "oc_0ac1e4e8d09f939d887f4992bba2886b"
+# ── 统一路径与凭据：不再硬编码绝对路径 / 明文 Secret ──────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+import feishu
+from paths import RECO_DIR as _RECO_DIR, LOG_DIR  # noqa: E402
 
-LOG_DIR = Path("/home/jarvis/.openclaw/logs/stock")
+RECO_DIR = str(_RECO_DIR)
 LOG_FILE = LOG_DIR / "fusion_push.log"
 
 def log(msg):
@@ -28,27 +30,6 @@ def log_error(msg):
     print(line, file=sys.stderr)
     with open(LOG_FILE, "a") as f:
         f.write(line + "\n")
-
-def get_tenant_token_with_retry(max_retries=3, retry_interval=5):
-    """获取tenant_access_token，带试错重试机制"""
-    url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
-    for attempt in range(1, max_retries + 1):
-        try:
-            resp = requests.post(url, json={"app_id": FEISHU_APP_ID, "app_secret": FEISHU_APP_SECRET}, timeout=10)
-            resp.raise_for_status()
-            token = resp.json().get("tenant_access_token", "")
-            if token:
-                if attempt > 1:
-                    log(f"获取token重试第{attempt}次成功")
-                return token
-            log(f"获取token为空, 第{attempt}次重试")
-        except Exception as e:
-            log(f"获取token异常 (第{attempt}/{max_retries}): {e}")
-        if attempt < max_retries:
-            import time
-            time.sleep(retry_interval)
-    log_error("获取token全部重试失败，退出")
-    sys.exit(1)
 
 def build_card(date_str, session_label, recs, total_pos, success_count, no_result_count, err_count, filename,
                market_phase='UNKNOWN', phase_label='未知', position_cap=0.30,
@@ -261,7 +242,7 @@ def build_card(date_str, session_label, recs, total_pos, success_count, no_resul
     ]
     elements.extend(stock_blocks)
     elements.append({"tag": "hr"})
-    elements.append({"tag": "div", "text": {"tag": "lark_md", "content": f"**策略来源**：早盘融合策略组" if "早盘" in session_label else "**策略来源**：尾盘融合策略组"}})
+    elements.append({"tag": "div", "text": {"tag": "lark_md", "content": "**策略来源**：早盘融合策略组" if "早盘" in session_label else "**策略来源**：尾盘融合策略组"}})
 
     # 副标题里显示大盘 phase + 仓位
     subtitle = f"{phase_label} · 仓位上限 {pos_cap_pct}% · {session_label}"
@@ -277,35 +258,6 @@ def build_card(date_str, session_label, recs, total_pos, success_count, no_resul
         ]
     }
     return card
-
-def send_card_with_retry(token, group_id, card, max_retries=3, retry_interval=5):
-    """发送飞书卡片，带试错重试机制"""
-    url = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=chat_id"
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    payload = {
-        "receive_id": group_id,
-        "msg_type": "interactive",
-        "content": json.dumps(card)
-    }
-    for attempt in range(1, max_retries + 1):
-        try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=10)
-            resp.raise_for_status()
-            result = resp.json()
-            code = result.get('code')
-            if code == 0:
-                if attempt > 1:
-                    log(f"重试第{attempt}次成功")
-                return result
-            else:
-                log(f"飞书返回错误: code={code} msg={result.get('msg','')}, 第{attempt}次重试")
-        except Exception as e:
-            log(f"推送异常 (第{attempt}/{max_retries}): {e}")
-        if attempt < max_retries:
-            log(f"{retry_interval}秒后重试...")
-            import time
-            time.sleep(retry_interval)
-    return {"code": -1, "msg": "全部重试失败"}
 
 def get_latest_reco(session_filter="morning"):
     pattern = f"*_{session_filter}_*recommendation.json"
@@ -343,8 +295,8 @@ if __name__ == "__main__":
                       market_phase=market_phase, phase_label=phase_label,
                       position_cap=position_cap,
                       sector_phases=sector_phases, sector_filter=sector_filter)
-    token = get_tenant_token_with_retry()
-    result = send_card_with_retry(token, FEISHU_GROUP_ID, card)
+    token = feishu.get_tenant_token_with_retry(logger=log)
+    result = feishu.send_card_with_retry(token, card, logger=log)
     code = result.get('code')
     msg = result.get('msg', '')
     if code == 0:

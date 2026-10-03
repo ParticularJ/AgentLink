@@ -1,2 +1,27 @@
 /data/AgentLink/Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/finetuned
 
+# ── 新增：排除生成物与本地数据（2026-10）──
+# Python 字节码与测试缓存
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# 回测生成的行情缓存与报告产物
+Skills/Chinese_Stock_Updating/Chinese_stockV1.0/backtests/cache/
+Skills/Chinese_Stock_Updating/Chinese_stockV1.0/backtests/out/
+
+# 本地持仓与日志（含个人资金/持仓数据，不应入库）
+Skills/Chinese_Stock_Updating/Chinese_stockV1.0/my_holdings/analysis_logs/
+Skills/Chinese_Stock_Updating/Chinese_stockV1.0/recommendations/
+
+# 密钥
+Skills/Chinese_Stock_Updating/Chinese_stockV1.0/common/secrets.yaml
+
+# 运行日志
+*.log
+
+# ── Kronos 生成物（回测/推理输出，非源码）──
+Skills/Chinese_Stock_Updating/Kronos/Kronos/outputs/
+Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/data/pool_300.csv
+Skills/Chinese_Stock_Updating/Kronos/Kronos/finetune_csv/data/pool.csv

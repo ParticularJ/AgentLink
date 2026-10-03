@@ -6,8 +6,8 @@
 
 import sys
 import os
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from datetime import datetime
+from typing import Dict, List
 
 # ——————————————————————————
 # 利空 / 利多 关键词库
@@ -67,7 +67,7 @@ def search_stock_news(code: str, name: str, days: int = 7) -> Dict:
                 with open(cfg_path) as f:
                     cfg = json.load(f)
                 api_key = cfg.get("tavily_api_key") or os.getenv("TAVILY_API_KEY")
-            except:
+            except Exception:
                 pass
         if not api_key:
             return _search_stock_news_fallback(code, name, days)
@@ -98,7 +98,6 @@ def _search_stock_news_fallback(code: str, name: str, days: int = 7) -> Dict:
     当 Tavily 不可用时的降级方案：使用 requests 直接搜索东方财富快讯
     """
     import requests
-    import re
 
     result = {
         "has_news": False,
@@ -148,10 +147,9 @@ def _search_stock_news_fallback(code: str, name: str, days: int = 7) -> Dict:
                 pub_dt = datetime.strptime(pub_date[:10], "%Y-%m-%d")
                 if (datetime.now() - pub_dt).days > days:
                     continue
-        except:
+        except Exception:
             pass
 
-        title_lower = title.lower()
         full_text = str(n.get("art_content", ""))[:500]
 
         # 检查利空

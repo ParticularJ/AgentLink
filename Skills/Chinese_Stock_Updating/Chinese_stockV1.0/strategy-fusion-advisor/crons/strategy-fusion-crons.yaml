@@ -30,8 +30,11 @@ crons:
         - 缩量回踩均线(volume-retrace-ma-strategy)
         - 均线多头(ma-bullish-strategy)
 
-        命令：
-        python3 /home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/strategy-fusion-advisor/skills/scripts/fusion_runner.py --session EVENING --top 5
+        命令（用根目录下的包装脚本，路径自适应，不含绝对路径）：
+        bash "$STOCK_ROOT/run_evening_fusion.sh"
+
+        如需指定解释器：STOCK_PYTHON=/path/to/python bash "$STOCK_ROOT/run_evening_fusion.sh"
+        其中 STOCK_ROOT 默认为本 skill 所在仓库根目录（Chinese_stockV1.0）。
 
         脚本输出包含 [FEISHU_CARD_START]...[FEISHU_CARD_END] 的飞书卡片JSON。
         提取该JSON并使用飞书 message 工具发送 interactive card 到当前会话。
@@ -52,8 +55,11 @@ crons:
         - 业绩超预期(earnings-surprise-strategy)
         - 早晨之星(morning-star-strategy)
 
-        命令：
-        python3 /home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/strategy-fusion-advisor/skills/scripts/fusion_runner.py --session MORNING --top 5
+        命令（用根目录下的包装脚本，路径自适应，不含绝对路径）：
+        bash "$STOCK_ROOT/run_morning_fusion.sh"
+
+        如需指定解释器：STOCK_PYTHON=/path/to/python bash "$STOCK_ROOT/run_morning_fusion.sh"
+        其中 STOCK_ROOT 默认为本 skill 所在仓库根目录（Chinese_stockV1.0）。
 
         脚本输出包含 [FEISHU_CARD_START]...[FEISHU_CARD_END] 的飞书卡片JSON。
         提取该JSON并使用飞书 message 工具发送 interactive card 到当前会话。

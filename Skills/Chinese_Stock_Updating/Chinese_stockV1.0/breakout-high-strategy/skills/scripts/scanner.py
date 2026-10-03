@@ -9,71 +9,37 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(__file__))
 
+# ── 统一路径：不再硬编码绝对路径 ──────────────────────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+from holdings import holding_codes                    # noqa: E402
+from watchlist import load_watchlist_df               # noqa: E402
+
 import argparse
-import json
 from datetime import datetime
 from typing import List, Dict, Optional
 import pandas as pd
-import yaml
 
 from breakout_high_strategy_analyzer import BreakoutHighAnalyzer
 
 
 def _load_holdings() -> set:
-    """加载持仓股代码集合，用于排除已持仓股票"""
-    # holdings.json 与 breakout-high-strategy 同级目录
-    holdings_path ="/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json"
-    if not os.path.exists(holdings_path):
-        return set()
-    try:
-        with open(holdings_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        if isinstance(data, list):
-            return {item['code'] for item in data if 'code' in item}
-        return set()
-    except Exception as e:
-        print(f"加载持仓数据失败: {e}")
-        return set()
-
+    """加载持仓股代码集合（用于排除已持仓标的）。实现见 common/holdings.py。"""
+    return holding_codes()
 
 def _load_watchlist() -> Optional[pd.DataFrame]:
-    """加载自选股池"""
-    watchlist_path = './my_stock_pool/watchlist.yaml'
-    if not os.path.exists(watchlist_path):
-        
-        watchlist_path = '../../../my_stock_pool/watchlist.yaml'
-        if not os.path.exists(watchlist_path):
-            print(f"watchlist.yaml 文件不存在: {watchlist_path}")
-            return None
-    
-    try:
-        with open(watchlist_path, 'r', encoding='utf-8') as f:
-            data = yaml.safe_load(f)
-        
-        stocks = []
-        if 'watchlist' in data:
-            for sector, categories in data['watchlist'].items():
-                for category, stock_list in categories.items():
-                    for stock in stock_list:
-                        if len(stock) >= 2:
-                            stocks.append({
-                                'code': stock[1],
-                                'name': stock[0]
-                            })
-        
-        if stocks:
-            return pd.DataFrame(stocks)
-        return None
-        
-    except Exception as e:
-        print(f"加载自选股池失败: {e}")
-        return None
+    """加载自选股池。
 
-
+    实现见 common/watchlist.py：原先这里依赖 ./my_stock_pool 这类相对当前工作目录的
+    路径，换个 cwd 就静默返回 None；现在由 common/paths.py 给出绝对路径。
+    """
+    return load_watchlist_df()
 
 def scan_all_stocks(analyzer: BreakoutHighAnalyzer, top_n: int = 20) -> List[Dict]:
     """扫描股票：优先使用自选池，失败则回退全市场"""
-    print(f"开始扫描突破前期高点股票...")
+    print("开始扫描突破前期高点股票...")
     print(f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
    #  print(f"使用数据源: {analyzer.data_adapter.source}")
     print("-" * 60)

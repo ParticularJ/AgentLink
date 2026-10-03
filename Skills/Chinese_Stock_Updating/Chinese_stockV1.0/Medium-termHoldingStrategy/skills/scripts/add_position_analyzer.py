@@ -23,10 +23,10 @@ for k in list(os.environ.keys()):
     if 'proxy' in k.lower():
         try:
             del os.environ[k]
-        except:
+        except Exception:
             pass
 
-from data_source import fetch_kline_sina, get_stock_realtime
+from data_source import fetch_kline_sina
 
 # ── akshare 保底数据源 ────────────────────────────────
 try:
@@ -36,19 +36,32 @@ except ImportError:
     AKSHARE_AVAILABLE = False
 
 
-HOLDINGS_FILE = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json"
-CASH_FILE = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/cash_balance.json"
-ANALYSIS_LOG_DIR = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/analysis_logs"
+# ── 统一路径与凭据：不硬编码绝对路径 / 明文 Secret ──────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+from holdings import to_pure_code  # noqa: E402
+from paths import (  # noqa: E402
+    HOLDINGS_FILE as _HOLDINGS_FILE,
+    CASH_FILE as _CASH_FILE,
+    ANALYSIS_LOG_DIR as _ANALYSIS_LOG_DIR,
+    LOG_DIR as _LOG_DIR,
+)
+from feishu_config import (  # noqa: E402
+    FEISHU_APP_ID,
+    FEISHU_APP_SECRET,
+    FEISHU_GROUP_ID,
+)
+
+HOLDINGS_FILE = str(_HOLDINGS_FILE)
+CASH_FILE = str(_CASH_FILE)
+ANALYSIS_LOG_DIR = str(_ANALYSIS_LOG_DIR)
 ADD_COOLDOWN_DAYS = 5   # 加仓冷却期：同一股票5日内不允许重复加仓
 
-# ====================== 飞书推送配置 ======================
-FEISHU_APP_ID = "cli_a93eb458ceb81cc0"
-FEISHU_APP_SECRET = "1i18JUKuFhQEejUOkNividRbMdJBMpV8"
-FEISHU_GROUP_ID = "oc_0ac1e4e8d09f939d887f4992bba2886b"
-
 # 日志
-LOG_DIR = "/home/jarvis/.openclaw/logs/stock"
-LOG_FILE = f"{LOG_DIR}/add_position_push.log"
+LOG_DIR = str(_LOG_DIR)
+LOG_FILE = os.path.join(LOG_DIR, "add_position_push.log")
 
 
 # ═══════════════════════════════════════════════════════════
@@ -275,9 +288,9 @@ def get_holding_by_code(code: str, holdings: List[dict] = None) -> Optional[dict
     """根据代码查找持仓（支持6位码或sh/sz前缀）"""
     if holdings is None:
         holdings = load_holdings_from_file()
-    code6 = code.lstrip('sh').lstrip('sz')
+    code6 = to_pure_code(code)
     for h in holdings:
-        if h.get('code', '').lstrip('sh').lstrip('sz') == code6:
+        if to_pure_code(h.get('code', '')) == code6:
             return h
     return None
 
@@ -289,7 +302,7 @@ def can_add_position(code: str, holdings: List[dict] = None) -> Tuple[bool, str]
     - can_add=True：可以加仓
     - can_add=False：reason 说明原因
     """
-    from datetime import datetime, timedelta
+    from datetime import datetime
     if holdings is None:
         holdings = load_holdings_from_file()
 
@@ -365,7 +378,7 @@ def execute_add(code: str, new_shares: int, new_cost: float,
                 "report": report}
 
     # ── 计算现金需求 ─────────────────────────────
-    code6 = code.lstrip('sh').lstrip('sz')
+    code6 = to_pure_code(code)
     # 取当前市场价（简化：直接用 current_price，实际应以成交价为准）
     price_per_share = float(h['current_price'])
     need_cash = new_shares * price_per_share
@@ -414,7 +427,7 @@ def execute_add(code: str, new_shares: int, new_cost: float,
     # 找出并替换持仓列表中的这只股票
     new_holdings = []
     for item in holdings:
-        code_check = item.get('code', '').lstrip('sh').lstrip('sz')
+        code_check = to_pure_code(item.get('code', ''))
         if code_check == code6:
             new_holdings.append(updated_h)
         else:
@@ -456,7 +469,6 @@ def _get_first_profit_target(code6: str) -> float:
     return cfg["profit_targets"][0] * 100  # 转为 %
 
 
-
 def _build_sno(h: dict) -> int:
     """
     生成加仓序号（sno），基于 add_count（加仓次数）字段：
@@ -481,7 +493,7 @@ def _infer_holding_days(h: dict) -> int:
 
 def _to_sina_code(code: str) -> str:
     """将 6 位股票代码转换为新浪格式 sh/sz 前缀"""
-    code = code.strip().lstrip('sh').lstrip('sz')
+    code = to_pure_code(code)
     if code.startswith(('6', '5')):
         return f'sh{code}'
     elif code.startswith(('0', '3', '4')):
@@ -489,7 +501,6 @@ def _to_sina_code(code: str) -> str:
     elif code.startswith('8') or code.startswith('9'):
         return f'sh{code}'   # 科创板
     return f'sz{code}'
-
 
 
 # ═══════════════════════════════════════════════════════════
@@ -542,8 +553,7 @@ def atomic_write_json(path: str, data, indent: int = 2) -> None:
     print(f"[写入] {path}")
 
 
-# ── 分析记录日志 ─────────────────────────────────────────
-ANALYSIS_LOG_DIR = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/analysis_logs"
+# ── 分析记录日志（目录由 common/paths.py 提供，见文件顶部）──────
 
 
 def log_analysis_batch(reports: List["AddPositionReport"], tag: str = "") -> str:
@@ -551,7 +561,6 @@ def log_analysis_batch(reports: List["AddPositionReport"], tag: str = "") -> str
     将本次分析结果写入 analysis_logs/ 目录（JSONL 格式，按日分行）。
     每行一条 JSON，方便后续查询和回溯。
     """
-    import shutil
     os.makedirs(ANALYSIS_LOG_DIR, exist_ok=True)
     from datetime import datetime
     date_str = datetime.now().strftime('%Y%m%d')
@@ -652,7 +661,6 @@ def _lv_explain(detail: str) -> str:
     return detail[:20]
 
 
-
 def _build_add_position_card(reports: List["AddPositionReport"],
                           date_str: str = "",
                           title: str = "加仓信号分析") -> dict:
@@ -688,7 +696,6 @@ def _build_add_position_card(reports: List["AddPositionReport"],
         lines.append("")
         for r in can_add:
             meta = _meta(r)
-            sno  = meta.get('sno', '?')
             last_add = meta.get('last_add_date', '无记录')
             profit_pct = (r.current_price / r.cost - 1) * 100
             signals = ' / '.join(r.add_signal) if r.add_signal else '无'
@@ -711,7 +718,6 @@ def _build_add_position_card(reports: List["AddPositionReport"],
         lines.append("")
         for r in no_add:
             meta = _meta(r)
-            sno  = meta.get('sno', '?')
             profit_pct = (r.current_price / r.cost - 1) * 100
             # 找第一个失败级别
             fail_tag  = ""
@@ -783,7 +789,6 @@ def send_reports_to_feishu(reports: List["AddPositionReport"],
     except Exception as e:
         _feishu_log_error(f"飞书推送异常: {e}")
         return {"success": False, "message": str(e)}
-
 
 
 class AddPositionAnalyzer:
@@ -864,7 +869,6 @@ class AddPositionAnalyzer:
         ma5 = closes.rolling(5).mean()
         ma10 = closes.rolling(10).mean()
         ma20 = closes.rolling(20).mean()
-        ma60 = closes.rolling(60).mean() if len(df) >= 60 else None
 
         current_close = float(closes.iloc[-1])
         current_ma5 = float(ma5.iloc[-1])
@@ -951,7 +955,7 @@ class AddPositionAnalyzer:
         if has_conflict:
             detail = f"止盈冲突筛查：{' / '.join(signals)}，❌禁止加仓"
         else:
-            detail = f"止盈冲突筛查：无冲突项，✅可继续"
+            detail = "止盈冲突筛查：无冲突项，✅可继续"
 
         return LevelResult(passed=not has_conflict, score=score, detail=detail)
 
@@ -974,19 +978,15 @@ class AddPositionAnalyzer:
                                detail="数据不足（需≥65日）"), []
 
         signals_triggered: List[str] = []
-        scores_by_signal = []
 
         closes = df['close']
         vols = df['volume']
-        ma5 = closes.rolling(5).mean()
         ma10 = closes.rolling(10).mean()
         ma20 = closes.rolling(20).mean()
-        ma60 = closes.rolling(60).mean()
         vol_avg20 = vols.rolling(20).mean()
 
         current_close = float(closes.iloc[-1])
         current_vol = float(vols.iloc[-1])
-        prev_close = float(closes.iloc[-2])
 
         # ── 信号1：突破新高 ───────────────────────────
         sig1_scores = []
@@ -1005,7 +1005,6 @@ class AddPositionAnalyzer:
 
         # ── 信号2：均线回踩 ─────────────────────────
         # 回踩10/20日线不破（当日最低价 < MA10/MA20），且次日收阳
-        current_low = float(df['low'].iloc[-1])
         current_ma10 = float(ma10.iloc[-1])
         current_ma20 = float(ma20.iloc[-1])
         # 今日是否回踩
@@ -1127,7 +1126,7 @@ class AddPositionAnalyzer:
         df = self._load_kline(code, days=120)
 
         # 第一级
-        code6_for_grade = code.lstrip("sh").lstrip("sz")
+        code6_for_grade = to_pure_code(code)
         lv1 = self.analyze_level1(cost, current_price, sno, code6_for_grade)
 
         # 第二级
@@ -1296,9 +1295,10 @@ def format_report(report: AddPositionReport) -> str:
     """格式化加仓分析报告为文本"""
     profit_pct = (report.current_price / report.cost - 1) * 100
     meta = _meta(report)
-    sno = meta.get('sno', '?')
     raw_code = meta.get('raw_code', report.code)
     last_add = meta.get('last_add_date', '无记录')
+    # 修复：此前直接引用裸 sno，调用 format_report 会 NameError
+    sno = meta.get('sno', '?')
 
     # 冷却期提示
     can_add_cooldown, cooldown_msg = can_add_position(raw_code)

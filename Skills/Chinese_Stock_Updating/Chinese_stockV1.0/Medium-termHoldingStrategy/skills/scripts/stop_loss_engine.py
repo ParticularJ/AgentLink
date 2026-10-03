@@ -13,33 +13,42 @@
 ✅ 优先级6：利润模式减半（回撤达阈值，恐慌区放宽10%）
 ✅ 优先级7：本金模式5日线（跌破>1×ATR(5)，放量或连续2日）
 ✅ 优先级8：本金模式10日线（放量1.5×或连续3日，恐慌区禁止清仓）
-✅ 优先级9：时间止损（持仓>10日且利润<5%且亏损≥原止损×0.8）
+✅ 优先级9：时间止损（非利润保护模式下，持仓>10交易日且浮盈<5% → 清仓，释放资金）
+
+    注意：原文档写作"且亏损≥原止损×0.8"，但原实现把两个负数拿来比较
+    （loss_pct = -浮盈，阈值 = clear_stop_pct*0.8 也是负数），该条件恒为真，
+    实际规则一直是"持仓超时且没赚到钱就走"。这里把真实语义显式化，
+    并把参数提到 TIME_STOP_* 常量，便于回测调参。
 ✅ 利润模式均线仅参考（优先级7/8在利润模式下不触发）
 ✅ 假跌破例外（每只每日限1次）
 ✅ 纠错买入（每月最多2次）
 """
 import os
-import sys
-import json
 import pandas as pd
-import numpy as np
 from datetime import datetime
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import math
-from typing import Optional, List, Tuple
-from enum import Enum
+from typing import Tuple
 
 # 清除代理
 for k in list(os.environ.keys()):
     if 'proxy' in k.lower():
         try:
             del os.environ[k]
-        except:
+        except Exception:
             pass
 
 from models import StockData, TechnicalIndicators
 from market_sentiment import MarketSentiment, MarketState
-from atr_calculator import calc_atr, calc_stop_levels, auto_calc_stop_levels, get_lot_size
+from atr_calculator import get_lot_size
+
+
+# ── 优先级9「时间止损」参数（回测可调）──────────────────
+# 持仓超过 TIME_STOP_DAYS 个交易日、且浮盈不足 TIME_STOP_MIN_PROFIT 时清仓。
+# 语义是"资金效率"而非"止损"：不赚钱的仓位不该长期占用资金；
+# 若设为 None 可关闭该规则。
+TIME_STOP_DAYS = 10
+TIME_STOP_MIN_PROFIT = 0.05
 
 
 # ── 利润保护模式回撤阈值表 ──────────────────────────────
@@ -385,33 +394,37 @@ class StopLossEngine:
                         alert_level="🔴"
                     )
 
-        # ══ 优先级9：时间止损 ═════════════════════════
-        # 持仓>10日且浮盈<5%且亏损≥原止损×0.8，恐慌区禁止
-        if not hs.profit_mode:
+        # ══ 优先级9：时间止损（资金效率）═══════════════
+        # 规则：非利润保护模式 + 持仓超过 TIME_STOP_DAYS 个交易日
+        #       + 浮盈不足 TIME_STOP_MIN_PROFIT  → 清仓，把资金放回池子。
+        # 修正说明：原实现写作 "loss_pct >= clear_stop_pct*0.8"，
+        # 但两侧同为负数（-浮盈 vs -止损×0.8），该比较恒为真，
+        # 既没有起到"要求确实亏损"的作用，也让代码读起来与实际行为不符。
+        # 现在按真实语义显式表达，并把天数/收益率阈值提为常量。
+        if (not hs.profit_mode and TIME_STOP_DAYS is not None
+                and not hs.time_stop_hit):
             holding_days = self._count_trading_days(hs.entry_date, today_str)
-            if holding_days > 10 and hs.current_profit_pct < 0.05:
-                time_stop_threshold = hs.clear_stop_pct * 0.8
-                # 亏损≥原止损×0.8（注意是"亏损"即负的利润）
-                loss_pct = -hs.current_profit_pct  # 亏损比例（正数）
-                if loss_pct >= time_stop_threshold and not hs.time_stop_hit:
-                    if not self.market.can_clear_position():
-                        return Action(
-                            priority=9,
-                            name="时间止损",
-                            action="持有",
-                            shares_to_sell=0,
-                            reason="🚨 恐慌区，时间止损（清仓）被禁止",
-                            alert_level="⚪"
-                        )
-                    hs.time_stop_hit = True
+            if holding_days > TIME_STOP_DAYS and hs.current_profit_pct < TIME_STOP_MIN_PROFIT:
+                if not self.market.can_clear_position():
                     return Action(
                         priority=9,
                         name="时间止损",
-                        action="清仓",
-                        shares_to_sell=hs.shares,
-                        reason=f"持仓{holding_days}交易日，浮盈{hs.current_profit_pct:.1%}<5%且亏损{loss_pct:.1%}≥原止损×0.8({time_stop_threshold:.1%})",
-                        alert_level="🔴"
+                        action="持有",
+                        shares_to_sell=0,
+                        reason="🚨 恐慌区，时间止损（清仓）被禁止",
+                        alert_level="⚪"
                     )
+                hs.time_stop_hit = True
+                return Action(
+                    priority=9,
+                    name="时间止损",
+                    action="清仓",
+                    shares_to_sell=hs.shares,
+                    reason=(f"持仓{holding_days}交易日>{TIME_STOP_DAYS}，"
+                            f"浮盈{hs.current_profit_pct:.1%}<{TIME_STOP_MIN_PROFIT:.0%}，"
+                            f"资金效率止损 → 清仓"),
+                    alert_level="🔴"
+                )
 
         # ══ 默认：持有 ══════════════════════════════
         return Action(
@@ -503,7 +516,6 @@ class StopLossEngine:
         if market_df is None or len(market_df) < 5:
             return False, "数据不足"
 
-        current_month = datetime.now().strftime("%Y-%m")
 
         # 检查月度次数限制
         if self._correction_count_month > 2:
@@ -597,7 +609,7 @@ class StopLossEngine:
             days = sum(1 for d in trade_days if d1 <= d <= d2)
             if days > 0:
                 return days
-        except:
+        except Exception:
             pass
 
         # 估算
@@ -606,7 +618,7 @@ class StopLossEngine:
             d2 = datetime.strptime(end_date, "%Y-%m-%d")
             calendar_days = (d2 - d1).days
             return max(1, int(calendar_days * 0.65))
-        except:
+        except Exception:
             return 0
 
     _trade_calendar = None
@@ -621,5 +633,5 @@ class StopLossEngine:
             df = ak.tool_trade_date_hist_sina()
             self._trade_calendar = set(pd.to_datetime(df['trade_date']).dt.date)
             return self._trade_calendar
-        except:
+        except Exception:
             return set()

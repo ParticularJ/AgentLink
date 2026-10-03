@@ -1,8 +1,7 @@
 import pandas as pd
-import numpy as np
 from typing import Tuple
 
-from config import POSITION_CONFIG, DATA_CONFIG
+from config import POSITION_CONFIG
 from models import MarketState, PositionAdvice
 
 # ── 代理清除 + 加载数据源 ────────────────────────────────
@@ -153,7 +152,6 @@ class MarketAnalyzer:
             total_limit_up = up_down.get('limit_up', 0) if up_down else 0
             total_limit_down = up_down.get('limit_down', 0) if up_down else 0         
             # print(f"涨跌家数: 上证 {up_down_sh.get('advance', 0)}/{up_down_sh.get('decline', 0)}, 深证 {up_down_sz.get('advance', 0)}/{up_down_sz.get('decline', 0)}, 创业板 {up_down_cy.get('advance', 0)}/{up_down_cy.get('decline', 0)}, 总体上涨率: {up_ratio:.2%}" )
-
 
 
             # ── 情绪乘数计算 ─────────────────────

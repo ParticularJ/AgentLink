@@ -1,9 +1,8 @@
 import pandas as pd
-import numpy as np
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple
 from atr_calculator import calc_atr
 from models import StockData, TechnicalIndicators, StockScore
-from config import SCORE_WEIGHTS, BUY_THRESHOLD
+from config import SCORE_WEIGHTS
 
 
 # ── 加载数据源适配层 ────────────────────────────────────
@@ -107,9 +106,6 @@ for sector_name, groups in WATCHLIST.items():
     SECTOR_ALL_STOCKS[sector_name] = all_codes
 
 
-
-
-
 class StockAnalyzer:
     """个股分析器（使用腾讯+新浪数据源，替代 akshare）"""
 
@@ -134,7 +130,7 @@ class StockAnalyzer:
                 df_hist, cur = get_stock_realtime(code)
                 if cur and "chg_pct" in cur:
                     stock_price_cache[code] = cur["chg_pct"]
-            except:
+            except Exception:
                 continue
 
         # 步骤3：计算每个板块强度
@@ -167,7 +163,6 @@ class StockAnalyzer:
                 score = 1.5
 
             self.sector_daily_score[sector_name] = round(score, 1)
-
 
 
     def fetch_stock_data(self, code: str) -> Optional[Tuple[pd.DataFrame, StockData]]:
@@ -416,7 +411,7 @@ class StockAnalyzer:
                     cap_score = 4.5
                 else:
                     cap_score = 2.0
-            except:
+            except Exception:
                 cap_score = 5.0
 
             # ============== 2. 稳定性评分（波动小→更稳健）==============
@@ -444,7 +439,7 @@ class StockAnalyzer:
             final = max(2.0, min(10.0, final))
             return round(final, 1)
 
-        except Exception as e:
+        except Exception:
             return 5.0
 
     def score_volume(self, latest_data: StockData) -> float:
@@ -485,7 +480,7 @@ class StockAnalyzer:
             index_data = get_index_realtime()  # 直接用你现有函数
             if index_data and "chg_pct" in index_data:
                 market_pct = index_data["chg_pct"]
-        except:
+        except Exception:
             pass
 
         # 真实强度 = 个股相对大盘的超额收益

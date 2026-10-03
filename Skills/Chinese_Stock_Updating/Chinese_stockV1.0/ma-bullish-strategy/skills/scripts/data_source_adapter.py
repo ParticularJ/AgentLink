@@ -3,10 +3,8 @@
 # 新增：pytdx 通达信数据源（无风控、无报错、极速稳定）
 
 import pandas as pd
-import numpy as np
-from typing import Optional, Dict, List
+from typing import Optional
 from datetime import datetime, timedelta
-import os
 import time
 
 class DataSourceAdapter:
@@ -24,7 +22,7 @@ class DataSourceAdapter:
         "yfinance": 2      # 有限支持A股
     }
     
-    def __init__(self, source: str = "auto", fallback: bool = True):
+    def __init__(self, source: str = "pytdx", fallback: bool = True):
         self.source = source
         self.fallback = fallback
         self.data_source = None
@@ -138,16 +136,17 @@ class DataSourceAdapter:
                     return self._baostock_stock_list()
                 elif self.source == "pytdx":
                     return self._pytdx_stock_list()
-            except Exception as e:
+            except Exception:
                 if self.fallback:
                     self.switch_to_next_source()
                 continue
         return None
     
-    def get_stock_data(self, stock_code: str, 
+    def get_stock_data(self, stock_code: str,
                        start_date: Optional[str] = None,
                        end_date: Optional[str] = None,
-                       max_retries: int = 3) -> Optional[pd.DataFrame]:
+                       max_retries: int = 3,
+                       count: int = 200) -> Optional[pd.DataFrame]:
         for attempt in range(max_retries):
             try:
                 if self.source == "akshare":
@@ -157,10 +156,10 @@ class DataSourceAdapter:
                 elif self.source == "baostock":
                     return self._baostock_stock_data(stock_code, start_date, end_date)
                 elif self.source == "pytdx":
-                    return self._pytdx_stock_data(stock_code)
+                    return self._pytdx_stock_data(stock_code, count=count)
                 elif self.source == "yfinance":
                     return self._yfinance_stock_data(stock_code, start_date, end_date)
-            except Exception as e:
+            except Exception:
                 print(f"⚠️ {self.source} 获取{stock_code} 失败，重试 {attempt+1}/{max_retries}")
                 time.sleep(1)
                 continue
@@ -240,26 +239,51 @@ class DataSourceAdapter:
             return df
         return None
 
-    def _pytdx_stock_data(self, stock_code):
+    def _pytdx_stock_data(self, stock_code, count: int = 200):
+        """
+        通过 pytdx 获取 K 线，支持自定义条数（默认 200，覆盖 MA60 计算）
+        pytdx 单次最多取 800 条，超过时分批拼接
+        """
         api = self.data_source
         market = 1 if stock_code.startswith('6') else 0
-        
+
         servers = [
            # ('113.105.167.39', 7709),
            # ('119.147.171.116', 7709),
-           ('218.75.126.9', 7709)
+            ('218.75.126.9', 7709)
         ]
-        
+
         for host, port in servers:
-            if api.connect(host, port):
-                data = api.get_security_bars(9, market, stock_code, 0, 35)
-                api.disconnect()
-                df = api.to_df(data)
+            if not api.connect(host, port):
+                continue
+            try:
+                all_dfs = []
+                remaining = count
+                start = 0
+                while remaining > 0:
+                    take = min(remaining, 800)
+                    data = api.get_security_bars(9, market, stock_code, start, take)
+                    if not data:
+                        break
+                    df_part = api.to_df(data)
+                    all_dfs.append(df_part)
+                    if len(data) < take:
+                        break
+                    remaining -= take
+                    start += take
+                if not all_dfs:
+                    api.disconnect()
+                    return None
+                df = pd.concat(all_dfs, ignore_index=True)
                 df = df.rename(columns={'datetime':'date','vol':'volume'})
                 df['date'] = pd.to_datetime(df['date'])
                 df['amount'] = df['close'] * df['volume']
                 df['pct_change'] = df['close'].pct_change() * 100
+                api.disconnect()
                 return df[['date','open','close','high','low','volume','amount','pct_change']]
+            except Exception:
+                api.disconnect()
+                continue
         return None
 
     # ============== yfinance ==============
@@ -285,7 +309,7 @@ if __name__ == '__main__':
     print("=== 测试数据源适配器（已添加 pytdx）===\n")
     
     # 自动选择最优数据源
-    adapter = create_adapter("baostock", fallback=True)
+    adapter = create_adapter("pytdx")
     
     if adapter.data_source:
         print(f"✅ 当前数据源: {adapter.source}")

@@ -1,16 +1,23 @@
 import schedule
-import time
 import os
+import sys
 import json
 import shutil
 from datetime import datetime
 from typing import List
 
-from models import Holding, StockScore
+from models import Holding
 from market_analyzer import MarketAnalyzer
 from stock_analyzer import StockAnalyzer
 from risk_controller import RiskController
 from config import STOCK_GRADE, GRADE_CONFIG
+
+# ── 统一路径：不再硬编码绝对路径 ──────────────────────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+from paths import HOLDINGS_FILE, CASH_FILE  # noqa: E402
 
 #from alert_sender import AlertSender
 
@@ -22,8 +29,8 @@ for k in list(os.environ.keys()):
 class StockTradingStrategy:
     """股票交易策略主程序"""
     
-    def __init__(self, holdings_file: str = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json",
-                 cash_file: str = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/cash_balance.json",
+    def __init__(self, holdings_file: str = str(HOLDINGS_FILE),
+                 cash_file: str = str(CASH_FILE),
                  initial_capital: float = 1000000.0):
         print("初始化股票交易策略系统...")
         self.holdings_file = holdings_file
@@ -46,7 +53,7 @@ class StockTradingStrategy:
         print("正在加载数据...")
         self.load_holdings()
         self.load_cash_balance()
-        print(f"系统初始化完成")
+        print("系统初始化完成")
         print(f"初始资金: {self.initial_capital:,.2f}")
         print(f"可用现金: {self.available_cash:,.2f}")
         print(f"持仓数量: {len(self.holdings)}")
@@ -395,8 +402,8 @@ class StockTradingStrategy:
 
 
 if __name__ == "__main__":
-    holdings_path = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json"
-    
+    holdings_path = str(HOLDINGS_FILE)
+
     if not os.path.exists(holdings_path):
         print("请修改 holdings.json 中的持仓信息,然后重新运行")
     else:

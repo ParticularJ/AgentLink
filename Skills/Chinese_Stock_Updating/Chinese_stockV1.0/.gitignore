@@ -1,0 +1,35 @@
+# ── 凭据：绝不入库 ──────────────────────────────────────
+common/secrets.yaml
+secrets.yaml
+.env
+.env.*
+
+# ── 运行期产物 ──────────────────────────────────────────
+logs/
+*.log
+my_holdings/backup/
+my_holdings/analysis_logs/
+strategy-fusion-advisor/recommendations/cache/
+
+# ── 临时 / 编辑器 / 系统文件 ────────────────────────────
+__pycache__/
+*.py[cod]
+*.damaged.py
+_recovered/
+backtests/cache/
+backtests/out/*.csv
+*.bak
+*.bk
+*.orig
+*.tmp
+*~
+*.swp
+* copy.*
+*copy.py
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 注：_archive/ 保留在版本库中（仅 7 个历史分叉文件，便于回溯），
+#     如需彻底清理可直接删除该目录。

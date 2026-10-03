@@ -5,17 +5,15 @@ ATR止损参数计算模块
 提供精确ATR计算、板块速查表、快速估算三种精度
 """
 import os
-import sys
 import pandas as pd
 import numpy as np
-from typing import Optional, Tuple
 
 # 清除代理
 for k in list(os.environ.keys()):
     if 'proxy' in k.lower():
         try:
             del os.environ[k]
-        except:
+        except Exception:
             pass
 
 

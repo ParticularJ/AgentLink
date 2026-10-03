@@ -15,9 +15,12 @@ SCRIPTS_DIR = os.path.join(SKILLS_DIR, "scripts")
 BASE_DIR = os.path.dirname(os.path.dirname(SKILLS_DIR))
 sys.path.insert(0, SCRIPTS_DIR)
 
-# 持仓和现金文件路径
-HOLDINGS_FILE = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json"
-CASH_FILE = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/cash_balance.json"
+# ── 统一路径：持仓 / 现金文件由 common/paths.py 推导 ────────
+_root = BASE_DIR
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+from paths import HOLDINGS_FILE, CASH_FILE  # noqa: E402
 
 # 初始资金
 INITIAL_CAPITAL = 1000000.0

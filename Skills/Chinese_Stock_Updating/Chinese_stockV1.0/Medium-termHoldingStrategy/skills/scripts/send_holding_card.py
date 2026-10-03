@@ -4,17 +4,27 @@
 持仓监控 - 飞书推送脚本（供 cron 调用）
 09:15 早盘分析推送 / 14:50 尾盘分析推送
 """
-import os,glob
+import os
 import sys
 import json
-from tracemalloc import start
-import requests
 import traceback
 from datetime import datetime
-from pathlib import Path
 import akshare as ak
 import pandas as pd
 from config import STOCK_GRADE, GRADE_CONFIG
+
+# ── 统一路径与凭据：不再硬编码绝对路径 / 明文 Secret ──────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+import feishu
+from paths import (  # noqa: E402
+    HOLDINGS_FILE as _HOLDINGS_FILE,
+    CASH_FILE as _CASH_FILE,
+    RECO_DIR as _RECO_DIR,
+    LOG_DIR,
+)
 # 清除代理
 for k in list(os.environ.keys()):
     if 'proxy' in k.lower():
@@ -30,20 +40,12 @@ GRADE_RULE = GRADE_CONFIG  # 兼容别名
 # ====================== 止盈策略结束 ======================
 
 
-# 持仓文件
-HOLDINGS_FILE = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json"
-
-# 资金文件
-CASH_FILE = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/cash_balance.json"
-
-# 飞书配置
-FEISHU_APP_ID = "cli_a93eb458ceb81cc0"
-FEISHU_APP_SECRET = "1i18JUKuFhQEejUOkNividRbMdJBMpV8"
-FEISHU_GROUP_ID = "oc_0ac1e4e8d09f939d887f4992bba2886b"
-RECO_DIR = '/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/recommendations'
+# 持仓 / 资金 / 推荐目录：来自 common/paths.py
+HOLDINGS_FILE = str(_HOLDINGS_FILE)
+CASH_FILE = str(_CASH_FILE)
+RECO_DIR = str(_RECO_DIR)
 
 # 日志文件
-LOG_DIR = Path("/home/jarvis/.openclaw/logs/stock")
 LOG_FILE = LOG_DIR / "holding_push.log"
 
 
@@ -62,26 +64,6 @@ def log_error(msg):
     print(line, file=sys.stderr)
     with open(LOG_FILE, "a") as f:
         f.write(line + "\n")
-
-def get_tenant_token():
-    url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
-    resp = requests.post(url, json={"app_id": FEISHU_APP_ID, "app_secret": FEISHU_APP_SECRET}, timeout=10)
-    resp.raise_for_status()
-    return resp.json()["tenant_access_token"]
-
-
-def send_feishu_card(token: str, card: dict, receive_id: str):
-    url = "https://open.feishu.cn/open-apis/im/v1/messages"
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    payload = {
-        "receive_id": receive_id,
-        "msg_type": "interactive",
-        "content": json.dumps(card)
-    }
-    resp = requests.post(url, params={"receive_id_type": "chat_id"}, json=payload, headers=headers, timeout=15)
-    resp.raise_for_status()
-    return resp.json()
-
 
 def load_holdings():
     with open(HOLDINGS_FILE, 'r', encoding='utf-8') as f:
@@ -126,7 +108,6 @@ def calc_profit_target(code, cost, shares, trend_coef):
     raw_s1 = shares * cfg["sell_ratio"][0]
     raw_s2 = shares * cfg["sell_ratio"][1]
     raw_s3 = shares * cfg["sell_ratio"][2]
-
 
 
     # 向上取整到对应单位
@@ -190,7 +171,7 @@ def run_analysis(session: str):
     """运行持仓分析（复用 main.py 的分析逻辑）"""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-    from models import Holding, PositionAdvice, MarketState
+    from models import Holding
     from market_analyzer import MarketAnalyzer
     from stock_analyzer import StockAnalyzer
     from risk_controller import RiskController
@@ -344,7 +325,6 @@ def run_analysis(session: str):
     return results, position_advice, total_asset, cash_info
 
 
-
 def build_card(session: str, results: list, position_advice, total_asset, cash_info, date_str: str):
     """构建飞书卡片"""
     is_morning = session == "MORNING"
@@ -352,14 +332,6 @@ def build_card(session: str, results: list, position_advice, total_asset, cash_i
     label = "持仓分析(止盈操作)" if is_morning else "持仓分析(止盈操作)"
     time_hint = "09:15" if is_morning else "14:50"
 
-    state_emoji = {
-        "强势主升": "🚀",
-        "震荡偏多": "📈",
-        "弱势震荡": "📊",
-        "下跌趋势": "📉",
-        "系统性风险": "🚨"
-    }
-    state_icon = state_emoji.get(position_advice.market_state.value, "📊")
 
     total_profit = total_asset - cash_info.get('initial_capital', 0)
     
@@ -374,9 +346,7 @@ def build_card(session: str, results: list, position_advice, total_asset, cash_i
         # 阶段1：跌破5日线或10日线
         #if r['profit_pct'] < r['profit']['first_target'] * 100:
         if r['tech']:
-            p = r['current_price']
             # 当前股票的盈亏金额
-            cur_profit_val = r['profit_val']
             print("r-shares: ", r['shares'])
             # 1. 达到止盈目标（分批卖出提醒）
             pf = r['profit']
@@ -402,15 +372,12 @@ def build_card(session: str, results: list, position_advice, total_asset, cash_i
                         action_reasons.append(f"🎯 达到第三止盈{pf['p3']} / 当前价：{current_price} → 卖出{pf['s3']}股")
 
 
-
             # 止损策略
             stop_loss_hit = r['stop_lose_hit']
             print("stop_loss_hit: ", stop_loss_hit[0], stop_loss_hit[1], stop_loss_hit[2], stop_loss_hit[3])
 
             # 当前股票的总金额
-            cur_total_val = r['current_price'] * r['shares']
             # 盈亏比例 = 盈亏金额 / 总金额
-            cur_profit_pct = cur_profit_val / cur_total_val if cur_total_val > 0 else 0
             # print('当前盈亏金额：', cur_profit_val, '当前总金额：', cur_total_val, '盈亏比例：', cur_profit_pct)
            
             # 盈亏金额达到总金额的10%才触发更强烈的卖出建议
@@ -491,7 +458,7 @@ def build_card(session: str, results: list, position_advice, total_asset, cash_i
     
     # 仓位与资产
     card_content_lines.append("---")
-    card_content_lines.append(f"📊 **仓位与资产**")
+    card_content_lines.append("📊 **仓位与资产**")
     #card_content_lines.append(f"大盘: {state_icon} {position_advice.market_state.value}")
     #card_content_lines.append(f"仓位: 🎯建议{position_advice.suggested_position*100:.0f}% | 💵当前{position_advice.current_position*100:.1f}% | ➕可用{position_advice.available_position*100:.0f}%")
     card_content_lines.append(f"**总资产: {total_asset:+,.0f}元 ** \n**总盈亏: {total_profit:+,.0f}元**\n**可用现金: {cash_info.get('available_cash', 0):+,.0f}元**")
@@ -540,16 +507,16 @@ def main():
         # print("card:", card)
         # return
         try:
-            token = get_tenant_token()
-            resp = send_feishu_card(token, card, FEISHU_GROUP_ID)
+            token = feishu.get_tenant_token()
+            resp = feishu.send_card_with_token(token, card, logger=log)
             code = resp.get('code')
             msg = resp.get('msg') or resp.get('message', '')
             if code == 0:
                 log(f"飞书推送成功: code={code} msg={msg}")
             else:
                 log_error(f"飞书推送失败: code={code} msg={msg} resp={resp}")
-        except Exception as e:
-            log_error(f"飞书推送异常")
+        except Exception:
+            log_error("飞书推送异常")
     else:
         log("无数据，跳过推送")
 

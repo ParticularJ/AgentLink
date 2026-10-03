@@ -5,8 +5,10 @@
 ## 路径
 
 ```
-/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/Medium-termHoldingStrategy/skills/trade_executor.py
+<repo>/Medium-termHoldingStrategy/skills/trade_executor.py
 ```
+
+`<repo>` 为仓库根目录，由 `common/paths.py` 自动推导，也可用环境变量 `STOCK_ROOT` 覆盖。
 
 ## 强制执行规则
 
@@ -77,14 +79,15 @@ result = execute_trade(
 2. **参数解析** - 从用户消息中提取 code/shares/price
 3. **执行交易** - 调用 `execute_trade()`
 4. **运行监控脚本** - 执行完成后运行对应时间的 monitor.sh：
-   - 早盘时段（09:15-11:30）：`sh /home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/run_morning_monitor.sh`
-   - 尾盘时段（13:00-15:00）：`sh /home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/run_evening_monitor.sh`
+   - 早盘时段（09:15-11:30）：`bash <repo>/run_morning_monitor.sh`
+   - 尾盘时段（13:00-15:00）：`bash <repo>/run_evening_monitor.sh`
 5. **结果回报** - 告知成功/失败，列出更新后的持仓和现金
 
 ## 配置文件
 
-- 持仓文件：`/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json`
-- 现金文件：`/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/cash_balance.json`
+- 持仓文件：`<repo>/my_holdings/holdings.json`
+- 现金文件：`<repo>/my_holdings/cash_balance.json`
+- 飞书凭据：`<repo>/common/secrets.yaml`（或环境变量 `FEISHU_APP_ID` / `FEISHU_APP_SECRET` / `FEISHU_GROUP_ID`）
 
 ## 注意事项
 

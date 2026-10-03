@@ -13,14 +13,20 @@ from pathlib import Path
 # 确保父目录在 PYTHONPATH
 from test_news import recommendations_penalty
 
-# 飞书配置
-FEISHU_APP_ID = "cli_a93eb458ceb81cc0"
-FEISHU_APP_SECRET = "1i18JUKuFhQEejUOkNividRbMdJBMpV8"
-FEISHU_GROUP_ID = "oc_0ac1e4e8d09f939d887f4992bba2886b"
+# ── 统一路径与凭据：不再硬编码绝对路径 / 明文 Secret ──────────
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+import feishu
+from paths import (  # noqa: E402
+    WATCHLIST_CORE_FILE,
+    HOLDINGS_FILE,
+    LOG_DIR,
+)
 
-WATCHLIST_PATH = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_stock_pool/watchlist_core.yaml"
-HOLDINGS_PATH = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json"
-LOG_DIR = Path("/home/jarvis/.openclaw/logs/stock")
+WATCHLIST_PATH = str(WATCHLIST_CORE_FILE)
+HOLDINGS_PATH = str(HOLDINGS_FILE)
 LOG_FILE = LOG_DIR / "watchlist_scan.log"
 
 
@@ -69,64 +75,17 @@ def load_holdings(path: Path) -> list[tuple[str, str]]:
     return stocks
 
 
-def get_tenant_token_with_retry(max_retries=3, retry_interval=5):
-    import requests, time
-    url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
-    for attempt in range(1, max_retries + 1):
-        try:
-            resp = requests.post(url, json={"app_id": FEISHU_APP_ID, "app_secret": FEISHU_APP_SECRET}, timeout=10)
-            resp.raise_for_status()
-            token = resp.json().get("tenant_access_token", "")
-            if token:
-                if attempt > 1:
-                    log(f"获取token重试第{attempt}次成功")
-                return token
-            log(f"获取token为空, 第{attempt}次重试")
-        except Exception as e:
-            log(f"获取token异常 (第{attempt}/{max_retries}): {e}")
-        if attempt < max_retries:
-            time.sleep(retry_interval)
-    log_error("获取token全部重试失败，退出")
-    sys.exit(1)
-
-
-def send_card_with_retry(token, group_id, card, max_retries=3, retry_interval=5):
-    import requests, time
-    url = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=chat_id"
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    payload = {
-        "receive_id": group_id,
-        "msg_type": "interactive",
-        "content": json.dumps(card)
-    }
-    for attempt in range(1, max_retries + 1):
-        try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=10)
-            resp.raise_for_status()
-            result = resp.json()
-            code = result.get('code')
-            if code == 0:
-                if attempt > 1:
-                    log(f"重试第{attempt}次成功")
-                return result
-            else:
-                log(f"飞书返回错误: code={code} msg={result.get('msg','')}, 第{attempt}次重试")
-        except Exception as e:
-            log(f"推送异常 (第{attempt}/{max_retries}): {e}")
-        if attempt < max_retries:
-            time.sleep(retry_interval)
-    return {"code": -1, "msg": "全部重试失败"}
-
-
+# ── 重大利空判定参数 ────────────────────────────────────────
+# 阈值 -10 来自模块文档：「仅推送重大利空：penalty <= -10 且命中强利空关键词」。
+# 关键词取自 test_news.py 系统提示词中「实质性利空 / 极端重大利空」列举的情形
+#（大额减持、高折价大宗、业绩预亏或下修、监管立案/谴责/处罚）。
 SEVERE_PENALTY_THRESHOLD = -10
-SEVERE_KEYWORDS = [
-    "退市", "ST", "*ST", "立案", "调查", "处罚", "处罚决定",
-    "财务造假", "造假", "违规", "减持", "清仓减持", "大额减持",
-    "诉讼", "仲裁", "冻结", "质押爆仓", "强平", "亏损", "巨亏",
-    "停牌", "停牌核查", "跌停", "连续跌停", "商誉减值",
-    "业绩预亏", "首亏", "退市风险", "风险警示", "重大违法",
-    "问询函", "关注函", "监管函", "解聘", "辞职", "被查",
-]
+SEVERE_KEYWORDS = (
+    "大额减持", "减持", "折价", "大宗交易",
+    "业绩预亏", "预亏", "业绩下修", "下修", "业绩暴雷", "暴雷",
+    "立案", "调查", "公开谴责", "谴责", "行政处罚", "处罚", "监管函", "问询函",
+    "退市风险", "退市", "商誉减值", "资产减值", "股份冻结", "资金占用",
+)
 
 
 def is_severe_negative(penalty: int, reasons: list) -> bool:
@@ -196,7 +155,6 @@ def build_severe_negative_card(date_str, severe_stocks, scanned_total):
 
 
 if __name__ == "__main__":
-    import requests
 
     date_str = datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -246,8 +204,8 @@ if __name__ == "__main__":
         }, ensure_ascii=False, indent=2))
         sys.exit(0)
 
-    token = get_tenant_token_with_retry()
-    result = send_card_with_retry(token, FEISHU_GROUP_ID, card)
+    token = feishu.get_tenant_token_with_retry(logger=log)
+    result = feishu.send_card_with_retry(token, card, logger=log)
     code = result.get('code')
     msg = result.get('msg', '')
     if code == 0:

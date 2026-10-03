@@ -5,10 +5,8 @@
 基于沪深300指数，每日14:40判定收盘状态
 """
 import os
-import sys
 import requests
 import pandas as pd
-import numpy as np
 from datetime import datetime
 from enum import Enum
 from typing import Tuple, Optional
@@ -18,7 +16,7 @@ for k in list(os.environ.keys()):
     if 'proxy' in k.lower():
         try:
             del os.environ[k]
-        except:
+        except Exception:
             pass
 
 

@@ -3,7 +3,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import requests, time
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional
+from typing import List, Dict
 from llm_client import generate_text
 
 def _analyze_news_sentiment(news_content: str, stock_name: str = "百济神州") -> dict:
@@ -93,7 +93,6 @@ def _analyze_news_sentiment(news_content: str, stock_name: str = "百济神州")
         except Exception as e:
             print(f"第{attempt}次调用异常：{str(e)}，即将重试...")
         # 短暂休眠防接口拥堵
-        import time
         time.sleep(0.5)
 
   
@@ -112,7 +111,7 @@ def _analyze_news_sentiment(news_content: str, stock_name: str = "百济神州")
         result = json.loads(response)
         
         return result
-    except:
+    except Exception:
         result = {"sentiment": "neutral", "score": 50, "reason": "JSON解析失败"}
     
         return result
@@ -264,7 +263,6 @@ def recommendations_penalty(stock_code: str, stock_name: str) -> tuple[int,List[
     # -----------------------
     penalty = max(-35, min(10, penalty))  # 利空最多-35，利好最多+10
     return penalty,reason
-
 
 
 if __name__ == "__main__":

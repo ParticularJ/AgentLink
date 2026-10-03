@@ -15,8 +15,7 @@ import os
 import json
 import sys
 import pandas as pd
-import numpy as np
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
@@ -30,13 +29,20 @@ for k in list(os.environ.keys()):
     if 'proxy' in k.lower():
         try:
             del os.environ[k]
-        except:
+        except Exception:
             pass
 
-# ── 路径配置 ───────────────────────────────────────────
-HOLDINGS_FILE = "/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/my_holdings/holdings.json"
-LOG_DIR = "/home/jarvis/.openclaw/logs/stock"
-LOG_FILE = f"{LOG_DIR}/position_monitor.log"
+# ── 路径配置：统一由 common/paths.py 推导，不硬编码绝对路径 ──
+_root = os.path.abspath(os.path.dirname(__file__))
+while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root != os.path.dirname(_root):
+    _root = os.path.dirname(_root)
+sys.path.insert(0, os.path.join(_root, "common"))
+from holdings import to_pure_code  # noqa: E402
+from paths import HOLDINGS_FILE as _HOLDINGS_FILE, LOG_DIR as _LOG_DIR  # noqa: E402
+
+HOLDINGS_FILE = str(_HOLDINGS_FILE)
+LOG_DIR = str(_LOG_DIR)
+LOG_FILE = os.path.join(LOG_DIR, "position_monitor.log")
 
 # ── 数据源 ─────────────────────────────────────────────
 try:
@@ -145,7 +151,7 @@ class PositionData:
             try:
                 entry_dt = datetime.strptime(entry_str, "%Y-%m-%d")
                 hold_days = (datetime.now() - entry_dt).days
-            except:
+            except Exception:
                 pass
         
         return cls(
@@ -276,17 +282,8 @@ def _get_first_profit_target(code6: str) -> list:
     return cfg["profit_targets"]
 
 
-
-def compute_rsi(closes: pd.Series, period: int = 14) -> float:
-    """计算RSI(14)"""
-    delta = closes.diff()
-    gain = delta.where(delta > 0, 0.0)
-    loss = (-delta).where(delta < 0, 0.0)
-    avg_gain = gain.ewm(alpha=1/period, adjust=False).mean()
-    avg_loss = loss.ewm(alpha=1/period, adjust=False).mean()
-    rs = avg_gain / loss.replace(0, np.nan)
-    rsi = 100 - (100 / (1 + rs))
-    return float(rsi.iloc[-1])
+# compute_rsi 已移除：本文件从未调用它，且实现里误用 loss 而非 avg_loss。
+# 需要 RSI 请用 common/indicators.py 的 rsi()。
 
 
 def _fetch_kline_akshare(code: str, days: int = 120) -> Optional[pd.DataFrame]:
@@ -338,7 +335,7 @@ def _fetch_kline_sina(code: str, days: int = 120) -> Optional[pd.DataFrame]:
     """新浪K线获取（备用）"""
     try:
         import requests
-        url = f"https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData"
+        url = "https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData"
         params = {
             'symbol': code,
             'scale': '240',  # 日线
@@ -800,7 +797,7 @@ class PositionMonitor:
     
     def _to_sina_code(self, code: str) -> str:
         """转换为新浪格式"""
-        code = code.strip().lstrip('sh').lstrip('sz')
+        code = to_pure_code(code)
         if code.startswith(('6', '5', '8', '9')):
             return f"sh{code}"
         return f"sz{code}"
@@ -828,7 +825,6 @@ class PositionMonitor:
             self.market_sentiment = MarketContext.get_market_sentiment()
 
         print("市场情绪:", self.market_sentiment)
-
 
 
         if holdings is None:
@@ -912,7 +908,6 @@ class PositionMonitor:
             lines.append("⚠️ **市场极端恐慌，🚫禁止清仓**\n")
         elif self.market_sentiment == "恐慌":
             lines.append("⚠️ **市场恐慌，禁止清仓，最多减仓30%**\n")
-
 
 
         # 紧急信号
@@ -1031,20 +1026,17 @@ def main():
         print("\n[INFO] 飞书推送...")
         try:
             from add_position_analyzer import _get_tenant_token, _send_feishu_card
-            
+            from feishu_config import FEISHU_GROUP_ID
+
             card = monitor.build_feishu_card(results, "持仓监控日报")
             token = _get_tenant_token()
-            
-            FEISHU_APP_ID = "cli_a93eb458ceb81cc0"
-            FEISHU_APP_SECRET = "1i18JU…MpV8"
-            FEISHU_GROUP_ID = "oc_0ac1e4e8d09f939d887f4992bba2886b"
-            
+
             resp = _send_feishu_card(token, card, FEISHU_GROUP_ID)
             code_resp = resp.get('code', -1)
             msg_resp = resp.get('msg', '') or resp.get('message', '')
             
             if code_resp == 0:
-                print(f"✅ 飞书推送成功")
+                print("✅ 飞书推送成功")
             else:
                 print(f"❌ 飞书推送失败: {msg_resp}")
         except Exception as e:

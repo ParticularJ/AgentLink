@@ -20,8 +20,6 @@ os.environ["FTP_PROXY"] = ""
 os.environ["ALL_PROXY"] = ""
 os.environ["SOCKS_PROXY"] = ""
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 import warnings
 warnings.filterwarnings('ignore')
@@ -57,8 +55,6 @@ except ImportError:
         print(f"[WARN] get_stock_realtime 导入失败: {_e}，将只用 DataSourceAdapter")
         get_stock_realtime = None
         _HAS_REALTIME = False
-
-
 
 
 class BreakoutHighAnalyzer:
@@ -321,7 +317,7 @@ class BreakoutHighAnalyzer:
                 print(f"🚫 高位过滤: {'; '.join(fail_reasons)}")
                 return None
             else:
-                print(f"✅ 距历史新高近但强趋势主升浪，放行")
+                print("✅ 距历史新高近但强趋势主升浪，放行")
 
         # 区间标记
         near_history = False
@@ -685,11 +681,8 @@ class BreakoutHighAnalyzer:
                     result['current_price'] = realtime['price']
 
             return result
-        except Exception as e:
+        except Exception:
             return None
-
-
-
 
 
 if __name__ == '__main__':

@@ -1,10 +1,9 @@
-#!/bin/bash
-# 持仓监控尾盘 (14:50)
-unset ALL_PROXY all_proxy http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
-cd /home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/Medium-termHoldingStrategy/skills/scripts
-PYTHONPATH=/home/jarvis/.openclaw/workspace/skills/Chinese_Stock_back/Medium-termHoldingStrategy/skills/scripts \
-timeout 120 /home/jarvis/miniconda3/envs/vllm/bin/python position_monitor.py --feishu 2>&1
-exit_code=$?
-if [ $exit_code -ne 0 ]; then
-    echo "[ERROR] position_monitor.py 异常退出: $exit_code"
-fi
+#!/usr/bin/env bash
+# 持仓监控 V3.0 - 止损止盈引擎 (14:50)
+# 路径 / 解释器 / 代理清理统一由 scripts/_common.sh 处理，本脚本不含任何绝对路径。
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/_common.sh"
+
+cd "$HOLDING_SCRIPTS"
+PYTHONPATH="$HOLDING_SCRIPTS" \
+  timeout 120 "$STOCK_PYTHON" position_monitor.py --feishu 2>&1
+report_exit "Medium-termHoldingStrategy" $?
