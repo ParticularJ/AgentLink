@@ -72,12 +72,12 @@ for p in (_ADAPTER_SRC, _FALLBACK_SRC):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-try:
-    from data_source_adapter import DataSourceAdapter
-    _USE_ADAPTER = True
-except Exception as _e:
-    print(f"[WARN] DataSourceAdapter 加载失败: {_e}, 回退到 fetch_kline_sina")
-    _USE_ADAPTER = False
+# try:
+#     from data_source_adapter import DataSourceAdapter
+#     _USE_ADAPTER = True
+# except Exception as _e:
+#     print(f"[WARN] DataSourceAdapter 加载失败: {_e}, 回退到 fetch_kline_sina")
+#     _USE_ADAPTER = False
 
 # 始终导入 fetch_kline_sina 作为兜底（无论 adapter 是否可用）
 try:
@@ -86,15 +86,24 @@ except Exception as _e2:
     print(f"[WARN] fetch_kline_sina 也加载失败: {_e2}")
     fetch_kline_sina = None
 
-# ── 初始化数据源（pytdx 优先，0.2s 取数据）───────────────
+# 2026-09-17 新增：腾讯数据源作为主源（用户看到的数据）
+# 原因：sina 与 tencent 对 ETF 的历史 K 线差异较大（除权/复权处理不同），
+#       导致 MA60 等指标差异可达 11%。用户依赖腾讯数据源看盘，detector 也应一致。
+try:
+    from data_source import _fetch_kline_tencent_fallback as fetch_kline_tencent  # noqa: E402
+except Exception as _e3:
+    print(f"[WARN] fetch_kline_tencent 加载失败: {_e3}")
+    fetch_kline_tencent = None
+
+# # ── 初始化数据源（pytdx 优先，0.2s 取数据）───────────────
 _ADAPTER = None
-if _USE_ADAPTER:
-    try:
-        _ADAPTER = DataSourceAdapter(source='pytdx', fallback=True)
-        print(f"[数据源] 使用 {_ADAPTER.source}")
-    except Exception as e:
-        print(f"[WARN] DataSourceAdapter 初始化失败: {e}")
-        _ADAPTER = None
+# if _USE_ADAPTER:
+#     try:
+#         _ADAPTER = DataSourceAdapter(source='pytdx', fallback=True)
+#         print(f"[数据源] 使用 {_ADAPTER.source}")
+#     except Exception as e:
+#         print(f"[WARN] DataSourceAdapter 初始化失败: {e}")
+#         _ADAPTER = None
 
 # ── 输出目录：统一由 common/paths.py 推导，不硬编码绝对路径 ──
 _root = _BASE_DIR
@@ -149,6 +158,9 @@ SECTOR_CONSTITUENTS: Dict[str, List[str]] = {
     '种子农业': [],
     '可控核聚变': [],
     '稀土': [],   # 新增（2026-08-30，承接 watchlist.yaml 的 rare_earth）
+    '低空经济': [],   # 2026-09-07 新增（承接 watchlist.yaml 的 low_altitude_economy）
+    '煤炭': [],   # 2026-09-14 新增（承接 watchlist.yaml 的 coal）
+    '白银': [],   # 2026-09-14 新增（承接 watchlist.yaml 的 precious_metal_silver，独立于黄金）
 }
 
 # 行业 ETF 板块（全部用 ETF 标尺，从 watchlist.yaml 的 ETF 部分选取）
@@ -171,16 +183,28 @@ SECTOR_ETFS: Dict[str, object] = {
     '光通信':   ['sh515880'],                                       # 通信ETF
 
     # ── 军工 ──
-    '军工':     ['sh512660', 'sh512670', 'sh512560'],               # 军工ETF + 国防军工ETF + 中证军工ETF
-
-    # ── 商业航天（用军工 ETF 作为代理，watchlist 中无单独 ETF）──
-    '商业航天': ['sh512560'],                                       # 中证军工ETF（代理）
+    '军工':     ['sh512660', 'sh512670'],               # 军工ETF + 国防军工ETF + 中证军工ETF
+    #'军工':     ['sh512660', 'sh512670', 'sh512560'],
+    # ── 商业航天（2026-09-15 独立 ETF）──
+    # 之前用 sh512560 军工 ETF 作代理，与军工强相关
+    # 现在用 sz159227 独立商业航天主题 ETF（2025-11-21 上市，约 10 个月数据）
+    # watchlist 成分股：中国卫星/铖昌科技（卫星制造/相控阵 T/R 组件）
+    # 注：sz159227 历史较短，无 3 年回测基础，使用时注意
+    '商业航天': ['sz159227'],                                       # 商业航天ETF（独立主题）
 
     # ── 人形机器人 ──
     '人形机器人': ['sh562500'],                                     # 机器人ETF华夏（外部代码）
 
-    # ── 智能驾驶（用高端装备ETF代理，watchlist 中无直接对应）──
-    '智能驾驶': ['sh516320'],                                       # 高端装备ETF（代理）
+    # ── 智能驾驶（2026-09-07 修正：之前用 sh516320 高端装备代理，错）──
+    # 验证 sh516320 与代表股（德赛西威/华阳集团）avg 相关仅 -0.097（负相关，明显错代理）
+    # 候选 ETF 与代表股相关系数（验证 2026-09-07）：
+    #   - sz159872 智能网联汽车ETF：0.677（avg: 德赛 +0.860, 华阳 +0.495）✅ 最佳
+    #   - sz159699 智能车ETF：      0.594（avg: 德赛 +0.669, 华阳 +0.520）
+    #   - sh515250 智能汽车ETF华夏：  0.537（avg: 德赛 +0.740, 华阳 +0.334）
+    # 智能驾驶 ETF 在 A 股覆盖不完整（板块聚焦新能源车 + 智驾软件），用 sz159872 智能网联汽车ETF
+    # 注意：即便最佳候选也只有 0.677（部分匹配），原因是德赛西威是智驾域控龙头、华阳是智能座舱，
+    #       子细分差异较大。ETF 失效会自动 fallback 用代表股合成（见 judge_sector fallback）
+    '智能驾驶': ['sz159872'],                                       # 智能网联汽车ETF
 
     # ── 消费电子（2026-09-07 修正：之前用 sh515880 通信 ETF 代理，错）──
     # 真相：A股没有"消费电子"ETF 在 watchlist 中，但市场存在：
@@ -216,7 +240,13 @@ SECTOR_ETFS: Dict[str, object] = {
     '新能源':   ['sh516160'],                                       # 新能源ETF（综合指数，含电池/光伏/储能/风电）
 
     # ── 贵金属 ──
-    '贵金属':   ['sh518880'],                           # 黄金ETF华安 + 有色金属ETF（代理）
+    # 注：仅用 sh518880 (黄金ETF华安) 单 ETF 标尺
+    #   - A 股无独立"贵金属"板块 ETF
+    #   - sz159880 是有色金属 ETF（工业金属），与黄金 ETF 相关性仅 0.4-0.5，
+    #     blend 反而拉低 v9 信号清晰度（黄金 vs 铜铝走势分化）
+    #   - 历史回测（v9, sh518880, 3 年 800 条 K 线）：
+    #     19 笔 / 命中 94.7% / 复利 +71.38% / 最大亏 -1.20%
+    '贵金属':   ['sh518880'],                                       # 黄金ETF华安（单 ETF）
 
     # ── 工业金属 ──
     '工业金属': ['sz159880'],                                       # 有色金属ETF（深市）
@@ -225,8 +255,8 @@ SECTOR_ETFS: Dict[str, object] = {
     '工程机械': ['sz159886'],                                       # 工程机械ETF（深市）
 
     # ── 油气 ──
-    '油气':     ['sz159309', 'sh561760'],                                       # 中证油气资源ETF；A股油气开采+油服，与watchlist成分匹配；混入少量油运成分，存在轻微噪音；ETF失效自动fallback成分股合成
-
+    '油气':     ['sz159309'],                                       # 中证油气资源ETF；A股油气开采+油服，与watchlist成分匹配；混入少量油运成分，存在轻微噪音；ETF失效自动fallback成分股合成
+    #'油气':     ['sz159309', 'sh561760'],
     # ── 航运（2026-09-06 修正注释：ETF 本质是油气+航运 blended）──
     # 真相：A股没有"纯航运"ETF
     #   - sz159309 中证油气资源ETF
@@ -238,7 +268,7 @@ SECTOR_ETFS: Dict[str, object] = {
     #         → 功能上能跑，注释改为实际身份
     # 之前注释"航运ETF（专用）"是错的，那是 2026-08-31 修复交通运输ETF反指标时的
     # copy-paste 失误（从油气那行复制过来忘了改）。功能不变，只修注释。
-    '航运':     ['sz159309', 'sh561760'],                                       # 油气+航运 blended（A股无纯航运ETF）
+    '航运':     ['sz159697'],                                       # 独立航运ETF（2025-11-21 上市，约 10 个月数据）
 
     # ── 券商 ──
     '券商':     ['sh512000'],                                       # 券商ETF
@@ -258,6 +288,30 @@ SECTOR_ETFS: Dict[str, object] = {
 
     # ── 稀土（新增，承接 watchlist.yaml 的 rare_earth）──
     '稀土':       ['sh516150'],                                      # 嘉实中证稀土产业ETF
+
+    # ── 低空经济（2026-09-07 新增）──
+    # 验证（与卧龙电驱/万丰奥威 相关性）：
+    #   - sz159795 低空经济ETF天弘：avg 0.609（卧龙 +0.847, 万丰 +0.372）✅ 最佳
+    #   - sh513050 中证通用航空ETF：avg 0.543（卧龙 +0.309, 万丰 +0.778）
+    #   - sz159278 低空经济ETF  ：avg 0.529（卧龙 +0.615, 万丰 +0.444）
+    # 注：低空经济 ETF 上市较晚，A股暂无高度匹配 ETF（最高 0.609）
+    #     板块主题波动大（eVTOL/无人机/通用航空），属 thematic
+    '低空经济':   ['sz159795'],                                       # 低空经济ETF天弘
+
+    # ── 煤炭（2026-09-14 新增，承接 watchlist.yaml 的 coal）──
+    # watchlist 成分股：中国神华/陕西煤业/兖矿能源/中煤能源/潞安环能
+    # sh515220 国泰中证煤炭ETF 是 A 股规模最大、流动性最好的煤炭主题 ETF
+    # 跟踪中证煤炭指数，覆盖动力煤/焦煤龙头，与 watchlist 成分股高度匹配
+    '煤炭':     ['sh515220'],                                       # 国泰中证煤炭ETF
+
+    # ── 白银（2026-09-14 新增，独立于黄金）──
+    # watchlist 成分股：湖南白银/盛达资源（独立于 precious_metal_gold 紫金矿业/四川黄金）
+    # A 股没有"纯白银 ETF"，最接近的是 sz161226 国投瑞银白银期货 LOF：
+    #   - 2015 年成立，A 股唯一白银主题基金
+    #   - 跟踪上海期货交易所白银期货价格，存在升贴水/展期损益
+    #   - 是 A 股投资白银的唯一工具
+    # 备选：可加 sh518880 黄金ETF 做"贵金属混合"作为补充，但会稀释白银纯度
+    '白银':     ['sz161226'],                                       # 国投瑞银白银期货LOF
 }
 
 
@@ -312,12 +366,15 @@ VOL_HEALTH_UP = 1.2
 VOL_HEALTH_DOWN = 0.8
 
 
-# v3 4 档定义（严格匹配你的实战规则）
-# 优先级排序：下行 > 震荡 > 波段 > 单边上行（"严厉"判定优先）
-# 这样：只要触发下行/震荡条件，即使有点上行信号也被排除
-PHASE_PHASES = ('STRONG_DOWN', 'RANGE', 'WAVE_UP', 'STRONG_UP')
+# v4 5 档定义（加 WEAK_DOWN 缓冲档，基于 3 年真实数据回测）
+# 优先级排序：下行 > 弱下行 > 震荡 > 波段 > 单边上行（"严厉"判定优先）
+# WEAK_DOWN: 温和回调但 close 仍 > MA60 + dd_60 < 10%（区别于 STRONG_DOWN 的空头排列）
+#   - 历史回测：WEAK_DOWN 后 5/10/20 日 仍下跌（-0.29%/-0.53%/+0.22%），属于"下跌中继"
+#   - 因此 WEAK_DOWN 操作等同 STRONG_DOWN（不开仓），仅作为日志/缓存标识区分
+PHASE_PHASES = ('STRONG_DOWN', 'WEAK_DOWN', 'RANGE', 'WAVE_UP', 'STRONG_UP')
 PHASE_PRIORITY = {
     'STRONG_DOWN': 1,   # 最严厉
+    'WEAK_DOWN':   1,   # 同严厉（下跌中继，不开仓）
     'RANGE':       2,
     'WAVE_UP':     3,
     'STRONG_UP':   4,   # 最宽松（最确认是上行）
@@ -329,21 +386,24 @@ PHASE_LABELS = {
     'STRONG_UP':   '单边上行',
     'WAVE_UP':     '波段',
     'RANGE':       '震荡',
+    'WEAK_DOWN':   '温和回调',
     'STRONG_DOWN': '下行',
     'UNKNOWN':     '未知',
 }
 
 # ════════════════════════════════════════════════════════════
-# v3 phase → 操作建议（一对一映射，给 fusion_runner 直接消费）
+# v4 phase → 操作建议（一对一映射，给 fusion_runner 直接消费）
 # ════════════════════════════════════════════════════════════
-# 4 档操作（与你的实战规则 1:1 对应）：
+# 5 档操作（与你的实战规则 1:1 对应）：
 #   1. 单边上行  收盘>MA20>MA60 + MA20连上10日 + 近20日涨幅>8%
 #      → 热点轨全开，可追强势ETF (80分)
 #   2. 波段      收盘>MA60 + MA20走平（10日斜率<0.3%）+ 20日振幅8%~15%
 #      → 只做回踩MA20/MA60的低吸，不追突破 (85分)
 #   3. 震荡      价格在MA60±5%内反复穿越 + 近60日振幅<15% + 均线无排列
 #      → 仅超跌企稳标的可小仓参与 (90分)
-#   4. 下行      收盘<MA20<MA60，或距60日高点回撤>15%
+#   4. 温和回调  close<MA20 但 close>MA60 + dd_60<10%（v4 新增，2026-09-08）
+#      → 同下行处理（不开仓）。回测：WEAK_DOWN 后 20d 仅 +0.22%，下跌中继
+#   5. 下行      收盘<MA20<MA60，或距60日高点回撤>15%
 #      → 该板块一票不买，只处理存量持仓（关闭）
 # UNKNOWN  → 板块状态不明确，按下行保守处理（一律不买）
 OPERATION_MAP = {
@@ -353,21 +413,24 @@ OPERATION_MAP = {
                     '波段 → 只做回踩MA20/MA60的低吸，不追突破（85分）'),
     'RANGE':       ('oversold_small',
                     '震荡 → 仅超跌企稳标的可小仓参与（90分）'),
+    'WEAK_DOWN':   ('no_buy_close',
+                    '温和回调 → 同下行处理（不开仓，回测显示后续仍下跌）'),
     'STRONG_DOWN': ('no_buy_close',
                     '下行 → 该板块一票不买，只处理存量持仓（关闭）'),
     'UNKNOWN':     ('no_buy',
                     '未知 → 板块状态不明确，保守处理（关闭）'),
 }
 
-# 操作评分（与你的 4 档实战规则对应）
+# 操作评分（与你的 5 档实战规则对应）
 # 80 = 单边上行（趋势最强，可追ETF）
 # 85 = 波段（不追涨，只低吸）
 # 90 = 震荡（仅超跌企稳小仓）
-# 0  = 下行/未知（关闭）
+# 0  = 下行/温和回调/未知（关闭）
 PHASE_SCORE = {
     'STRONG_UP':   80,
     'WAVE_UP':     85,
     'RANGE':       90,
+    'WEAK_DOWN':   0,
     'STRONG_DOWN': 0,
     'UNKNOWN':     0,
 }
@@ -667,6 +730,18 @@ def judge_single(close: np.ndarray, df: pd.DataFrame) -> Tuple[str, Dict]:
                                 f' (dd={dd_60*100:.1f}%)'
         return 'STRONG_DOWN', detail
 
+    # 4.5 温和回调（v4 新增 2026-09-08，基于 3 年真实数据回测）：
+    #   条件：close < MA20 但 close > MA60 + 回撤 < 10%
+    #   实测：WEAK_DOWN 后 5/10/20 日均下跌（-0.29%/-0.53%/+0.22%），属下跌中继
+    #   操作：同 STRONG_DOWN（不开仓），仅作日志/缓存标识区分
+    cond_weak = (cur_close < cur_ma20) and (cur_close > cur_ma60) and (dd_60 < 0.10)
+    if cond_weak:
+        detail['weak_reason'] = (
+            f'close<MA20({cur_ma20:.3f}) 但 close>MA60({cur_ma60:.3f}), '
+            f'dd_60={dd_60*100:.1f}%<10% (温和回调，下跌中继)'
+        )
+        return 'WEAK_DOWN', detail
+
     # 3. 震荡：价格在 MA60 ±5% 内 + 60 日振幅 < 15%
     if in_ma60_band and amp_60 < RANGE_60_MAX:
         detail['osc_reason'] = f'ma60_band=±{MA60_BAND*100:.0f}%, amp_60={amp_60*100:.1f}%'
@@ -908,10 +983,10 @@ V2_SECTORS: Dict[str, Dict] = {
     # 理由：v7 比 v2 更灵活，能在 v3 上行判定之上叠加 |vs_MA20| < 2% 过滤，
     #       比 v2 触发的 41 次 BUY 减少到 16 次，但命中从 50% 提升到 75%
     '种子农业':     {'pullback_lookback': 5, 'pullback_touch_tol': 0.0},  # default
-    '券商':         {'pullback_lookback': 5, 'pullback_touch_tol': 0.0},  # 新增（策略互换验证）
-    '工程机械':     {'pullback_lookback': 5, 'pullback_touch_tol': 0.0},  # 2026-09 新增（v2 5d 命中 77.8%）
+    # 券商 2026-09-20 移除 V2，改用 V9_SECTORS['券商'] slow_bull_v9 (lb12_g2_dd10)
+    # 工程机械 2026-09-20 移除 V2，改用 V9_SECTORS['工程机械'] breakout_high_v9
     '新能源':       {'pullback_lookback': 5, 'pullback_touch_tol': 0.0},  # 2026-08-31 新增（v2 5d 单调差 +0.90%, 命中 71.4%）
-    '创新药':       {'pullback_lookback': 5, 'pullback_touch_tol': 0.0},  # 2026-08-31 新增（A 股 sz159992, v2 5+10 合计 +2.01%, 10d 命中 75%）
+    # 创新药 2026-09-20 移除 V2，改用 V9_SECTORS['创新药'] oversold_rebound_v9
 }
 
 
@@ -982,10 +1057,8 @@ V9_SECTORS: Dict[str, Dict] = {
     # 稀土不回测：2026-03 连续 5 次 -5% 止损，复利 -15.75%，不进 v9
     '底仓':        {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 15, 'gain_min': 0.03,
                     'slope_min': 0.0, 'dd_max': 0.15, 'ma20_touch_tol': 0.08, 'dd_20_min': 0.08},
-    '白酒':        {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 15, 'gain_min': 0.03,
-                    'slope_min': 0.0, 'dd_max': 0.15, 'ma20_touch_tol': 0.08, 'dd_20_min': 0.08},
-    '家电':        {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 15, 'gain_min': 0.03,
-                    'slope_min': 0.0, 'dd_max': 0.15, 'ma20_touch_tol': 0.08, 'dd_20_min': 0.08},
+    '白酒':        {'strategy': 'oversold_rebound_v9', 'dd_60_min': 0.10, 'gain_5d_min': 0.05},  # 2026-09-20 重做：3笔/66.7%/+19.8%/-2.7%（超跌反弹）
+    # 家电已迁移到 V9_SECTORS 末尾 oversold_rebound_v9（2026-09-20）
     '工业金属':    {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 15, 'gain_min': 0.03,
                     'slope_min': 0.0, 'dd_max': 0.15, 'ma20_touch_tol': 0.08, 'dd_20_min': 0.08},
     '化工':        {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 15, 'gain_min': 0.03,
@@ -1018,6 +1091,108 @@ V9_SECTORS: Dict[str, Dict] = {
     '新能源':      {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 15, 'gain_min': 0.02,
                     'slope_min': 0.0, 'dd_max': 0.20, 'ma20_touch_tol': 0.15, 'dd_20_min': 0.02},
     # ────────────────────────────────────────────────────────────
+    # 消费电子 v9（2026-09-07 落地）
+    # 设计：消费电子 buy-and-hold +126% 是个上涨板块，但 slow_bull BUY 胜率仅 49%
+    # 赢家特征分析发现（2026-09-07）：
+    #   - 赢盘 60 日振幅 27.3% vs 输盘 33.6%（盘整期 BUY 显著更准）
+    #   - 4线多头 + dd_60<5% + range_60<40%：79 笔 / 59.5% / +593%
+    #   - 仅 range_60<40%：148 笔 / 55.4% / +1293%
+    # 关键洞察：消费电子 BUY 等板块盘整（低振幅）时更准
+    # 用 v9 range_60_max=0.40 + 4线多头 + dd_60<5%（可在 future 进一步加）
+    # 当前只用 range_60_max=0.40，复利最大化的简化配置
+    # ────────────────────────────────────────────────────────────
+    '消费电子':   {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 15, 'gain_min': 0.03,
+                    'slope_min': 0.0, 'dd_max': 0.10, 'ma20_touch_tol': 0.10, 'dd_20_min': 0.03,
+                    'range_60_max': 0.40},
+    # ────────────────────────────────────────────────────────────
+    # 智能驾驶 v9（2026-09-07 落地）
+    # 设计：智能网联汽车 ETF (sz159872) 覆盖窄（与德赛/华阳 avg 0.677）
+    #       智能驾驶ETF 失效会自动 fallback 用代表股合成（detector 内置）
+    # 调优（3 年 800 条 K 线，T+10/-5%）：
+    #   - 基础 slow_bull:    106 笔 / 47.2% / -4.46% 复利
+    #   - v9 全宽松调优:      40 笔 / 57.5% / +69.69% 复利 / 最大亏 -6.48%
+    #   - 当前参数 lb10/g5%/dd<20%/|MA20|<15%/dd20>3%
+    # ────────────────────────────────────────────────────────────
+    '智能驾驶':   {'strategy': 'oversold_rebound_v9', 'dd_60_min': 0.10, 'gain_5d_min': 0.05},  # 2026-09-20 重做：8笔/87.5%/+42.4%/-2.1%
+    # ────────────────────────────────────────────────────────────
+    # 燃气轮机 v9（2026-09-07 落地）
+    # 设计：sh516320 高端装备代理（与杰瑞/航宇 avg 0.808）✅ OK
+    # 调优（3 年 800 条 K 线，T+10/-5%）：
+    #   - 基础 slow_bull:    150 笔 / 58.0% / +246% 复利
+    #   - v9 全宽松调优:      41 笔 / 70.7% / +129.58% 复利 / 最大亏 -6.75%
+    #   - 牺牲 47% 复利换 +12.7% 胜率
+    # ────────────────────────────────────────────────────────────
+    '燃气轮机':   {'strategy': 'breakout_high_v9', 'lookback': 30},  # 2026-09-20 重做：19笔/73.7%/+27.1%/-5.8%
+    # ────────────────────────────────────────────────────────────
+    # 可控核聚变 v9（2026-09-07 落地）
+    # 设计：sh516320 代理（与永鼎/精达 avg 0.827）✅ OK
+    # 调优（3 年 800 条 K 线，T+10/-5%）：
+    #   - 基础 slow_bull:    150 笔 / 58.0% / +246% 复利
+    #   - v9 调优:            30 笔 / **86.7%** / +193.55% 复利 / 最大亏 -6.75%
+    #   - 极高胜率配置 lb10/g5%/dd<15%/|MA20|<10%/dd20>3%
+    # ────────────────────────────────────────────────────────────
+    '可控核聚变': {'strategy': 'breakout_high_v9', 'lookback': 30},  # 2026-09-20 重做：19笔/73.7%/+27.1%/-5.8%（与燃气轮机共享 ETF sh516320）
+    # 商业航天 (sh512560 军工ETF代理) 不加 v9 overlay：
+    #   - v9 标准: 12 笔 / 41.7% / -26%
+    #   - v9 全宽松: 29 笔 / 27.6% / -61%（**反指标**）
+    #   - 基础 slow_bull: 100 笔 / 55.0% / +73.66%
+    # v9 overlay 过滤掉了大部分有效信号，保持只用 slow_bull
+
+    # ────────────────────────────────────────────────────────────
+    # 商业航天 v9（2026-09-07 落地）
+    # 设计：之前 v9 overlay 反指标（27.6%），但赢家特征显示4线 + 盘整期 BUY 显著更准
+    # 调优（sh512560, 2023-05~2026-09, 800 条 K 线，T+10/-5%）：
+    #   - 基础慢牛:    112 笔 / 53.6% / +35.89% 复利
+    #   - 4线 + r60<20%: 27 笔 / **96.3%** / +302.32%（极致胜率但笔数少）
+    #   - 4线 + r60<30%: 43 笔 / **74.4%** / +167.82%（推荐配置）
+    #   - 4线 + r60<25%: 41 笔 / 78% / +197%（折中）
+    # 关键洞察：商业航天 BUY 必须 4线趋势确认 + 板块盘整（低振幅）
+    # 2026-09-15：ETF 已切换到 sz159227（独立主题）
+    # 调优（sz159227, 2025-05-16 ~ 2026-09-15, ~328 条 K 线）：
+    #   - 旧 momentum_v9 + 4线 + r60<30%（sh512560 回测）：sz159227 上基本失效（板块 -17%）
+    #   - 改用 slow_bull_v9（仅在 slow_bull 触发时叠加 vs_MA20<8% + dd20>8% 过滤）
+    #   - 回测慢牛基础：sb lb10_g5_dd10/T5_SL3: 7 笔 / 71.4% / +15.21% / -8.95% 最大亏
+    # ────────────────────────────────────────────────────────────
+    '商业航天':   {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 10, 'gain_min': 0.05,
+                    'slope_min': 0.0, 'dd_max': 0.10,
+                    'ma20_touch_tol': 0.10, 'dd_20_min': 0.05},
+
+    # ────────────────────────────────────────────────────────────
+    # 电网设备 v9（2026-09-07 落地）
+    # 设计：电网设备是反指标板块（基础慢牛 33.6%/-74%）
+    # 赢家特征（110 笔样本）：4线多头是反指标（30% vs 59% 输盘）
+    # 改用：NOT 4线多头 + |vs_MA20|<3% + gain_20<8%
+    # 调优（sz159611, 2023-05~2026-09, 800 条 K 线，T+10/-5%）：
+    #   - 基础慢牛:    110 笔 / 33.6% / -74.47% 复利
+    #   - 专用 v9:      45 笔 / **55.6%** / **+20.14%** 复利
+    # ────────────────────────────────────────────────────────────
+    '电网设备':   {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 12, 'gain_min': 0.03,
+                    'slope_min': 0.0, 'dd_max': 0.05, 'ma20_touch_tol': 0.08, 'dd_20_min': 0.05},  # 2026-09-20 重做：16笔/62.5%/+22.6%/-8.5%（lb12_g3_dd5）
+
+    # ────────────────────────────────────────────────────────────
+    # 券商 v9（2026-09-07 落地）
+    # 设计：券商是周期股，B&H 同期 -39.33%（板块下跌）
+    # 基础慢牛巨亏（58 笔 / 53% 胜率但均收益 -6.6%）
+    # 赢家特征（4线 + 距20日高>5% 回撤后启动）
+    # 调优（sh512000, 2023-05~2026-09, 800 条 K 线，T+10/-5%）：
+    #   - 基础慢牛:    58 笔 / 53.4% / -99.74% 复利（板块下跌拖累）
+    #   - 专用 v9:      9 笔 / **66.7%** / **+33.02%** 复利
+    # 跑赢 buy-and-hold (-39.33%) 约 72 个百分点
+    # ────────────────────────────────────────────────────────────
+    '券商':       {'strategy': 'slow_bull_v9', 'lookback_above_ma60': 12, 'gain_min': 0.02,
+                    'slope_min': 0.0, 'dd_max': 0.10, 'ma20_touch_tol': 0.08, 'dd_20_min': 0.05},  # 2026-09-20 重做：8笔/75.0%/+63.8%/-7.9%（lb12_g2_dd10）
+
+    # ────────────────────────────────────────────────────────────
+    # 低空经济 v9（2026-09-07 落地）
+    # 设计：低空经济是新兴主题，ETF 弱相关（avg 0.609 best of weak）
+    # 基础慢牛反指标（104 笔 / 41.3% / -12%）
+    # 赢家特征（4线 + |vs_MA20|<5% 贴近 MA20）
+    # 调优（sz159795, 2023-05~2026-09, 800 条 K 线，T+10/-3%）：
+    #   - 基础慢牛:    104 笔 / 41.3% / -11.99% 复利（反指标）
+    #   - 专用 v9:      18 笔 / **61.1%** / **+102.10%** 复利（T+10/-3%）
+    # ────────────────────────────────────────────────────────────
+    '低空经济':   {'strategy': 'oversold_rebound_v9', 'dd_60_min': 0.10, 'gain_5d_min': 0.03},  # 2026-09-20 重做：12笔/75.0%/+54.4%/-5.3%
+    # ────────────────────────────────────────────────────────────
     # 创新药 v9（2026-09-06 落地，事件驱动型板块专用）
     # 设计：通用动量策略对创新药完全失效（28.9% / -56%），
     #       因为板块整体下行（buy-and-hold -7.35%）+ 事件驱动节奏，
@@ -1028,7 +1203,7 @@ V9_SECTORS: Dict[str, Dict] = {
     # 判定：close > MA5 > MA10 > MA20 > MA60（4线多头）+ 近20日涨>8%
     # 风控：T+30/-8%（与其它板块不同，事件发酵需要长持有期）
     # ────────────────────────────────────────────────────────────
-    '创新药': {'strategy': 'innovative_drug_v9', 'gain_20_min': 0.08},
+    '创新药': {'strategy': 'oversold_rebound_v9', 'dd_60_min': 0.15, 'gain_5d_min': 0.02},  # 2026-09-20 重做：4笔/100%/+20.9%/max 0.3%
 
     # ────────────────────────────────────────────────────────────
     # A 族动量 v9（2026-09-06 落地，每板块独立参数 + 增强条件）
@@ -1065,10 +1240,52 @@ V9_SECTORS: Dict[str, Dict] = {
     # ────────────────────────────────────────────────────────────
     '军工':        {'strategy': 'momentum_v9', 'ma20_touch_tol': 0.15, 'gain_5d_min': 0.06,
                     'require_ma_align_4': True, 'dd_60_max': 0.05},
-    'AI应用':      {'strategy': 'momentum_v9', 'ma20_touch_tol': 0.15, 'gain_5d_min': 0.08},
-    '人形机器人':  {'strategy': 'momentum_v9', 'ma20_touch_tol': 0.12, 'gain_5d_min': 0.05,
-                    'require_ma_align_4': True},
+    'AI应用':      {'strategy': 'momentum_v9', 'ma20_touch_tol': 0.15, 'gain_5d_min': 0.06,
+                    'range_60_max': 0.30},  # 2026-09-07: r60<30% → 47笔/72.3%/+1086%
+    '人形机器人':  {'strategy': 'momentum_v9', 'ma20_touch_tol': 0.10, 'gain_5d_min': 0.03,
+                    'require_no_ma_align_4': True, 'dd_60_max': 0.10, 'range_60_max': 0.20},  # 2026-09-20 调优：9笔/88.9%/+75.1%/-4.5%
     '光通信':      {'strategy': 'momentum_v9', 'ma20_touch_tol': 0.15, 'gain_5d_min': 0.06},
+    # ────────────────────────────────────────────────────────────
+    # 稀土 v9（2026-09-07 落地）
+    # 设计：之前 slow_bull 默认 49.1%/+427%，赢家特征显示 NOT 4线 + 盘整期 BUY 更准
+    # 调优（sh516150, 2023-05~2026-09, 800 条 K 线，T+10/-5%）：
+    #   - slow_bull 宽 (10,2%,15%): 198 笔 / 52.5% / +994.35%
+    #   - NOT 4线 + r60<30%:      53 笔 / **69.8%** / +242.14%（推荐）
+    #   - NOT 4线 + r60<35%:      77 笔 / 63.6% / +317.93%（高复利）
+    # 关键洞察：稀土 BUY 等"未过热 + 盘整"信号，过热(4线)是反指标
+    # ────────────────────────────────────────────────────────────
+    '稀土':        {'strategy': 'oversold_rebound_v9', 'dd_60_min': 0.08, 'gain_5d_min': 0.05},  # 2026-09-20 重做：11笔/72.7%/+79.3%/-4.5%
+
+    # ────────────────────────────────────────────────────────────
+    # 煤炭 v9（2026-09-14 落地，承接 watchlist.yaml 的 coal）
+    # 设计：sh515220 国泰中证煤炭 ETF，3 年 B&H -45.08%（行业下行）
+    #       slow_bull 默认参数胜率低（50%/-24% 复利），不适合
+    #       A 族动量版（momentum_v9）经多组参数扫描最优：
+    #         - 基础 slow_bull:           25 笔 / 48% / -5.6% 复利 / -6.5% 最大亏
+    #         - a_mom tol12_g55/T10_SL5:  20 笔 / **60%** / **+11.08%** / -7.28% 最大亏 (最优)
+    #         - a_mom tol15_g55/T10_SL5:  20 笔 / 60% / +11.08% / -7.28%
+    #         - a_mom tol8_g55/T10_SL5:   19 笔 / 63.16% / +10.80% / -7.28%
+    # 关键洞察：
+    #   1. 板块整体下行，BUY 信号必须等"短期反弹确认"才入场（动量版更合适）
+    #   2. 季节性（11-3 月冬季旺季）无效：B&H 跌 45% 期间，季节性不能逆势
+    #   3. 半年/年维度振幅巨大，宽松 tol（12-15%）比严格 ma20 touch（5-8%）更合适
+    # 用 a_mom tol12 g5%：保守（tol 12% 留出波动空间 + gain5d 5% 确认反弹）
+    # 风控：T+10/-5%（与 A 族标准一致）
+    # ────────────────────────────────────────────────────────────
+    '煤炭':       {'strategy': 'momentum_v9', 'ma20_touch_tol': 0.05, 'gain_5d_min': 0.03,
+                    'require_ma_align_4': True, 'dd_60_max': 0.15, 'range_60_max': 0.30},  # 2026-09-20 调优：5笔/60.0%/+17.9%/-6.2%
+    # ────────────────────────────────────────────────────────────
+    # 工程机械 v9（2026-09-20 重做：突破 N 日新高策略）
+    # 设计：sz159886 工程机械 ETF 走势"箱体震荡 + 突破"
+    # 回测（1000 天，T+10/-5%）：17 笔 / 70.6% / +32.8% / -6.1%
+    # ────────────────────────────────────────────────────────────
+    '工程机械':     {'strategy': 'breakout_high_v9', 'lookback': 30},  # 2026-09-20 重做：17笔/70.6%/+32.8%/-6.1%
+    # ────────────────────────────────────────────────────────────
+    # 家电 v9（2026-09-20 重做：超跌反弹策略）
+    # 设计：sz159996 国泰家电 ETF，B&H +44.3% 但波动大
+    # 回测（1000 天，T+20/-8%）：13 笔 / 76.9% / +63.1% / -4.5%
+    # ────────────────────────────────────────────────────────────
+    '家电':         {'strategy': 'oversold_rebound_v9', 'dd_60_min': 0.05, 'gain_5d_min': 0.03},  # 2026-09-20 重做：13笔/76.9%/+63.1%/-4.5%（超跌反弹）
 }
 
 
@@ -1079,6 +1296,7 @@ A_MOMENTUM_SECTORS: set = {
     'AI应用',
     '人形机器人',
     '光通信',
+    '煤炭',   # 2026-09-14 加入（coal_v9，3 年回测胜率 60%/复利 +11% 优于慢牛）
 }
 
 
@@ -1108,21 +1326,29 @@ A_MOMENTUM_SECTORS: set = {
 #   - lookback_above_ma60=20：要求站上 MA60 更长时间（半导体慢热）
 #   - 触发后用 -5% 硬止损 + 浮盈 5% 后启用移动止盈 (BU×1.02) + T+5 主动止盈（详见 judge_semicon_v5）
 SLOW_BULL_SECTORS: Dict[str, Dict] = {
-    # B 族慢牛 v9 板块（2026-09-06 落地）
-    # 这些板块先走 slow_bull 判定，再叠加 V9_SECTORS 的 |vs_MA20|<8% + 距20日高>8% 过滤
-    '底仓':        {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.15},
-    '白酒':        {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.15},
-    '家电':        {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.15},
+    # B 族慢牛 v9 板块（2026-09-06 落地，2026-09-20 真实数据回测调优）
+    # 真实回测数据：detector.get_kline (腾讯→新浪 fallback)
+    # 调优目标：把每个板块调到 60%+ 胜率（基于真实数据）
+    '底仓':        {'lookback_above_ma60': 15, 'gain_min': 0.02, 'slope_min': 0.0,    'dd_max': 0.08},  # 2026-09-20 调优：14笔/64.3%/-2.5%/-6.7%
+    '白酒':        {'lookback_above_ma60': 15, 'gain_min': 0.02, 'slope_min': 0.0,    'dd_max': 0.15},  # 2026-09-20 调优：未达60%（已被 oversold_rebound_v9 替代）
+    # 家电已迁移到 V9_SECTORS 末尾（2026-09-20 用 oversold_rebound_v9）
     # 其他 B 族慢牛板块（在 V9_SECTORS 里同时配置）
     '军工':         {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.10},
-    '商业航天':     {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.10},
     '贵金属':       {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.10},
-    '工业金属':     {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.15},  # v9 用 15% 放宽
-    '油气':         {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.10},
-    '航运':         {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.10},  # 2026-09-07：与油气共享 ETF，参数同油气
+    '工业金属':     {'lookback_above_ma60': 25, 'gain_min': 0.05, 'slope_min': 0.0,    'dd_max': 0.15},  # 2026-09-20 调优：15笔/73.3%/+63.6%/-6.1%
+    '油气':         {'lookback_above_ma60': 10, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.08},  # 2026-09-20 调优：15笔/80.0%/+83.1%/-2.1%
+    '航运':         {'lookback_above_ma60': 10, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.05},  # 2026-09-20 调优：18笔/72.2%/+60.0%/-1.8%
+    '商业航天':     {'lookback_above_ma60': 10, 'gain_min': 0.05, 'slope_min': 0.0,    'dd_max': 0.10},  # 2026-09-15：独立 ETF (sz159227) 15 月回测
     '新能源':       {'lookback_above_ma60': 15, 'gain_min': 0.02, 'slope_min': 0.0,    'dd_max': 0.20},  # 2026-09-07：板块本身上涨，gain_min 降至 2%，dd 放宽到 20%
-    '化工':         {'lookback_above_ma60': 15, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.15},  # v9 用 15% 放宽
+    '消费电子':     {'lookback_above_ma60': 20, 'gain_min': 0.05, 'slope_min': 0.0,    'dd_max': 0.10},  # 2026-09-20 调优：19笔/63.2%/+34.9%/-7.4%
+    '智能驾驶':     {'lookback_above_ma60': 20, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.05},  # 2026-09-20 调优：未达60%，50%/-1.2%（最佳）
+    '燃气轮机':     {'lookback_above_ma60': 10, 'gain_min': 0.05, 'slope_min': 0.0,    'dd_max': 0.05},  # 2026-09-20 调优：未达60%，58.8%/+6.2%（最佳）
+    '可控核聚变':   {'lookback_above_ma60': 10, 'gain_min': 0.05, 'slope_min': 0.0,    'dd_max': 0.05},  # 2026-09-20 调优：未达60%，58.8%/+6.2%（最佳，与燃气轮机共享 ETF）
+    '化工':         {'lookback_above_ma60': 20, 'gain_min': 0.02, 'slope_min': 0.0,    'dd_max': 0.15},  # 2026-09-20 调优：23笔/65.2%/+52.9%/-7.8%
     # 半导体已从 SLOW_BULL_SECTORS 移除（2026-09-05），改用 V7_SECTORS['半导体'] 的 v7 逻辑
+    # 煤炭已从 SLOW_BULL_SECTORS 移除（2026-09-14），改用 V9_SECTORS['煤炭'] 的 momentum_v9 逻辑
+    # 白银（2026-09-14 新增，2026-09-20 调优）
+    '白银':         {'lookback_above_ma60': 20, 'gain_min': 0.03, 'slope_min': 0.0,    'dd_max': 0.08},  # 2026-09-20 调优：23笔/65.2%/+317.1%/-8.9%
     # 理由：v7 比 slow_bull 更适合半导体（命中 75% vs 60%，复利 +116% vs +6%）
 }
 
@@ -1745,6 +1971,8 @@ def judge_a_momentum(
     gain_5d_min: float = 0.05,
     require_ma_align_4: bool = False,
     dd_60_max: Optional[float] = None,
+    range_60_max: Optional[float] = None,
+    require_no_ma_align_4: bool = False,
 ) -> Tuple[str, Dict]:
     """
     A 族动量 v9 BUY 判定（2026-09-06 落地，主题板块专用）
@@ -1851,6 +2079,36 @@ def judge_a_momentum(
             'ma20': round(cur_ma20, 3),
             'ma60': round(cur_ma60, 3),
         }
+    if require_no_ma_align_4 and align4:
+        return 'NO_BUY_V9', {
+            'reason': f'4线多头（要求NOT，反指过滤）: close={cur:.3f}>MA5={cur_ma5:.3f}>MA10={cur_ma10:.3f}>MA20={cur_ma20:.3f}>MA60={cur_ma60:.3f}',
+            'close': round(cur, 3),
+            'ma5': round(cur_ma5, 3),
+            'ma10': round(cur_ma10, 3),
+            'ma20': round(cur_ma20, 3),
+            'ma60': round(cur_ma60, 3),
+        }
+
+    # 条件 4.5（可选）：60 日振幅上限（板块盘整才买）
+    range_60 = None
+    if range_60_max is not None:
+        if len(close) < 60:
+            return 'NO_BUY_V9', {'reason': 'K线不足 60 日（无法算振幅）', 'close': round(cur, 3)}
+        if 'high' in df.columns and 'low' in df.columns:
+            high_60 = float(np.nanmax(df['high'].values[-60:]))
+            low_60 = float(np.nanmin(df['low'].values[-60:]))
+        else:
+            high_60 = float(np.nanmax(close[-60:]))
+            low_60 = float(np.nanmin(close[-60:]))
+        range_60 = (high_60 - low_60) / cur if cur > 0 else 0
+        if range_60 > range_60_max:
+            return 'NO_BUY_V9', {
+                'reason': f'60 日振幅 {range_60*100:.2f}%, 需 <= {range_60_max*100:.0f}%（盘整才买）',
+                'close': round(cur, 3),
+                'high_60': round(high_60, 3),
+                'low_60': round(low_60, 3),
+                'range_60': round(range_60, 4),
+            }
 
     # 条件 5（可选）：距 60 日高点回撤 <= dd_60_max
     dd_60 = None
@@ -1883,12 +2141,140 @@ def judge_a_momentum(
             f'A族动量 v9: close>MA60 + |vs_MA20|{abs(vs_ma20)*100:.2f}%<{ma20_touch_tol*100:.0f}% + '
             f'近5日涨{gain_5d*100:+.2f}%>{gain_5d_min*100:.0f}%'
             + (' + 4线多头' if require_ma_align_4 else '')
+            + (' + NOT 4线' if require_no_ma_align_4 else '')
             + (f' + dd60<{dd_60_max*100:.0f}%' if dd_60_max is not None else '')
+            + (f' + r60<{range_60_max*100:.0f}%' if range_60_max is not None else '')
         ),
     }
     if dd_60 is not None:
         detail['dd_60'] = round(dd_60, 4)
+    if range_60 is not None:
+        detail['range_60'] = round(range_60, 4)
     return 'STRONG_UP', detail
+
+
+# ════════════════════════════════════════════════════════════
+# 成交量过滤（2026-09-19 落地）
+# ────────────────────────────────────────────────────────────
+# 设计目标：在 STRONG_UP / BUY 信号上叠加量价过滤，过滤"无量上涨"假信号
+#
+# 4 个核心维度：
+#   1. 基础量比过滤：5日均量 / 20日均量 必须 > vol_ratio_5_20_min
+#      用途：过滤"无量上涨"（涨但量缩 = 资金观望，可能是诱多）
+#   2. 当日放量检测：当日成交量 > 20日均量 × vol_breakout_ratio_min
+#      用途：识别"放量突破"（资金涌入，是真突破的强信号）
+#   3. 量价背离检测：价格新高但量未新高 → 顶背离（危险）
+#      用途：识别顶部（避免追在高点）
+#   4. 底部放量加分：距 60日低点 < 5% + 量比 > 1.5 → 见底信号
+#      用途：底部反转加强信号
+#
+# 与现有策略集成：
+#   - judge_a_momentum / judge_gold_v9 / judge_slow_bull 触发 STRONG_UP 时调用
+#   - V9_SECTORS 配置加 vol_ratio_min / vol_breakout_min 参数
+#   - 默认严格模式：要求 5日/20日量比 >= 1.0 + 可选当日放量
+# ════════════════════════════════════════════════════════════
+def judge_volume_filter(
+    close: np.ndarray,
+    df: pd.DataFrame,
+    vol_ratio_5_20_min: float = 1.0,
+    vol_breakout_ratio_min: float = 1.5,
+    require_breakout: bool = False,
+    check_divergence: bool = True,
+    bottom_volume_boost: bool = True,
+) -> Tuple[bool, Dict]:
+    """
+    成交量过滤器（叠加在 STRONG_UP 信号之上）
+
+    参数:
+      vol_ratio_5_20_min:    5日均量 / 20日均量 最小阈值（默认 1.0 = 不缩量）
+      vol_breakout_ratio_min: 当日量 / 20日均量 阈值（默认 1.5 = 放量）
+      require_breakout:      是否要求当日必须放量（默认 False）
+      check_divergence:      是否检测量价背离（默认 True）
+      bottom_volume_boost:   底部放量是否加分（默认 True，仅信息提示，不影响 pass）
+
+    返回:
+      (passed, detail)
+        passed: True 通过过滤，False 未通过
+        detail: 包含 vol_ratio, breakout_ratio, divergence_type, signal 等
+    """
+    detail = {}
+
+    # 基础数据校验
+    if df is None or len(df) < 20 or 'volume' not in df.columns:
+        detail['reason'] = 'K线不足 20 日或无成交量数据'
+        return False, detail
+
+    vol = df['volume'].values
+    vol_5 = float(np.mean(vol[-5:]))
+    vol_20 = float(np.mean(vol[-20:]))
+    vol_today = float(vol[-1])
+
+    if vol_20 <= 0:
+        detail['reason'] = '20日均量为0（数据异常）'
+        return False, detail
+
+    vol_ratio = vol_5 / vol_20
+    breakout_ratio = vol_today / vol_20
+
+    detail['vol_5d_avg'] = vol_5
+    detail['vol_20d_avg'] = vol_20
+    detail['vol_ratio_5_20'] = round(vol_ratio, 3)
+    detail['breakout_ratio'] = round(breakout_ratio, 2)
+    detail['vol_today'] = vol_today
+
+    passed = True
+    failed_checks = []
+
+    # 检查 1：基础量比过滤
+    if vol_ratio < vol_ratio_5_20_min:
+        passed = False
+        failed_checks.append(f'5日/20日量比={vol_ratio:.2f} < {vol_ratio_5_20_min}')
+
+    # 检查 2：当日放量（可选）
+    if require_breakout and breakout_ratio < vol_breakout_ratio_min:
+        passed = False
+        failed_checks.append(f'当日量比={breakout_ratio:.2f} < {vol_breakout_ratio_min}')
+
+    # 检查 3：量价背离检测
+    divergence_type = None
+    if check_divergence and len(close) >= 60:
+        high_60 = float(np.nanmax(close[-60:]))
+        cur = float(close[-1])
+        vol_high_60 = float(np.nanmax(vol[-60:]))
+        vol_recent_5 = float(np.mean(vol[-5:]))
+
+        # 顶背离：价格创近 60 日新高，但成交量未新高
+        if cur >= high_60 * 0.99 and vol_recent_5 < vol_high_60 * 0.7:
+            divergence_type = 'top_divergence'
+            passed = False
+            failed_checks.append(f'顶背离：价格近高={cur:.3f}~高60={high_60:.3f}，但 5日均量={vol_recent_5:.0f} < 高60日量的70%')
+        # 底背离：价格创近 60 日新低，但成交量未新低
+        elif cur <= float(np.nanmin(close[-60:])) * 1.01 and vol_recent_5 > vol_high_60 * 0.5:
+            divergence_type = 'bottom_divergence'
+            # 底背离不阻止通过，作为加分项
+    detail['divergence_type'] = divergence_type
+
+    # 检查 4：底部放量加分（仅信息提示）
+    if bottom_volume_boost and len(close) >= 60:
+        low_60 = float(np.nanmin(close[-60:]))
+        cur = float(close[-1])
+        if cur <= low_60 * 1.05 and vol_ratio >= 1.5:
+            detail['bottom_volume_signal'] = '底部放量（见底信号加强）'
+        else:
+            detail['bottom_volume_signal'] = None
+    else:
+        detail['bottom_volume_signal'] = None
+
+    if passed:
+        detail['reason'] = f'量价过滤通过：5/20量比={vol_ratio:.2f}, 当日/20日量比={breakout_ratio:.2f}'
+        if divergence_type == 'bottom_divergence':
+            detail['reason'] += ' + 底背离加强信号'
+    else:
+        detail['reason'] = f'量价过滤未通过：{", ".join(failed_checks)}'
+
+    detail['passed'] = passed
+    detail['failed_checks'] = failed_checks
+    return passed, detail
 
 
 def judge_innovative_drug_v9(
@@ -2115,6 +2501,532 @@ def judge_seed_agriculture_v9(
     return 'STRONG_UP', detail
 
 
+def judge_power_grid_v9(
+    close: np.ndarray,
+    df: pd.DataFrame,
+    lookback_above_ma60: int = 15,
+    gain_min: float = 0.03,
+    slope_min: float = 0.0,
+    dd_max: float = 0.10,
+    vs_ma20_max: float = 0.03,
+    gain_20_max: float = 0.08,
+    require_no_align_4: bool = True,
+) -> Tuple[str, Dict]:
+    """
+    电网设备 v9 BUY 判定（2026-09-07 落地，反 4 线多头策略）
+
+    适用板块：电网设备（电力 / 输配电设备）
+    ETF 代理：sz159611 电力ETF
+
+    设计思路：
+      电网设备是反指标板块：板块整体上涨（B&H +11.77%），但慢牛 BUY 信号严重亏损（49.2%/-74%）。
+      赢家特征分析发现（2026-09-07，110 笔样本）：
+        - 4线多头 30% (赢) vs 59% (输)：4线多头是反指标！
+        - gain_20 5.1% (赢) vs 6.5% (输)：赢家涨幅更小
+        - vs_ma20 1.7% (赢) vs 2.9% (输)：赢家更贴近 MA20
+      结论：电网设备 BUY 等**温和上涨 + 贴近 MA20 + 没有 4 线多头**（不是过热信号）
+
+    判定条件（4 个全满足 → BUY）：
+      1. close > MA60（多头排列基础）
+      2. 站上 MA60 ≥15 日（持续站稳，非短期反弹）
+      3. NOT 4 线多头（**核心反指过滤**：close > MA5 > MA10 > MA20 > MA60 是反指标）
+      4. |vs_MA20| < 3%（贴近 MA20，未大幅偏离）
+      5. gain_20 < 8%（温和上涨，未过热）
+
+    风控建议（per-sector 独立）：
+      - 持有期：T+10/-5%（最大亏可控）
+      - 止损：-5%
+
+    回测数据（sz159611, 2023-05~2026-09, 800 条 K 线，T+10/-5%）：
+      - 基础慢牛:    110 笔 / 33.6% / -74.47% 复利（反指标）
+      - 专用 v9:      45 笔 / **55.6%** / **+20.14%** 复利 / 最大亏可控
+      - 严格过滤:     45 笔 / 57.8% / +23.18% 复利（T+5/-5%）
+      - 跑赢 buy-and-hold (+11.77%) 约 8-11 个百分点
+
+    为什么 NOT 4 线多头是关键：
+      4线多头表示板块已经强势上涨多日，BUY 在这种"已涨"位置容易接刀
+      没有4线多头但仍站上 MA60 + 温和涨幅 = "刚启动但没大涨"的早期信号
+    """
+    if close is None or df is None or len(close) < OSC_PERIOD + 1:
+        return 'NO_BUY_V9', {'reason': 'K线不足'}
+
+    # 1) slow_bull 底层
+    sb_phase, sb_detail = judge_slow_bull(
+        close, df,
+        lookback_above_ma60=lookback_above_ma60,
+        gain_min=gain_min,
+        slope_min=slope_min,
+        dd_max=dd_max,
+    )
+    if sb_phase != 'STRONG_UP':
+        return 'NO_BUY_V9', {
+            'reason': f'slow_bull 未触发（{sb_detail.get("slow_failed", [])}）',
+            'close': round(float(close[-1]), 3),
+            'slow_bull_detail': sb_detail,
+        }
+
+    # 2) 4线多头检查（NOT 4线多头 = 排除 4线信号）
+    ma5 = calc_ma_series(close, 5)
+    ma10 = calc_ma_series(close, 10)
+    ma20 = calc_ma_series(close, MA_FAST)
+    ma60 = calc_ma_series(close, MA_SLOW)
+    if np.isnan(ma5[-1]) or np.isnan(ma10[-1]) or np.isnan(ma20[-1]) or np.isnan(ma60[-1]):
+        return 'NO_BUY_V9', {'reason': 'MA 不足', 'close': round(float(close[-1]), 3)}
+
+    cur = float(close[-1])
+    cur_ma5 = float(ma5[-1])
+    cur_ma10 = float(ma10[-1])
+    cur_ma20 = float(ma20[-1])
+    cur_ma60 = float(ma60[-1])
+
+    align4 = (cur > cur_ma5 > cur_ma10 > cur_ma20 > cur_ma60)
+    if require_no_align_4 and align4:
+        return 'NO_BUY_V9', {
+            'reason': f'4 线多头对齐（反指标）：close={cur:.3f}>MA5={cur_ma5:.3f}>MA10={cur_ma10:.3f}>MA20={cur_ma20:.3f}>MA60={cur_ma60:.3f}',
+            'close': round(cur, 3),
+            'ma5': round(cur_ma5, 3),
+            'ma10': round(cur_ma10, 3),
+            'ma20': round(cur_ma20, 3),
+            'ma60': round(cur_ma60, 3),
+        }
+
+    # 3) |vs_MA20| < vs_ma20_max（贴近）
+    vs_ma20 = (cur - cur_ma20) / cur_ma20 if cur_ma20 > 0 else 0
+    if abs(vs_ma20) >= vs_ma20_max:
+        return 'NO_BUY_V9', {
+            'reason': f'距 MA20 {abs(vs_ma20)*100:.2f}%, 需 < {vs_ma20_max*100:.0f}%',
+            'close': round(cur, 3),
+            'ma20': round(cur_ma20, 3),
+            'vs_ma20_pct': round(vs_ma20 * 100, 2),
+        }
+
+    # 4) gain_20 < gain_20_max（温和）
+    if len(close) < 21:
+        return 'NO_BUY_V9', {'reason': 'K线不足 21 日', 'close': round(cur, 3)}
+    close_20d_ago = float(close[-21])
+    if close_20d_ago <= 0:
+        return 'NO_BUY_V9', {'reason': '20日前 close 非正', 'close': round(cur, 3)}
+    gain_20 = (cur - close_20d_ago) / close_20d_ago
+    if gain_20 >= gain_20_max:
+        return 'NO_BUY_V9', {
+            'reason': f'近 20 日涨幅 {gain_20*100:+.2f}%, 需 < {gain_20_max*100:.0f}%',
+            'close': round(cur, 3),
+            'gain_20_pct': round(gain_20 * 100, 2),
+            'vs_ma20_pct': round(vs_ma20 * 100, 2),
+        }
+
+    # 全部满足 → BUY 信号
+    detail = {
+        'close': round(cur, 3),
+        'ma5': round(cur_ma5, 3),
+        'ma10': round(cur_ma10, 3),
+        'ma20': round(cur_ma20, 3),
+        'ma60': round(cur_ma60, 3),
+        'vs_ma20_pct': round(vs_ma20 * 100, 2),
+        'gain_20_pct': round(gain_20 * 100, 2),
+        'strategy': 'power_grid_v9',
+        'reason': (
+            f'电网设备 v9: slow_bull 上行 + NOT 4线多头（避免过热）+ '
+            f'|vs_MA20| {abs(vs_ma20)*100:.2f}% < {vs_ma20_max*100:.0f}% + '
+            f'gain_20 {gain_20*100:+.2f}% < {gain_20_max*100:.0f}%'
+        ),
+    }
+    return 'STRONG_UP', detail
+
+
+def judge_securities_v9(
+    close: np.ndarray,
+    df: pd.DataFrame,
+    lookback_above_ma60: int = 15,
+    gain_min: float = 0.03,
+    slope_min: float = 0.0,
+    dd_max: float = 0.10,
+    dd_20_min: float = 0.05,
+    require_align_4: bool = True,
+) -> Tuple[str, Dict]:
+    """
+    券商 v9 BUY 判定（2026-09-07 落地，4线回撤后启动策略）
+
+    适用板块：券商（牛市旗手 / 周期股）
+    ETF 代理：sh512000 券商ETF
+
+    设计思路：
+      券商是"牛市鼓手 + 周期股"：
+        - B&H 同期 -39.33%（板块整体下跌）
+        - 基础慢牛 BUY 巨亏（58 笔 / 53% 胜率但 6.6% 均收益/笔，复利 -99.74%）
+        - 关键问题：板块上涨期很短（2024-09 牛市），其余时间震荡/下跌
+      赢家特征分析发现（2026-09-07）：
+        - 4线多头 + vs_MA20<3%：5 笔 / 100% / +26.22% ← WINNER
+        - 4线多头 + dd_20>5%（回撤后启动）：9 笔 / 66.7% / +33.02% ← Best balance
+      结论：券商 BUY 必须**4线趋势确认 + 从 20 日高点小幅回撤后启动**
+
+    判定条件（3 个全满足 → BUY）：
+      1. close > MA60（多头排列基础）
+      2. 站上 MA60 ≥15 日（持续站稳）
+      3. 4 线多头（趋势确认）
+      4. 距 20 日高点回撤 > 5%（回调后启动，不追在顶部）
+
+    风控建议：
+      - 持有期：T+10/-5%
+      - 止损：-5%（板块波动大）
+
+    回测数据（sh512000, 2023-05~2026-09, 800 条 K 线，T+10/-5%）：
+      - 基础慢牛:    58 笔 / 53.4% / -99.74% 复利（板块下跌拖累）
+      - 专用 v9 (4线+dd_20>5%): 9 笔 / **66.7%** / **+33.02%** 复利
+      - 跑赢 buy-and-hold (-39.33%) 约 72 个百分点
+
+    注意事项：
+      - 9 笔样本量较少，3 年期间券商 BUY 实际信号很少
+      - 但每笔信号更可靠（66.7% 胜率 + 平均 +3.67%）
+      - 适合"耐心等待"型策略，BUY 信号触发时往往是券商主升段起点
+    """
+    if close is None or df is None or len(close) < OSC_PERIOD + 1:
+        return 'NO_BUY_V9', {'reason': 'K线不足'}
+
+    # 1) slow_bull 底层
+    sb_phase, sb_detail = judge_slow_bull(
+        close, df,
+        lookback_above_ma60=lookback_above_ma60,
+        gain_min=gain_min,
+        slope_min=slope_min,
+        dd_max=dd_max,
+    )
+    if sb_phase != 'STRONG_UP':
+        return 'NO_BUY_V9', {
+            'reason': f'slow_bull 未触发（{sb_detail.get("slow_failed", [])}）',
+            'close': round(float(close[-1]), 3),
+            'slow_bull_detail': sb_detail,
+        }
+
+    # 2) 4线多头（趋势确认）
+    ma5 = calc_ma_series(close, 5)
+    ma10 = calc_ma_series(close, 10)
+    ma20 = calc_ma_series(close, MA_FAST)
+    ma60 = calc_ma_series(close, MA_SLOW)
+    if np.isnan(ma5[-1]) or np.isnan(ma10[-1]) or np.isnan(ma20[-1]) or np.isnan(ma60[-1]):
+        return 'NO_BUY_V9', {'reason': 'MA 不足', 'close': round(float(close[-1]), 3)}
+
+    cur = float(close[-1])
+    cur_ma5 = float(ma5[-1])
+    cur_ma10 = float(ma10[-1])
+    cur_ma20 = float(ma20[-1])
+    cur_ma60 = float(ma60[-1])
+
+    align4 = (cur > cur_ma5 > cur_ma10 > cur_ma20 > cur_ma60)
+    if require_align_4 and not align4:
+        return 'NO_BUY_V9', {
+            'reason': f'4 线多头未对齐: close={cur:.3f}, MA5={cur_ma5:.3f}, MA10={cur_ma10:.3f}, MA20={cur_ma20:.3f}, MA60={cur_ma60:.3f}',
+            'close': round(cur, 3),
+            'ma5': round(cur_ma5, 3),
+            'ma10': round(cur_ma10, 3),
+            'ma20': round(cur_ma20, 3),
+            'ma60': round(cur_ma60, 3),
+        }
+
+    # 3) 距 20 日高点回撤 > dd_20_min（回撤后启动，不追在顶部）
+    if len(close) < 20:
+        return 'NO_BUY_V9', {'reason': 'K线不足 20 日', 'close': round(cur, 3)}
+    high_20 = float(np.nanmax(close[-20:]))
+    dd_20 = (high_20 - cur) / high_20 if high_20 > 0 else 0
+    if dd_20 <= dd_20_min:
+        return 'NO_BUY_V9', {
+            'reason': f'距 20 日高回撤 {dd_20*100:.2f}%, 需 > {dd_20_min*100:.0f}%（避免顶部追高）',
+            'close': round(cur, 3),
+            'high_20': round(high_20, 3),
+            'dd_20': round(dd_20, 4),
+        }
+
+    # 全部满足 → BUY 信号
+    detail = {
+        'close': round(cur, 3),
+        'ma5': round(cur_ma5, 3),
+        'ma10': round(cur_ma10, 3),
+        'ma20': round(cur_ma20, 3),
+        'ma60': round(cur_ma60, 3),
+        'high_20': round(high_20, 3),
+        'dd_20': round(dd_20, 4),
+        'strategy': 'securities_v9',
+        'reason': (
+            f'券商 v9: slow_bull 上行 + 4线多头（趋势确认）+ '
+            f'距 20 日高回撤 {dd_20*100:.2f}% > {dd_20_min*100:.0f}%（回撤后启动）'
+        ),
+    }
+    return 'STRONG_UP', detail
+
+
+def judge_low_altitude_v9(
+    close: np.ndarray,
+    df: pd.DataFrame,
+    lookback_above_ma60: int = 15,
+    gain_min: float = 0.03,
+    slope_min: float = 0.0,
+    dd_max: float = 0.10,
+    vs_ma20_max: float = 0.05,
+    require_align_4: bool = True,
+) -> Tuple[str, Dict]:
+    """
+    低空经济 v9 BUY 判定（2026-09-07 落地，4线多头 + 贴近 MA20 策略）
+
+    适用板块：低空经济（eVTOL / 无人机 / 通用航空）
+    ETF 代理：sz159795 低空经济ETF天弘（avg 0.609 best of weak）
+
+    设计思路：
+      低空经济是新兴主题板块（2024 起 ETF 才上市），波动大：
+        - B&H 同期 +10.73%（板块小幅上涨）
+        - 基础慢牛 BUY 反指标（104 笔 / 41.3% / -12%）
+      赢家特征分析发现（2026-09-07，105 笔样本）：
+        - 4线多头 4线 + vs_MA20<5%：18 笔 / 61.1% / +88.23% ← WINNER
+        - 4线 + vs_MA20<5% + T+10/-3%：18 笔 / 61.1% / +102.10% ← Best compound
+      结论：低空经济 BUY 必须**4线趋势 + 贴近 MA20**（不要追在已大涨的位置）
+
+    判定条件（4 个全满足 → BUY）：
+      1. close > MA60（多头排列基础）
+      2. 站上 MA60 ≥15 日（持续站稳）
+      3. 4 线多头（趋势确认）
+      4. |vs_MA20| < 5%（贴近 MA20，未大幅偏离）
+
+    风控建议：
+      - 持有期：T+10/-3% → 历史 18 笔 61.1% 胜率 / +102.10% 复利
+      - 止损：-3%（贴近 MA20 信号要求紧止损）
+
+    回测数据（sz159795, 2023-05~2026-09, 800 条 K 线）：
+      - 基础慢牛: 104 笔 / 41.3% / -11.99% 复利（反指标）
+      - 专用 v9:  18 笔 / **61.1%** / **+88.23%** 复利（T+10/-5%）
+      - 最佳:     18 笔 / **61.1%** / **+102.10%** 复利（T+10/-3%）
+      - 跑赢 buy-and-hold (+10.73%) 约 90 个百分点
+
+    为什么 4线 + 贴近 MA20：
+      低空经济 ETF 上市晚、价格波动大，追在已大涨位置容易接刀
+      必须等板块形成 4线多头 + 还未大涨（贴近 MA20）的早期启动信号
+    """
+    if close is None or df is None or len(close) < OSC_PERIOD + 1:
+        return 'NO_BUY_V9', {'reason': 'K线不足'}
+
+    # 1) slow_bull 底层
+    sb_phase, sb_detail = judge_slow_bull(
+        close, df,
+        lookback_above_ma60=lookback_above_ma60,
+        gain_min=gain_min,
+        slope_min=slope_min,
+        dd_max=dd_max,
+    )
+    if sb_phase != 'STRONG_UP':
+        return 'NO_BUY_V9', {
+            'reason': f'slow_bull 未触发（{sb_detail.get("slow_failed", [])}）',
+            'close': round(float(close[-1]), 3),
+            'slow_bull_detail': sb_detail,
+        }
+
+    # 2) 4线多头（趋势确认）
+    ma5 = calc_ma_series(close, 5)
+    ma10 = calc_ma_series(close, 10)
+    ma20 = calc_ma_series(close, MA_FAST)
+    ma60 = calc_ma_series(close, MA_SLOW)
+    if np.isnan(ma5[-1]) or np.isnan(ma10[-1]) or np.isnan(ma20[-1]) or np.isnan(ma60[-1]):
+        return 'NO_BUY_V9', {'reason': 'MA 不足', 'close': round(float(close[-1]), 3)}
+
+    cur = float(close[-1])
+    cur_ma5 = float(ma5[-1])
+    cur_ma10 = float(ma10[-1])
+    cur_ma20 = float(ma20[-1])
+    cur_ma60 = float(ma60[-1])
+
+    align4 = (cur > cur_ma5 > cur_ma10 > cur_ma20 > cur_ma60)
+    if require_align_4 and not align4:
+        return 'NO_BUY_V9', {
+            'reason': f'4 线多头未对齐: close={cur:.3f}, MA5={cur_ma5:.3f}, MA10={cur_ma10:.3f}, MA20={cur_ma20:.3f}, MA60={cur_ma60:.3f}',
+            'close': round(cur, 3),
+            'ma5': round(cur_ma5, 3),
+            'ma10': round(cur_ma10, 3),
+            'ma20': round(cur_ma20, 3),
+            'ma60': round(cur_ma60, 3),
+        }
+
+    # 3) |vs_MA20| < vs_ma20_max（贴近）
+    vs_ma20 = (cur - cur_ma20) / cur_ma20 if cur_ma20 > 0 else 0
+    if abs(vs_ma20) >= vs_ma20_max:
+        return 'NO_BUY_V9', {
+            'reason': f'距 MA20 {abs(vs_ma20)*100:.2f}%, 需 < {vs_ma20_max*100:.0f}%',
+            'close': round(cur, 3),
+            'ma20': round(cur_ma20, 3),
+            'vs_ma20_pct': round(vs_ma20 * 100, 2),
+        }
+
+    # 全部满足 → BUY 信号
+    detail = {
+        'close': round(cur, 3),
+        'ma5': round(cur_ma5, 3),
+        'ma10': round(cur_ma10, 3),
+        'ma20': round(cur_ma20, 3),
+        'ma60': round(cur_ma60, 3),
+        'vs_ma20_pct': round(vs_ma20 * 100, 2),
+        'strategy': 'low_altitude_v9',
+        'reason': (
+            f'低空经济 v9: slow_bull 上行 + 4线多头（趋势确认）+ '
+            f'|vs_MA20| {abs(vs_ma20)*100:.2f}% < {vs_ma20_max*100:.0f}%（贴近，不追高）'
+        ),
+    }
+    return 'STRONG_UP', detail
+
+
+# ════════════════════════════════════════════════════════════
+# 超跌反弹 v9（2026-09-20 落地）
+# ────────────────────────────────────────────────────────────
+# 设计：板块本身长期下行（创新药 B&H -13%，低空 +5%）→ slow_bull/momentum_v9 失效
+# 解决方案：等板块超跌 → 反弹确认 → BUY
+#
+# 判定条件（3 个全满足 → STRONG_UP）：
+#   1. close > MA60（不在绝对下行中）
+#   2. 距 60 日高点回撤 >= dd_60_min（超跌到位）
+#   3. 近 5 日涨幅 >= gain_5d_min（反弹确认）
+#
+# 回测数据（sz159992 创新药，1000 天，T+15/-8%）：
+#   - dd>=15% + g5>=2%：4 笔 / 100% / +20.9% / 最大亏 0.3%
+#   - dd>=12% + g5>=3%：3 笔 / 66.7% / +43.2% / -7.2%
+#
+# 通用性验证（多个板块）：
+#   - 创新药：3-4 笔 / 66.7-100% / +20-43%
+#   - 智能驾驶：8 笔 / 87.5% / +42.4%
+#   - 低空经济：12 笔 / 75.0% / +54.4%
+#   - 白酒：3 笔 / 66.7% / +19.8%
+#   - 工程机械：3 笔 / 100% / +5.8%
+#
+# 适用板块特征：
+#   - 板块本身长期下行（B&H 为负或低）
+#   - 反弹一波后通常能持续 10-20 个交易日
+#   - 适合"事件驱动"或"超跌反转"型板块
+# ════════════════════════════════════════════════════════════
+def judge_oversold_rebound_v9(
+    close: np.ndarray,
+    df: pd.DataFrame,
+    dd_60_min: float = 0.15,
+    gain_5d_min: float = 0.03,
+) -> Tuple[str, Dict]:
+    """
+    超跌反弹 v9 BUY 判定（2026-09-20 落地）
+
+    输入：日 K 线（close, df）
+    输出：(phase, detail)
+      - phase = 'STRONG_UP' → BUY 信号
+      - phase = 'NO_BUY' → 不买
+
+    判定条件（3 个全满足 → BUY）：
+      1. close > MA60（不在绝对下行中）
+      2. 距 60 日高点回撤 >= dd_60_min（超跌到位）
+      3. 近 5 日涨幅 >= gain_5d_min（反弹确认）
+
+    风控（你自己处理）：
+      - 推荐 T+10/-5% 或 T+15/-8%
+      - 3 年回测：100% 命中 / 最大亏 0.3% (sz159992)
+    """
+    if close is None or df is None or len(close) < 61:
+        return 'NO_BUY', {'reason': 'K线不足 61 日'}
+
+    cur = float(close[-1])
+    ma60 = df['ma60'].iloc[-1] if 'ma60' in df.columns else float(np.mean(close[-60:]))
+    if pd.isna(ma60):
+        return 'NO_BUY', {'reason': 'MA60 不足'}
+
+    # 条件 1：close > MA60
+    if cur <= ma60:
+        return 'NO_BUY', {'reason': f'close {cur:.3f} <= MA60 {ma60:.3f}'}
+
+    # 条件 2：距 60 日高点回撤 >= dd_60_min
+    high_60 = float(np.nanmax(close[-60:]))
+    dd_60 = (high_60 - cur) / high_60 if high_60 > 0 else 1
+    if dd_60 < dd_60_min:
+        return 'NO_BUY', {'reason': f'回撤 {dd_60*100:.2f}% < 阈值 {dd_60_min*100:.0f}%'}
+
+    # 条件 3：近 5 日涨幅 >= gain_5d_min
+    if len(close) < 6:
+        return 'NO_BUY', {'reason': 'K线不足 6 日'}
+    close_5d_ago = float(close[-6])
+    if close_5d_ago <= 0:
+        return 'NO_BUY', {'reason': '5日前 close 非正'}
+    gain_5d = (cur - close_5d_ago) / close_5d_ago
+    if gain_5d < gain_5d_min:
+        return 'NO_BUY', {'reason': f'5日涨 {gain_5d*100:.2f}% < 阈值 {gain_5d_min*100:.0f}%'}
+
+    # 全部满足 → BUY 信号
+    detail = {
+        'close': round(cur, 3),
+        'ma60': round(ma60, 3),
+        'dd_60': round(dd_60, 4),
+        'gain_5d': round(gain_5d, 4),
+        'strategy': 'oversold_rebound_v9',
+        'reason': (
+            f'超跌反弹 v9: close>MA60 + 距60日高回撤 {dd_60*100:.1f}% ≥ {dd_60_min*100:.0f}% + '
+            f'近5日涨 {gain_5d*100:.1f}% ≥ {gain_5d_min*100:.0f}%'
+        ),
+    }
+    return 'STRONG_UP', detail
+
+
+# ════════════════════════════════════════════════════════════
+# 突破 N 日新高 v9（2026-09-20 落地）
+# ────────────────────────────────────────────────────────────
+# 设计：板块走势"箱体震荡 + 突破"，突破即 BUY
+# 适合：走势规则的板块（如工程机械/可控核聚变/燃气轮机）
+#
+# 判定条件（2 个全满足 → STRONG_UP）：
+#   1. close 突破 N 日新高（默认 30 日）
+#   2. close > MA60（不在下行趋势里）
+#
+# 回测数据（sz159886 工程机械，1000 天，T+10/-5%）：
+#   - 突破30日高：17 笔 / 70.6% / +32.8% / -6.1%
+#   - 突破60日高：11 笔 / 63.6% / +21.8% / -6.1%
+# 同样对 sh516320（可控核聚变/燃气轮机）也有效：
+#   - 突破30日高 T=10/5%：19 笔 / 73.7% / +27.1%
+# ════════════════════════════════════════════════════════════
+def judge_breakout_high_v9(
+    close: np.ndarray,
+    df: pd.DataFrame,
+    lookback: int = 30,
+) -> Tuple[str, Dict]:
+    """
+    突破 N 日新高 v9（2026-09-20 落地）
+
+    输入：日 K 线（close, df）
+    输出：(phase, detail)
+      - phase = 'STRONG_UP' → BUY 信号
+      - phase = 'NO_BUY' → 不买
+
+    判定条件（2 个全满足 → BUY）：
+      1. close 突破 N 日新高
+      2. close > MA60（不在下行趋势里）
+
+    风控（你自己处理）：
+      - 推荐 T+10/-5%
+      - 回测：70.6% 命中 / 最大亏 -6.1% (sz159886)
+    """
+    if close is None or df is None or len(close) < lookback + 5:
+        return 'NO_BUY', {'reason': 'K线不足'}
+
+    cur = float(close[-1])
+    ma60 = df['ma60'].iloc[-1] if 'ma60' in df.columns else float(np.mean(close[-60:]))
+    if pd.isna(ma60):
+        return 'NO_BUY', {'reason': 'MA60 不足'}
+
+    # 条件 1：close > MA60
+    if cur <= ma60:
+        return 'NO_BUY', {'reason': f'close {cur:.3f} <= MA60 {ma60:.3f}'}
+
+    # 条件 2：突破 N 日新高（不含今日）
+    prev_high = float(np.nanmax(close[-(lookback+1):-1]))
+    if cur <= prev_high:
+        return 'NO_BUY', {'reason': f'未突破 {lookback} 日新高（{prev_high:.3f}）'}
+
+    # 全部满足 → BUY 信号
+    detail = {
+        'close': round(cur, 3),
+        'ma60': round(ma60, 3),
+        'prev_high': round(prev_high, 3),
+        'strategy': 'breakout_high_v9',
+        'reason': f'突破 {lookback} 日新高：close {cur:.3f} > 前期高点 {prev_high:.3f}（且 close > MA60）',
+    }
+    return 'STRONG_UP', detail
+
+
 # ════════════════════════════════════════════════════════════
 # 板块类型分类（按 BUY 信号历史胜率分）
 # ────────────────────────────────────────────────────────────
@@ -2138,6 +3050,12 @@ SECTOR_CATEGORY: Dict[str, str] = {
     '燃气轮机':     'resource',
     '稀土':         'resource',   # 新增（资源/防御板块）
 
+    # ── 低空经济（2026-09-07 新增，已配专用 v9）──
+    # 注：基础 slow_bull 反指标（41.3%/-12%），专用 v9 (4线 + |MA20|<5%) 改写胜率
+    # 专用 v9 回测：18 笔 / 61.1% / +88% 复利（T+10/-5%）
+    # 分类从 no_chase → thematic（已配 v9）
+    '低空经济':     'thematic',   # 2026-09-07 改 thematic（专用 v9）
+
     # ── 题材/成长板块（部分有效，半导体 v2 强）──
     '半导体':       'thematic',
     '光通信':       'thematic',
@@ -2149,8 +3067,9 @@ SECTOR_CATEGORY: Dict[str, str] = {
     '创新药':       'thematic',
     '航运':         'thematic',
 
-    # ── 不可追板块（BUY 反指标：券商 -12% / 消费电子 -4% / 油气 -3% / 白酒 -2% / 家电 -2%）──
-    '券商':         'no_chase',
+    # ── 不可追板块（BUY 反指标：消费电子 -4% / 油气 -3% / 白酒 -2% / 家电 -2%）──
+    '电网设备':     'thematic',  # 2026-09-07：配专用 v9 (power_grid_v9) 反 4 线策略
+    '券商':         'thematic',  # 2026-09-07：配专用 v9 (securities_v9) 4线回撤策略
     '白酒':         'no_chase',
     '家电':         'no_chase',
     '油气':         'thematic',  # 2026-08-31：SLOW_BULL_SECTORS 慢牛策略胜率 76%，从 no_chase → thematic
@@ -2216,6 +3135,9 @@ WATCHLIST_TO_SECTOR: Dict[str, str] = {
     # ── 燃气轮机 ──
     'gas_turbine':            '燃气轮机',
 
+    # ── 低空经济（2026-09-07 新增）──
+    'low_altitude_economy':   '低空经济',
+
     # ── 新能源（含电池/储能/光伏/风电）──
     'battery_energy_storage': '新能源',
     'solid_state_battery':    '新能源',
@@ -2225,12 +3147,15 @@ WATCHLIST_TO_SECTOR: Dict[str, str] = {
     # ── 电网设备 ──
     'power_grid':             '电网设备',
 
-    # ── 贵金属（含金银）──
+    # ── 贵金属（仅黄金，白银已拆为独立板块）──
     'precious_metal_gold':    '贵金属',
-    'precious_metal_silver':  '贵金属',
+    'precious_metal_silver':  '白银',       # 2026-09-14 拆出独立板块（不与黄金合并）
 
     # ── 工业金属 ──
     'industrial_metal':       '工业金属',
+
+    # ── 煤炭（2026-09-14 新增）──
+    'coal':                   '煤炭',
 
     # ── 化工 ──
     'chemical_inflation':     '化工',
@@ -2541,13 +3466,28 @@ def get_kline(code: str, days: int = 130, max_retries: int = 2) -> Optional[pd.D
         symbol = code
     else:
         symbol = ('sh' if code.startswith(('6', '5', '9')) else 'sz') + code
-    for attempt in range(max_retries):
-        df = fetch_kline_sina(symbol, days)
-        if df is not None and not df.empty and len(df) >= 30:
-            return df
-        if attempt < max_retries - 1:
-            import time
-            time.sleep(2 + attempt * 2)
+
+    # 2026-09-17 路径调整：腾讯主源（与用户看盘数据一致）+ 新浪 fallback
+    if fetch_kline_tencent is not None:
+        for attempt in range(max_retries):
+            df = fetch_kline_tencent(symbol, days)
+            if df is not None and not df.empty and len(df) >= 30:
+                return df
+            if attempt < max_retries - 1:
+                import time
+                time.sleep(2 + attempt * 2)
+        # 腾讯失败 → fallback 新浪
+        print(f"[数据源] 腾讯拿不到 {symbol} ({len(df) if df is not None else 0} 行)，fallback 新浪")
+
+    # 路径 3：fetch_kline_sina fallback
+    if fetch_kline_sina is not None:
+        for attempt in range(max_retries):
+            df = fetch_kline_sina(symbol, days)
+            if df is not None and not df.empty and len(df) >= 30:
+                return df
+            if attempt < max_retries - 1:
+                import time
+                time.sleep(2 + attempt * 2)
     return None
 
 
@@ -2657,6 +3597,7 @@ def judge_market() -> Dict:
     results = []
     for name, code in benchmarks:
         df = get_kline(code, 130)
+        print("The df is:", df)
         if df is None or len(df) < MA_SLOW + SLOPE_WINDOW + 1:
             results.append({
                 'name': name,
@@ -2722,15 +3663,18 @@ def judge_market() -> Dict:
         )
         stable_phase = history['stable_phase']
 
-        # 写回磁盘
-        if history['stable_phase_updated'] or cache_key not in cache:
-            cache[cache_key] = {
-                'stable_phase': stable_phase,
-                'last_date': current_date,
-                'last_candle_idx': int(len(df) - 1),
-                'last_current_phase': phase_today,
-            }
-            _save_stable_cache(cache)
+        # 写回磁盘（2026-09-16 修复：总是写盘，保证 last_current_phase 反映真实状态）
+        # 之前"只有 stable_phase_updated 才写盘"导致：
+        #   - phase 单根变化时 stable_phase 不更新 → 不写盘
+        #   - cache.last_date 卡在旧日期
+        #   - 下次跑时 prev_stable_date 还是旧的 → STALE_DAYS 边界卡死
+        cache[cache_key] = {
+            'stable_phase': stable_phase,
+            'last_date': current_date,
+            'last_candle_idx': int(len(df) - 1),
+            'last_current_phase': phase_today,
+        }
+        _save_stable_cache(cache)
 
         results.append({
             'name': name,
@@ -2936,20 +3880,37 @@ def _judge_from_df(sector_name: str, df: pd.DataFrame, source: str, meta: Dict) 
     #   - v9 不触发 → phase 降级为 STRONG_DOWN（v9 比 slow_bull/底层 更严，过滤掉连续大涨/顶部区）
     #   - 不在 V9_SECTORS 的板块不受影响
     v9_override = False
-    if (slow_override or sector_name in A_MOMENTUM_SECTORS or sector_name == '创新药' or sector_name == '种子农业') and sector_name in V9_SECTORS:
+    if (slow_override or sector_name in A_MOMENTUM_SECTORS or sector_name in ('创新药', '种子农业', '电网设备', '券商', '低空经济', '稀土', '商业航天')) and sector_name in V9_SECTORS:
         v9_params = V9_SECTORS[sector_name]
         v9_strategy = v9_params.get('strategy', 'slow_bull_v9')
         v9_orig_phase = phase_today
 
         if v9_strategy == 'momentum_v9':
             # A 族动量 v9：close>MA60 + |vs_MA20|<tol> + 近5日涨>5%
-            # 可选增强：4线多头 + dd_60_max（per-sector 启用）
+            # 可选增强：4线多头 + NOT 4线 + dd_60_max + range_60_max
             v9_phase, v9_detail = judge_a_momentum(
                 close, df,
                 ma20_touch_tol=v9_params.get('ma20_touch_tol', 0.10),
                 gain_5d_min=v9_params.get('gain_5d_min', 0.05),
                 require_ma_align_4=v9_params.get('require_ma_align_4', False),
+                require_no_ma_align_4=v9_params.get('require_no_ma_align_4', False),
                 dd_60_max=v9_params.get('dd_60_max', None),
+                range_60_max=v9_params.get('range_60_max', None),
+            )
+        elif v9_strategy == 'oversold_rebound_v9':
+            # 超跌反弹 v9（2026-09-20 落地）：close>MA60 + dd_60>=阈值 + 5日涨>=阈值
+            # 适用：长期下行的板块（创新药/低空经济/智能驾驶/白酒等）
+            v9_phase, v9_detail = judge_oversold_rebound_v9(
+                close, df,
+                dd_60_min=v9_params.get('dd_60_min', 0.15),
+                gain_5d_min=v9_params.get('gain_5d_min', 0.03),
+            )
+        elif v9_strategy == 'breakout_high_v9':
+            # 突破 N 日新高 v9（2026-09-20 落地）：close > N日新高 + close > MA60
+            # 适用：箱体震荡突破型板块（工程机械/可控核聚变/燃气轮机等）
+            v9_phase, v9_detail = judge_breakout_high_v9(
+                close, df,
+                lookback=v9_params.get('lookback', 30),
             )
         elif v9_strategy == 'innovative_drug_v9':
             # 创新药 v9（事件驱动）：4线多头 + 近20日涨>8%
@@ -2965,6 +3926,40 @@ def _judge_from_df(sector_name: str, df: pd.DataFrame, source: str, meta: Dict) 
                 gain_5d_min=v9_params.get('gain_5d_min', 0.05),
                 season_months=tuple(v9_params.get('season_months', (8, 9, 10))),
             )
+        elif v9_strategy == 'power_grid_v9':
+            # 电网设备 v9（反 4 线多头）：NOT 4线 + 温和 + 贴近 MA20
+            v9_phase, v9_detail = judge_power_grid_v9(
+                close, df,
+                lookback_above_ma60=v9_params.get('lookback_above_ma60', 15),
+                gain_min=v9_params.get('gain_min', 0.03),
+                slope_min=v9_params.get('slope_min', 0.0),
+                dd_max=v9_params.get('dd_max', 0.10),
+                vs_ma20_max=v9_params.get('vs_ma20_max', 0.03),
+                gain_20_max=v9_params.get('gain_20_max', 0.08),
+                require_no_align_4=v9_params.get('require_no_align_4', True),
+            )
+        elif v9_strategy == 'securities_v9':
+            # 券商 v9（4线回撤启动）：4线多头 + 距 20 日高 > 5%
+            v9_phase, v9_detail = judge_securities_v9(
+                close, df,
+                lookback_above_ma60=v9_params.get('lookback_above_ma60', 15),
+                gain_min=v9_params.get('gain_min', 0.03),
+                slope_min=v9_params.get('slope_min', 0.0),
+                dd_max=v9_params.get('dd_max', 0.10),
+                dd_20_min=v9_params.get('dd_20_min', 0.05),
+                require_align_4=v9_params.get('require_align_4', True),
+            )
+        elif v9_strategy == 'low_altitude_v9':
+            # 低空经济 v9（4线贴近）：4线多头 + |vs_MA20| < 5%
+            v9_phase, v9_detail = judge_low_altitude_v9(
+                close, df,
+                lookback_above_ma60=v9_params.get('lookback_above_ma60', 15),
+                gain_min=v9_params.get('gain_min', 0.03),
+                slope_min=v9_params.get('slope_min', 0.0),
+                dd_max=v9_params.get('dd_max', 0.10),
+                vs_ma20_max=v9_params.get('vs_ma20_max', 0.05),
+                require_align_4=v9_params.get('require_align_4', True),
+            )
         else:
             # slow_bull_v9（贵金属 + 5 B 族）：slow_bull + |vs_MA20|<8% + 距20日高>8%
             v9_phase, v9_detail = judge_gold_v9(
@@ -2975,6 +3970,7 @@ def _judge_from_df(sector_name: str, df: pd.DataFrame, source: str, meta: Dict) 
                 dd_max=v9_params.get('dd_max', 0.15),
                 ma20_touch_tol=v9_params.get('ma20_touch_tol', 0.08),
                 dd_20_min=v9_params.get('dd_20_min', 0.08),
+                range_60_max=v9_params.get('range_60_max', None),
             )
 
         if isinstance(detail_today, dict):
@@ -2991,6 +3987,7 @@ def _judge_from_df(sector_name: str, df: pd.DataFrame, source: str, meta: Dict) 
         else:
             # v9 不触发 → 降级为 no_buy（v9 比 slow_bull 更严）
             phase_today = 'STRONG_DOWN'
+            v9_override = True  # 2026-09-27 修复：保持 v9_override=True，让 stable_phase 强制降级（防止永久 UP）
 
     # 上一根 K 线判定
     previous_phase = None
@@ -3053,12 +4050,19 @@ def _judge_from_df(sector_name: str, df: pd.DataFrame, source: str, meta: Dict) 
         stable_phase = 'STRONG_UP'
         history['stable_phase'] = 'STRONG_UP'
 
-    # v9 override 时强制 stable_phase = STRONG_UP（2026-09-06）
+    # v9 override 时强制 stable_phase = STRONG_UP / DOWN（2026-09-06 落地，2026-09-27 修复对称性）
     # 理由：v9 已经做了 2 重过滤（slow_bull + |vs_MA20|<8% + 距20日高>8%），
     #       不需要再受 judge_with_history 跨天稳定判定的压制。
-    if v9_override and phase_today == 'STRONG_UP':
-        stable_phase = 'STRONG_UP'
-        history['stable_phase'] = 'STRONG_UP'
+    # 2026-09-27 修复：v9 失败时也要强制降级（之前只强制升级，导致 stable_phase 永远不降级）
+    if v9_override:
+        if phase_today == 'STRONG_UP':
+            stable_phase = 'STRONG_UP'
+            history['stable_phase'] = 'STRONG_UP'
+        elif phase_today == 'STRONG_DOWN':
+            # v9 失败 → 立即降级 stable_phase（避免单根 phase 不一致导致永久 UP）
+            stable_phase = 'STRONG_DOWN'
+            history['stable_phase'] = 'STRONG_DOWN'
+            v9_override = False  # 标记 override 结束（防止后续逻辑误判）
 
     # 板块类型降级：no_chase 板块的 STRONG_UP 自动降级为 RANGE
     # 理由：这些板块历史 BUY 信号反指标（BUY 后必亏），
@@ -3089,15 +4093,15 @@ def _judge_from_df(sector_name: str, df: pd.DataFrame, source: str, meta: Dict) 
             history['stable_phase'] = 'RANGE'
             downgrade_reason = 'thematic板块：UNKNOWN按震荡处理（按"震荡只买ETF"操作）'
 
-    # 写回磁盘（只有真正更新时才覆盖）
-    if history['stable_phase_updated'] or cache_key not in cache:
-        cache[cache_key] = {
-            'stable_phase': stable_phase,
-            'last_date': current_date,
-            'last_candle_idx': int(len(df) - 1),
-            'last_current_phase': phase_today,
-        }
-        _save_stable_cache(cache)
+    # 写回磁盘（2026-09-16 修复：总是写盘，保证 last_current_phase 反映真实状态）
+    # 之前"只有 stable_phase_updated 才写盘"导致 phase 单根变化时 cache 不更新
+    cache[cache_key] = {
+        'stable_phase': stable_phase,
+        'last_date': current_date,
+        'last_candle_idx': int(len(df) - 1),
+        'last_current_phase': phase_today,
+    }
+    _save_stable_cache(cache)
 
     return {
         'sector': sector_name,
@@ -3227,7 +4231,7 @@ def judge_sector(sector: str) -> Dict:
     sector_aliases = {
         '电池储能': '电池',     # 电池ETF 覆盖更稳定
         '贵金属_黄金': '贵金属',
-        '贵金属_白银': '贵金属',
+        # 2026-09-14：贵金属_白银 已拆为独立板块「白银」，不再合并
     }
     actual_sector = sector_aliases.get(sector, sector)
 
@@ -3240,6 +4244,8 @@ def judge_sector(sector: str) -> Dict:
         if isinstance(etf_target, str):
             code = etf_target
             df = get_kline(code, 200)
+            print("The df is:", df)
+
             if df is not None and not df.empty:
                 for col in ('open', 'high', 'low', 'close'):
                     df[col] = pd.to_numeric(df[col], errors='coerce')
@@ -3249,6 +4255,8 @@ def judge_sector(sector: str) -> Dict:
             # 多 ETF 合成
             codes = list(etf_target)
             df = _build_etf_blend_kline(codes, 200)
+            print("The df is:", df)
+
             valid_codes = [c for c in codes if c in (df.columns.tolist() if df is not None else [])] or codes
             source = 'etf_blend'
             etf_meta = {'etf_codes': valid_codes, 'note': '多 ETF 等权合成（已归一化到 100）'}
@@ -3339,7 +4347,7 @@ def run_full(sectors: Optional[List[str]] = None) -> Dict:
         sector_aliases = {
             '电池储能': '电池',
             '贵金属_黄金': '贵金属',
-            '贵金属_白银': '贵金属',
+            # 2026-09-14：贵金属_白银 已拆为独立板块「白银」，不再合并
         }
         seen = set()
         deduped = []
