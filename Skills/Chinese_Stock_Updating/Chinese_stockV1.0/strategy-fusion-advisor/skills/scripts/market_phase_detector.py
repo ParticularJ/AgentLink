@@ -72,6 +72,9 @@ for p in (_ADAPTER_SRC, _FALLBACK_SRC):
     if p not in sys.path:
         sys.path.insert(0, p)
 
+# 注意（2026-10 复审）：pytdx 适配器已被整块注释、_ADAPTER 恒为 None，
+# 现役数据源是 腾讯(主) → 新浪(fallback)，见下方 fetch_kline_tencent / fetch_kline_sina。
+# 下面这段保留仅为记录历史；is_index 的"指数强制走 sina"分支因此已成残留。
 # try:
 #     from data_source_adapter import DataSourceAdapter
 #     _USE_ADAPTER = True
@@ -4207,7 +4210,7 @@ def _build_etf_blend_kline(codes: List[str], days: int = 200) -> Optional[pd.Dat
     avg_returns = avg_close.pct_change().fillna(0)
     sector_open = (avg_close / (1 + avg_returns)).fillna(avg_close.iloc[0])
 
-    return pd.DataFrame({
+    out = pd.DataFrame({
         'day': close_df.index,
         'open': sector_open.values,
         'close': avg_close.values,
@@ -4215,6 +4218,14 @@ def _build_etf_blend_kline(codes: List[str], days: int = 200) -> Optional[pd.Dat
         'low': np.minimum(avg_low.values, avg_close.values),
         'volume': avg_vol.values,
     })
+    # 落地"实际参与了合成的 ETF 代码"（取 concat 前的 key，顺序与 close_df 的列一致），
+    # 供 judge_sector 写入 meta.etf_codes。原先那里靠匹配 df 列名判断，恒为空。
+    used = list(series_map.keys())
+    try:
+        out.attrs['used_codes'] = used
+    except Exception:  # 极老版本 pandas 不支持 attrs
+        pass
+    return out
 
 
 def judge_sector(sector: str) -> Dict:
@@ -4244,7 +4255,8 @@ def judge_sector(sector: str) -> Dict:
         if isinstance(etf_target, str):
             code = etf_target
             df = get_kline(code, 200)
-            print("The df is:", df)
+            print(f"  [ETF] {code}: " + ("无数据" if df is None or df.empty
+                                         else f"{len(df)} 根K线 {df['day'].iloc[0]} ~ {df['day'].iloc[-1]}"))
 
             if df is not None and not df.empty:
                 for col in ('open', 'high', 'low', 'close'):
@@ -4255,11 +4267,17 @@ def judge_sector(sector: str) -> Dict:
             # 多 ETF 合成
             codes = list(etf_target)
             df = _build_etf_blend_kline(codes, 200)
-            print("The df is:", df)
+            print(f"  [ETF blend] {len(codes)} 只 -> " + ("无数据" if df is None or df.empty
+                                                        else f"{len(df)} 根K线，参与合成 {len(df.attrs.get('used_codes', codes))} 只"))
 
-            valid_codes = [c for c in codes if c in (df.columns.tolist() if df is not None else [])] or codes
+            # 修（2026-10）：原实现是 [c for c in codes if c in df.columns]，
+            # 而 df 的列是 day/open/high/low/close/volume，用 ETF 代码去匹配**永远为空**，
+            # 于是每次都靠 `or codes` 兜底 → meta 里的 etf_codes 只是把输入原样回显。
+            # 现在由 _build_etf_blend_kline 通过 df.attrs['used_codes'] 如实回报参与合成的标的。
             source = 'etf_blend'
-            etf_meta = {'etf_codes': valid_codes, 'note': '多 ETF 等权合成（已归一化到 100）'}
+            used_codes = list(df.attrs.get('used_codes', codes)) if df is not None else []
+            etf_meta = {'etf_codes': used_codes or codes,
+                        'note': '多 ETF 等权合成（已归一化到 100）'}
 
     # ETF 成功（df 不为空且行数够）→ 直接用 ETF 判定
     if df is not None and not df.empty and len(df) >= MA_SLOW + SLOPE_WINDOW + 1:
@@ -4276,7 +4294,7 @@ def judge_sector(sector: str) -> Dict:
                 test_df = get_kline(c, 200)
                 if test_df is None or len(test_df) < 30:
                     failed.append(c)
-            etf_fail_reason = "多 ETF 中失败: {failed}" if failed else "ETF blend 拿不到 K 线"
+            etf_fail_reason = f"多 ETF 中失败: {failed}" if failed else "ETF blend 拿不到 K 线"
 
     # 成分股合成回退
     constituents = SECTOR_CONSTITUENTS.get(actual_sector, [])

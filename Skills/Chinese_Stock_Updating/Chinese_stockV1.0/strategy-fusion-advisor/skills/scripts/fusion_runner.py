@@ -28,7 +28,7 @@ while not os.path.exists(os.path.join(_root, "common", "paths.py")) and _root !=
     _root = os.path.dirname(_root)
 sys.path.insert(0, os.path.join(_root, "common"))
 from paths import MARKET_PHASE_FILE, RECO_DIR                # noqa: E402
-from holdings import load_holdings                            # noqa: E402
+from holdings import load_holdings, to_pure_code              # noqa: E402
 from watchlist import load_watchlist_entries                  # noqa: E402
 
 # 推荐文件写入位置（<repo>/recommendations/）
@@ -95,6 +95,11 @@ from fusion_config import (
     DAILY_TOP_N,
     MARKET_TRADE_SWITCH,
     RANGE_MODE,
+    DEFENSIVE_MODES,
+    DEFENSIVE_SECTORS,
+    DEFENSIVE_ETFS,
+    DEFENSIVE_MIN_SCORE,
+    DEFENSIVE_ETF_POSITION_PCT,
     ETF_TRADABLE_PHASES,
     EVENING_STRATEGIES,
     MORNING_STRATEGIES,
@@ -233,7 +238,6 @@ def scan_strategy(strategy_name: str, top_n: int = 5,
       }
     """
     meta = STRATEGY_META.get(strategy_name, {})
-    print("meta: ", meta)
     analyzer = get_analyzer(strategy_name)
     if analyzer is None:
         return [], {'reserve': [], 'block': [], 'unknown_sector': []}
@@ -344,7 +348,6 @@ def get_analyzer(strategy_name: str):
     try:
       
         import_module = "skills.scripts." +strategy_name.replace('-', '_') + "_analyzer"
-        print("import_module: ", import_module)
         if import_module in sys.modules:
             del sys.modules[import_module]
         # 清理污染
@@ -460,7 +463,11 @@ def _load_cooldown_history() -> Dict:
 
 def load_recent_picks() -> Dict[str, str]:
     """返回 {标的代码: 最近一次被推荐的日期}。"""
-    hist = _load_cooldown_history()
+    return _picks_last_date(_load_cooldown_history())
+
+
+def _picks_last_date(hist: Dict) -> Dict[str, str]:
+    """同上，但接受已加载的历史，避免重复读盘。"""
     last: Dict[str, str] = {}
     for run in hist['runs']:
         for code in run.get('codes', []):
@@ -475,7 +482,18 @@ def trading_days_since(date_str: str) -> int:
     """
     if not date_str:
         return None
-    runs = [r.get('date', '') for r in _load_cooldown_history()['runs']]
+    return _runs_since(_load_cooldown_history(), date_str)
+
+
+def _runs_since(hist: Dict, date_str: str) -> Optional[int]:
+    """trading_days_since 的纯函数版本（复用已加载的历史）。
+
+    原实现每调用一次就重新读一遍 recent_picks.json；
+    而冷却期过滤会对每只候选各调一次，属于无谓的重复 IO。
+    """
+    if not date_str:
+        return None
+    runs = [r.get('date', '') for r in hist['runs']]
     if date_str not in runs:
         return None          # 不在历史里 → 无从判断，按"未推荐过"处理
     return len([d for d in runs if d > date_str])
@@ -506,27 +524,29 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
     # 持仓板块加分：同一板块持仓后，下次推荐分数加 HELD_SECTOR_BONUS
     holded_sectors = load_holded_sectors()
 
+    # 财报不及预期黑名单：**在循环外取一次**。
+    # 原实现把它放在 per-stock 循环内，每只候选都重新加载一遍财报 JSON；
+    # 且一旦该模块抛异常，会打断整个 fuse_recommendations（调用方在 try 之外），
+    # 当天推荐静默变空。现在改为：只取一次 + 异常降级 + 用纯 6 位代码做等值匹配
+    # （原来的 `code in s['stock_code']` 是子串匹配，方向反了，'600' 会命中 '600150'）。
+    try:
+        _dangerous_codes = {to_pure_code(s.get('stock_code') or '')
+                            for s in dangerous_stocks()}
+        _dangerous_codes.discard('')
+    except Exception as _e:  # noqa: BLE001 - 外部模块，失败不能让主流程挂掉
+        print(f'[WARN] 财报黑名单不可用，本次跳过该过滤: {_e}')
+        _dangerous_codes = set()
+
     stock_map: Dict[str, Dict] = {}
     for rec in recommendations:
         code = rec.get('stock_code', '')
         if not code:
             continue
-        #penalty = 0
-        #reason = ''
-        penalty, reason = news_penalty(code, rec.get('stock_name', ''))
-       
-        dangerous_stock = dangerous_stocks()
-        is_dangerous = False
-        for s in dangerous_stock:
-            if code in s['stock_code']:
-                is_dangerous = True
-                continue   
-        if is_dangerous:
+        if to_pure_code(code) in _dangerous_codes:
+            print(f'⛔ 财报不及预期黑名单，剔除: {code} {rec.get("stock_name", "")}')
             continue
-       # print("Is the stock dangerous? ", is_dangerous)
-       # print("stock_code: ", code, "penalty: ", penalty, "reason: ", reason)
-        ## 添加惩罚策略
-       # penalty = 0  # 新闻情绪惩罚已禁用
+        penalty, reason = news_penalty(code, rec.get('stock_name', ''))
+
         if code not in stock_map:
             stock_map[code] = {
                 'stock_code': code,
@@ -562,7 +582,6 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
         if _act:
             e['sector_action_set'].add(_act)
         e['reasons'] = rec.get('reasons', '')
-        print("the penalty is : ", penalty)
         if penalty < 0:
             e['penalty_reason'] = reason
         weight = rec.get('strategy_weight', 1.0)
@@ -583,8 +602,6 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
         n = len(data['recs'])           # 策略命中数量
         final_best = data['best_score'] # 扣除惩罚后的最佳分数
         penalty = data.get('penalty', 0)
-        print("=data['penalty_reason']: ", data['penalty_reason'])
-        print("penalty: ", penalty)
 
         reasons = []  # 记录具体原因，方便后续输出分析细节
         # 1. 只要 penalty 是负数（利空扣分），直接判定风险，不进入推荐
@@ -706,7 +723,6 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
     #   且回测显示两者选出的标的完全相同（并列在实际数据里几乎不出现）。
     #   因此回退为文档 3.9 描述的 combined_score，去掉一层负 IC 的中间量。
     scored.sort(key=lambda x: (x['combined_score'], x['strategy_count']), reverse=True)
-    print("The all recommendations are: ", scored)
     top = scored[:top_n]
 
     # ── 信号冷却期（在选出 top-N 之后再剔除）──
@@ -715,10 +731,11 @@ def fuse_recommendations(recommendations: List[Dict], top_n: int = 5,
     # 宁缺毋滥：某天没有满足条件的新信号，就空仓。
     if cooldown_days > 0 and top:
         try:
-            _last = load_recent_picks()
+            _hist = _load_cooldown_history()
+            _last = _picks_last_date(_hist)
             _kept, _cooled = [], []
             for _s in top:
-                _gap = trading_days_since(_last.get(_s['stock_code']))
+                _gap = _runs_since(_hist, _last.get(_s['stock_code']))
                 if _gap is not None and _gap < cooldown_days:
                     _cooled.append((_s['stock_code'], _s['stock_name'], _gap))
                     continue
@@ -923,6 +940,7 @@ def write_recommendations(top: List[Dict], session: str, success: int, no_result
             'is_etf': s.get('is_etf', False),
             'is_etf_phase_recommendation': s.get('is_etf_phase_recommendation', False),
             'sector_action': s.get('sector_action', 'run'),
+            'trade_switch': s.get('trade_switch', 'full'),
         })
 
     data = {
@@ -932,6 +950,9 @@ def write_recommendations(top: List[Dict], session: str, success: int, no_result
         'market_phase': market_phase,
         'market_phase_label': phase_label,
         'position_cap': position_cap,
+        # 'full' = 常规；'defensive' = 防守通道；'off' = 空仓（空推荐分支另写）
+        'trade_switch': next((s.get('trade_switch') for s in top
+                              if s.get('trade_switch')), 'full'),
         # ── 板块过滤统计 ──
         'sector_filter': {
             'sector_phases': sector_phases or {},
@@ -965,45 +986,49 @@ def write_recommendations(top: List[Dict], session: str, success: int, no_result
     print(f'\n📄 推荐已写入: {skill_file}')
 
 
-# ── ETF 推荐（消费 detector 的 STRONG_UP 板块 ETF）──
+# ── ETF 推荐（消费 detector 的板块判定）──
 
-def collect_strong_up_etf_recommendations(market_info: Dict) -> List[Dict]:
-    """
-    从 market_phase.json 中提取 phase=STRONG_UP 的板块 ETF 推荐。
-    用户原则："个股在板块下降根本不碰，可以考虑ETF"（v4.2）。
-    STRONG_UP 时 ETF 是板块整体上行，可作为板块层面的 BUY 信号。
+def collect_etf_recommendations(market_info: Dict,
+                                tradable_phases=None,
+                                score: float = None,
+                                position_pct: float = None,
+                                allowed_sectors=None,
+                                source: str = 'etf_phase_detector',
+                                reason_prefix: str = '') -> List[Dict]:
+    """从 market_phase.json 提取板块 ETF 推荐（通用实现）。
 
-    返回: [{
-        'stock_code': 'sh561760',
-        'stock_name': '油气ETF华泰柏瑞',
-        'sector': '油气',
-        'sector_phase': 'STRONG_UP',
-        'sector_action': 'run',
-        'is_etf': True,
-        'combined_score': ETF_BASE_SCORE,
-        'best_score': ETF_BASE_SCORE,
-        'position_pct': 12.0,  # 默认 12%（比个股低，因为是板块而非个股）
-        'strategies': ['板块ETF-单边上行'],
-        'reasons': '板块 STRONG_UP（连续 3 日单边上行，gain_20=5.2%, slope=2.81%）, 推荐板块ETF',
-        'is_etf_phase_recommendation': True,
-        'source': 'etf_phase_detector',
-    }, ...]
+    参数化是为了让「常态通道」与「防守通道」共用同一段逻辑，
+    而不是各写一份（历史上 PHASE_SECTOR_FILTER_ETF 就是因为写了两份而失效）：
+
+      tradable_phases  允许的板块 phase 集合（默认 fusion_config.ETF_TRADABLE_PHASES）
+      score            入池分数（默认 ETF_BASE_SCORE）
+      position_pct     单只仓位上限（默认按大盘 phase 查表）
+      allowed_sectors  板块名白名单；None = 不限（用于防守通道只放行防守板块）
+      source           落盘的来源标记
+      reason_prefix    买入理由前缀（如 '【防守配置】'）
     """
     sectors_detail = market_info.get('sectors_detail') or []
     recs = []
 
-    # 大盘 phase 决定 ETF 仓位上限（分档表见 fusion_config）
+    if tradable_phases is None:
+        tradable_phases = ETF_TRADABLE_PHASES
+    if score is None:
+        score = ETF_BASE_SCORE
+
     market_phase = market_info.get('phase', 'UNKNOWN')
-    default_pos = ETF_POSITION_BY_MARKET_PHASE.get(market_phase, ETF_POSITION_DEFAULT)
+    if position_pct is None:
+        position_pct = ETF_POSITION_BY_MARKET_PHASE.get(market_phase, ETF_POSITION_DEFAULT)
 
     for sec in sectors_detail:
         phase = sec.get('stable_phase') or sec.get('phase') or 'UNKNOWN'
         # 模块1 复审：RANGE 的 ETF 未来表现优于 STRONG_UP，原先只推 STRONG_UP
         # 等于把最好的档位闲置（见 fusion_config.ETF_TRADABLE_PHASES 的实测数据）。
-        if phase not in ETF_TRADABLE_PHASES:
+        if phase not in tradable_phases:
             continue
         sector_name = sec.get('sector', '')
         if not sector_name:
+            continue
+        if allowed_sectors is not None and sector_name not in allowed_sectors:
             continue
         meta = sec.get('meta') or {}
         etf_codes = meta.get('etf_codes') or []
@@ -1030,7 +1055,7 @@ def collect_strong_up_etf_recommendations(market_info: Dict) -> List[Dict]:
 
         _label = 'STRONG_UP（连续 3 日单边上行）' if phase == 'STRONG_UP' else f'{phase}（震荡）'
         reasons = (
-            f'板块【{sector_name}】{_label}，'
+            f'{reason_prefix}板块【{sector_name}】{_label}，'
             f'gain_20={gain_20*100:.1f}%, slope={slope:.2f}%, '
             f'站上 MA60 {n_above} 日；推荐买入板块ETF'
         )
@@ -1043,25 +1068,69 @@ def collect_strong_up_etf_recommendations(market_info: Dict) -> List[Dict]:
             'sector_action': 'run',
             'is_etf': True,
             'is_etf_phase_recommendation': True,
-            'source': 'etf_phase_detector',
-            'combined_score': ETF_BASE_SCORE,
-            'best_score': ETF_BASE_SCORE,
-            'strategy_score': ETF_BASE_SCORE,
+            'source': source,
+            'combined_score': score,
+            'best_score': score,
+            'strategy_score': score,
             'strategy_win_rate': 0.65,
             'strategy_weight': 0.9,
-            'position_pct': default_pos,
-            'position_value': default_pos / 100.0,
+            'position_pct': position_pct,
+            'position_value': position_pct / 100.0,
             'strategies': ['板块ETF-单边上行'],
             'reasons': reasons,
             'penalty': 0.0,
             'penalty_reason': [],
             'sectors': [sector_name],
-            'sector_phases': ['STRONG_UP'],
+            'sector_phases': [phase],
             'strategy_count': 1,
             'sector_held_bonus': 0.0,
             'recommendations': [],
         })
 
+    return recs
+
+
+def collect_strong_up_etf_recommendations(market_info: Dict) -> List[Dict]:
+    """常态 ETF 通道：只取 STRONG_UP 板块（保持原签名，回测/历史调用方无需改动）。"""
+    return collect_etf_recommendations(market_info)
+
+
+def collect_defensive_etf_recommendations(market_info: Dict) -> List[Dict]:
+    """防守通道：大盘下行时，只放行防守白名单板块的 ETF。
+
+    与常态通道的三处差异（全部来自 fusion_config，便于回测调参与一键关闭）：
+      1. `tradable_phases` 换成 DEFENSIVE_MODES（STRONG_DOWN / WEAK_DOWN），
+         因为常态通道只认 STRONG_UP，下行时一只都不会出；
+      2. `allowed_sectors` 限定为 DEFENSIVE_SECTORS，把主题类板块挡在外面；
+      3. 分数门槛抬到 DEFENSIVE_MIN_SCORE（90），仓位压到
+         DEFENSIVE_ETF_POSITION_PCT（8%）。
+
+    另有一层双保险：即使板块名不在白名单里，只要该板块的 ETF 代码命中
+    DEFENSIVE_ETFS，也仍然放行（应对将来板块改名/新增防守板块）。
+    """
+    sectors_detail = market_info.get('sectors_detail') or []
+    recs = collect_etf_recommendations(
+        market_info,
+        tradable_phases=DEFENSIVE_MODES,
+        score=DEFENSIVE_MIN_SCORE,
+        position_pct=DEFENSIVE_ETF_POSITION_PCT,
+        allowed_sectors=DEFENSIVE_SECTORS,
+        source='etf_defensive',
+        reason_prefix='【防守配置】',
+    )
+    # 双保险：按 ETF 代码再放行一次（板块名不匹配但标的是防守资产）
+    picked = {r.get('stock_code') for r in recs}
+    for r in collect_etf_recommendations(
+            market_info,
+            tradable_phases=DEFENSIVE_MODES,
+            score=DEFENSIVE_MIN_SCORE,
+            position_pct=DEFENSIVE_ETF_POSITION_PCT,
+            allowed_sectors=None,
+            source='etf_defensive',
+            reason_prefix='【防守配置】'):
+        if r.get('stock_code') in DEFENSIVE_ETFS and r.get('stock_code') not in picked:
+            recs.append(r)
+            picked.add(r.get('stock_code'))
     return recs
 
 
@@ -1144,8 +1213,12 @@ def run_fusion(session: str, top_n: int = DAILY_TOP_N):
     position_cap = PHASE_POSITION_CAP.get(market_phase, 0.30)
 
     # ── 大盘趋势交易开关（用户需求 2）──
-    # 现状：大盘 phase 只调仓位上限，不阻止开仓 → 单边下跌月仍在交易。
-    # 改为：STRONG_DOWN / WEAK_DOWN / UNKNOWN 直接禁止当日开仓。
+    # 2026-10-15 改造：开关从「硬短路」升级为「三档」。
+    #   full      → 照常跑全部策略
+    #   defensive → 不跑个股策略，只走防守通道（下行时的降级档，见 fusion_config）
+    #   off       → 完全空仓
+    # 旧实现在 STRONG_DOWN 时直接 return，导致 PHASE_SECTOR_FILTER_ETF 里
+    # 早就设计好的 run_low（板块下行时 ETF 仍放行、门槛 85）**永远没有执行机会**。
     trade_mode = MARKET_TRADE_SWITCH.get(market_phase, "off")
     if trade_mode == "off":
         print(f'\n🛑 大盘趋势禁止开仓：{phase_label}（{market_phase}）')
@@ -1170,13 +1243,80 @@ def run_fusion(session: str, top_n: int = DAILY_TOP_N):
             'error_count': 0,
         }
         os.makedirs(SKILL_RECO_DIR, exist_ok=True)
-        _sess_tag = {'CLOSE': 'CLOSE', 'EVENING': 'EVENING'}.get(session, 'MORNING')
+        # 文件名必须与正常路径（write_recommendations 的 f'{date}_{session_str.lower()}_recommendation.json'）
+        # 保持一致。原实现写的是大写 '_MORNING_BUY_'，而推送端 send_feishu_card 的
+        # glob 是 '*_morning_*recommendation.json'（小写），导致禁止开仓日的空推荐文件
+        # 永远不会被推送端取到。
+        _sess_tag = {'CLOSE': 'close', 'EVENING': 'evening'}.get(session, 'morning')
         path = os.path.join(SKILL_RECO_DIR,
-                            f'{datetime.now().strftime("%Y%m%d")}_{_sess_tag}_BUY_recommendation.json')
+                            f'{datetime.now().strftime("%Y%m%d")}_{_sess_tag}_buy_recommendation.json')
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(empty, f, ensure_ascii=False, indent=2)
         print(f'   已写入空推荐：{path}')
         return empty
+
+    # ── 🛡️ 防守通道（大盘下行时的降级档）────────────────────────
+    # 用户取向："大盘下跌时可以推荐，但务必保证推荐质量，风险高就不推荐。"
+    # 这里刻意**不跑个股策略**（省掉大量网络请求，而且个股在下行档无论如何都被 block），
+    # 只产出防守白名单板块的 ETF，门槛 90 分、单只仓位 8%。
+    if trade_mode == "defensive":
+        print(f'\n🛡️  大盘下行 → 进入防守通道：{phase_label}（{market_phase}）')
+        print(f'   白名单板块: {"、".join(DEFENSIVE_SECTORS)}')
+        print(f'   入池门槛: combined_score ≥ {DEFENSIVE_MIN_SCORE:.0f}（常规为 {MIN_COMBINED_SCORE:.0f}）')
+        print(f'   单只仓位上限: {DEFENSIVE_ETF_POSITION_PCT:.0f}%（常规 ETF 档位更高）')
+        print('   个股策略本次不运行（下行档一律不碰个股）')
+
+        defensive_cap = min(position_cap, DEFENSIVE_ETF_POSITION_PCT * max(1, top_n) / 100.0)
+        top = collect_defensive_etf_recommendations(market_info)
+
+        # 冷却期同样生效：防守标的也会被同一波行情反复点名
+        if SIGNAL_COOLDOWN_DAYS > 0 and top:
+            try:
+                _hist = _load_cooldown_history()
+                _last = _picks_last_date(_hist)
+                _kept = []
+                for _s in top:
+                    _code = _s.get('code') or _s.get('stock_code', '')
+                    _gap = _runs_since(_hist, _last.get(_code))
+                    if _gap is not None and _gap < SIGNAL_COOLDOWN_DAYS:
+                        continue
+                    _kept.append(_s)
+                if len(_kept) != len(top):
+                    print(f'❄️  冷却期过滤防守标的: {len(top)} → {len(_kept)}')
+                top = _kept
+            except Exception as _e:  # noqa: BLE001
+                print(f'[WARN] 防守通道冷却期过滤失败: {_e}')
+
+        top = sorted(top, key=lambda x: x.get('combined_score', 0), reverse=True)[:top_n]
+
+        # 组合总仓位上限：不超过「单只上限 × 当日只数」，也不超过大盘仓位上限
+        _total = sum(s.get('position_pct', 0) for s in top)
+        _cap_pct = defensive_cap * 100
+        if _total > _cap_pct and _total > 0:
+            _scale = _cap_pct / _total
+            for s in top:
+                s['position_pct'] = round(s['position_pct'] * _scale, 1)
+                s['position_value'] = round(s['position_pct'] / 100.0, 4)
+                s['position_capped'] = True
+            print(f'⚠️  防守通道仓位超限 {_total:.1f}% → 按 {_cap_pct:.1f}% 等比缩放')
+
+        if not top:
+            print(f'   今日无防守标的通过筛选（门槛 {DEFENSIVE_MIN_SCORE:.0f} 分）→ 空仓')
+        # 打上防守标记，便于事后区分口径（须在落盘前）
+        for s in top:
+            s['trade_switch'] = 'defensive'
+        report = build_report(top, session, len(top),
+                              market_phase=market_phase, phase_label=phase_label,
+                              position_cap=defensive_cap,
+                              sector_filter_stats=None,
+                              sector_phases=market_info.get('sector_phases', {}))
+        print('\n' + report)
+        write_recommendations(top, session, 0, 0, 0,
+                              market_phase=market_phase, phase_label=phase_label,
+                              position_cap=defensive_cap,
+                              sector_filter_stats=None,
+                              sector_phases=market_info.get('sector_phases', {}))
+        return top
 
     print(f'\n✅ 大盘趋势允许开仓：{phase_label}（{market_phase}，模式 {trade_mode}）')
 
@@ -1266,11 +1406,12 @@ def run_fusion(session: str, top_n: int = DAILY_TOP_N):
         # 是重复信号的主要来源，不去重会让同一波行情被反复计数。
         if SIGNAL_COOLDOWN_DAYS > 0:
             try:
-                _last = load_recent_picks()
+                _hist = _load_cooldown_history()
+                _last = _picks_last_date(_hist)
                 _kept = []
                 for _s in top:
                     _code = _s.get('code') or _s.get('stock_code', '')
-                    _gap = trading_days_since(_last.get(_code))
+                    _gap = _runs_since(_hist, _last.get(_code))
                     if _gap is not None and _gap < SIGNAL_COOLDOWN_DAYS:
                         continue
                     _kept.append(_s)

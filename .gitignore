@@ -18,6 +18,9 @@ Skills/Chinese_Stock_Updating/Chinese_stockV1.0/recommendations/
 # 密钥
 Skills/Chinese_Stock_Updating/Chinese_stockV1.0/common/secrets.yaml
 
+# ACL 修复产物（临时备份/报告，非源码）
+Skills/acl-recovery/
+
 # 运行日志
 *.log
 

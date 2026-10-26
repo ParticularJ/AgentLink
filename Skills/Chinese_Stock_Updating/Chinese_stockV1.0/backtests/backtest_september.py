@@ -401,23 +401,61 @@ def build_analyzers():
 def run(cache: QuoteCache, days: List[str], hold_days: int, stop_pct: float,
         top_n: int, gate: bool = True, cooldown: int = 0,
         include_reserve: bool = False, market_switch: bool = False,
-        entry_quality_keep: float = 0.0) -> dict:
-    """逐日重放，返回 {day: {"candidates": [...], "all_recs": [...]}}。"""
+        entry_quality_keep: float = 0.0, defensive: bool = False,
+        no_defensive: bool = False) -> dict:
+    """逐日重放，返回 {day: {"candidates": [...], "all_recs": [...]}}。
+
+    defensive=True 时，MARKET_TRADE_SWITCH 命中 'defensive' 档的日子
+    跳过个股策略、改走防守通道（与生产 fusion_runner.run_fusion 同款规则）。
+    no_defensive=True 时把 'defensive' 档当作 'off'（对照组）。
+    """
     import fusion_runner as fr
+    import fusion_config as _fc
 
     result = {}
     cooled: Dict[str, str] = {}          # code -> 上次被推荐的日期
     day_idx: Dict[str, int] = {d: i for i, d in enumerate(days)}
+    # no_defensive：把下行档当作 "off"（对照组）。
+    # 生产配置里 STRONG_DOWN/WEAK_DOWN 现在是 "defensive"，所以做 A/B 时必须
+    # 显式提供"如果不开防守通道会怎样"的对照，而不是依赖生产配置恰好是 off。
+    switch = dict(_fc.MARKET_TRADE_SWITCH)
+    if no_defensive:
+        for _p, _m in list(switch.items()):
+            if _m == "defensive":
+                switch[_p] = "off"
     for i, day in enumerate(days, 1):
         market, sectors, detail = daily_phases(cache, day)
 
         # 大盘趋势交易开关（生产 fusion_runner 同款规则）
-        if market_switch:
-            import fusion_config as _fc
-            if _fc.MARKET_TRADE_SWITCH.get(market, "off") == "off":
-                result[day] = {"market": market, "candidates": [], "all_recs": []}
-                print(f"  [{i}/{len(days)}] {day} 大盘={market:12s} 🛑 开关关闭，不开仓")
-                continue
+        trade_mode = switch.get(market, "off") if market_switch else "full"
+        if trade_mode == "off" or (trade_mode == "defensive" and not defensive):
+            result[day] = {"market": market, "candidates": [], "all_recs": []}
+            _why = "开关关闭" if trade_mode == "off" else "防守档（未启用防守通道）"
+            print(f"  [{i}/{len(days)}] {day} 大盘={market:12s} 🛑 {_why}，不开仓")
+            continue
+
+        if trade_mode == "defensive":
+            # 防守通道：不跑个股策略，只产出防守白名单板块的 ETF
+            cands = fr.collect_defensive_etf_recommendations(
+                {"phase": market, "sectors_detail": detail})
+            if cooldown > 0:
+                sel, dropped = [], 0
+                for c in cands[:top_n]:
+                    code = c.get("stock_code") or c.get("code", "")
+                    last = cooled.get(code)
+                    if last is not None and day_idx[day] - day_idx.get(last, -10 ** 6) < cooldown:
+                        dropped += 1
+                        continue
+                    sel.append(c)
+                for c in sel:
+                    cooled[c.get("stock_code") or c.get("code", "")] = day
+                cands = sel
+                if dropped:
+                    print(f"  [防守+冷却] {day} 剔除 {dropped} 只")
+            result[day] = {"market": market, "candidates": cands, "all_recs": cands}
+            print(f"  [{i}/{len(days)}] {day} 大盘={market:12s} 🛡️ 防守通道 → {len(cands)} 只")
+            continue
+
         with patched_analyzers(cache, day, [__import__("ma_bullish_strategy_analyzer"),
                                              __import__("gap_fill_strategy_analyzer"),
                                              __import__("breakout_high_strategy_analyzer")]):
@@ -561,7 +599,7 @@ def main():
     ap.add_argument("--top", type=int, default=5, help="每日取前 N 名")
     ap.add_argument("--ungated", action="store_true", help="关闭板块门控（对照组）")
     ap.add_argument("--time-stop", action="store_true",
-                    help="启用优先级9 时间止损（持仓>10日且浮盈<5% 清仓）")
+                    help="启用优先级9 时间止损（持仓>10日且浮盈<5%% 清仓）")
     ap.add_argument("--ts-days", type=int, default=10)
     ap.add_argument("--ts-profit", type=float, default=0.05)
     ap.add_argument("--report", default="", help="把摘要写入指定 UTF-8 文件")
@@ -571,6 +609,10 @@ def main():
                     help="入场质量分过滤：保留分位前 N（如 0.7 保留前 70%%）；0=不过滤")
     ap.add_argument("--market-switch", action="store_true",
                     help="启用大盘趋势交易开关（STRONG_DOWN/WEAK_DOWN/UNKNOWN 不开仓）")
+    ap.add_argument("--defensive", action="store_true",
+                    help="启用防守通道：下行档改推防守白名单板块 ETF（需与 --market-switch 同用）")
+    ap.add_argument("--no-defensive", action="store_true",
+                    help="对照组：把下行档当作 off（不开防守通道）")
     ap.add_argument("--include-reserve", action="store_true",
                     help="把 WAVE_UP/RANGE 板块的候选也纳入（验证 reserve 路径）")
     ap.add_argument("--cooldown", type=int, default=0,
@@ -602,7 +644,9 @@ def main():
     _play = run(cache, days, args.hold, args.stop, args.top, gate=not args.ungated,
                 cooldown=args.cooldown, include_reserve=args.include_reserve,
                 market_switch=args.market_switch,
-                entry_quality_keep=args.entry_quality)
+                entry_quality_keep=args.entry_quality,
+                defensive=args.defensive,
+                no_defensive=args.no_defensive)
     play = _play
 
     if args.dump_candidates:
